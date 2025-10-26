@@ -1,0 +1,351 @@
+/* ========================================
+   DARK MODE – Full Site
+   Keeps light-mode layout
+   Changes only design/colors
+   ======================================== */
+
+/* ===== Base ===== */
+[data-bs-theme="dark"] {
+ background-color: #121212;
+color: #e5e7eb;
+font-family: Arial, sans-serif;
+}
+
+
+/* ===== Body ===== */
+[data-bs-theme="dark"] body {
+  background-color: #121212;
+  color: #e5e7eb;
+}
+
+/* ===== Typography ===== */
+[data-bs-theme="dark"] h1,
+[data-bs-theme="dark"] h2,
+[data-bs-theme="dark"] h3,
+[data-bs-theme="dark"] h4,
+[data-bs-theme="dark"] h5,
+[data-bs-theme="dark"] h6,
+[data-bs-theme="dark"] p,
+[data-bs-theme="dark"] span,
+[data-bs-theme="dark"] label {
+  color: #e7e7e7;
+}
+
+[data-bs-theme="dark"] a {
+  color: #60a5fa;
+  text-decoration: none;
+}
+[data-bs-theme="dark"] a:hover {
+  color: #1b1a19;
+}
+
+/* ===== Navbar ===== */
+[data-bs-theme="dark"] .navbar {
+  background-color: #111827;
+  border-bottom: 1px solid #374151;
+}
+[data-bs-theme="dark"] .navbar-brand,
+[data-bs-theme="dark"] .navbar-nav .nav-link {
+  color: #e5e7eb !important;
+}
+[data-bs-theme="dark"] .navbar-nav .nav-link:hover,
+[data-bs-theme="dark"] .navbar-brand:hover {
+  color: #e0e0e0 !important;
+}
+
+/* ===== Footer ===== */
+[data-bs-theme="dark"] footer,
+[data-bs-theme="dark"] .footer {
+  background-color: #111827;
+  border-top: 1px solid #374151;
+  color: #9ca3af;
+}
+
+/* ===== Containers / Sections ===== */
+[data-bs-theme="dark"] .container,
+[data-bs-theme="dark"] section,
+[data-bs-theme="dark"] main {
+  background-color: #1f2937;
+  border-radius: 12px;
+  color: #e5e7eb;
+  
+}
+
+/* ===== Cards ===== */
+[data-bs-theme="dark"] .card {
+  background-color: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  border-radius: 12px;
+}
+[data-bs-theme="dark"] .card-header {
+  background: linear-gradient(135deg, #2563eb);
+  color: #fff;
+  border-bottom: none;
+}
+[data-bs-theme="dark"] .card-body {
+  background-color: #1f1f1f;
+  
+}
+
+/* ===== Tables ===== */
+[data-bs-theme="dark"] table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+[data-bs-theme="dark"] th {
+  background: linear-gradient(135deg, #2563eb);
+  color: #fff;
+  font-weight: 600;
+}
+[data-bs-theme="dark"] td {
+  border-bottom: 1px solid #374151;
+}
+[data-bs-theme="dark"] tr:nth-child(even) {
+  background-color: #1f2937;
+}
+[data-bs-theme="dark"] tr:nth-child(odd) {
+  background-color: #272f3f;
+}
+[data-bs-theme="dark"] tr:hover {
+  background-color: #374151;
+}
+
+/* ===== Forms & Inputs ===== */
+[data-bs-theme="dark"] input[type="text"],
+[data-bs-theme="dark"] input[type="email"],
+[data-bs-theme="dark"] input[type="password"],
+[data-bs-theme="dark"] textarea,
+[data-bs-theme="dark"] select {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border: 1px solid #374151;
+  border-radius: 12px;
+}
+[data-bs-theme="dark"] input::placeholder,
+[data-bs-theme="dark"] textarea::placeholder {
+  color: #9ca3af;
+}
+[data-bs-theme="dark"] input:focus,
+[data-bs-theme="dark"] textarea:focus,
+[data-bs-theme="dark"] select:focus {
+  background-color: #272f3f;
+  border-color: #6366f1;
+  color: #f9fafb;
+  box-shadow: 0 0 6px rgba(99,102,241,0.5);
+  outline: none;
+}
+
+/* ===== Buttons ===== */
+[data-bs-theme="dark"] button,
+[data-bs-theme="dark"] .btn {
+  .futuristic-btn { background: linear-gradient(90deg, #667eea, #764ba2); }
+.futuristic-btn-green { background: linear-gradient(90deg, #43e97b, #38f9d7); }
+.futuristic-btn-blue { background: linear-gradient(90deg, #36d1dc, #5b86e5); }
+.futuristic-btn-yellow { background: linear-gradient(90deg, #f7971e, #ffd200); color: #222; }
+.futuristic-btn-red { background: linear-gradient(90deg, #ff416c, #ff4b2b); }
+.futuristic-btn-gray { background: linear-gradient(90deg, #bdc3c7, #2c3e50); }
+.futuristic-btn-dark { background: linear-gradient(90deg, #232526, #414345); }
+  color: #fff2f2;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+[data-bs-theme="dark"] button:hover,
+[data-bs-theme="dark"] .btn:hover {
+  background: linear-gradient(135deg, #2564eb7f);
+  color: #111827;
+}
+
+/*====== Suggestion buttons ======*/
+[data-bs-theme="dark"] .text-center {
+padding: 12px;
+background-color: #101010;
+border-top: 1px solid #101010;
+}
+/* ===== Chat ===== */
+[data-bs-theme="dark"] .chat-container {
+  background: #1f1f1f;
+  border: 1px solid #2e2e2e;
+  border-radius: 12px;
+}
+
+[data-bs-theme="dark"] #chat-messages {
+  background: linear-gradient(180deg, #101010, #1a1a1a);
+  border-radius: 10px;
+  overflow-y: auto;
+  color: #f9fafb;
+}
+[data-bs-theme="dark"] .chat-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    background: #1f2937;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+[data-bs-theme="dark"] .message-bot {
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+[data-bs-theme="dark"] #chat-form {
+  background-color: #111827;
+  border-top: 1px solid #1f2937;
+  padding: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+[data-bs-theme="dark"] #user-input {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border: 1px solid #374151;
+  border-radius: 80px;
+  flex: 1;
+  padding: 0.5rem 1rem;
+}
+[data-bs-theme="dark"] #user-input::placeholder {
+  color: #9ca3af;
+}
+[data-bs-theme="dark"] #user-input:focus {
+  background-color: #272f3f;
+  border-color: #6366f1;
+  box-shadow: 0 0 6px rgba(99,102,241,0.5);
+  outline: none;
+}
+
+[data-bs-theme="dark"] #chat-form button {
+  background: linear-gradient(135deg, #2563eb, #2563eb);
+  color: #fff;
+  border-radius: 12px;
+}
+[data-bs-theme="dark"] #chat-form button:hover {
+  background: linear-gradient(135deg, #facc15, #2563eb);
+  color: #111827;
+}
+
+/* ===== Modals ===== */
+[data-bs-theme="dark"] .modal-content {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #374151;
+}
+[data-bs-theme="dark"] .modal-header,
+[data-bs-theme="dark"] .modal-footer {
+  background-color: #111827;
+  border-color: #374151;
+}
+
+/* ===== Scrollbars ===== */
+[data-bs-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+}
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #facc15;
+}
+
+/* ===== Dropdowns ===== */
+[data-bs-theme="dark"] .dropdown-menu {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+[data-bs-theme="dark"] .dropdown-item {
+  color: #e5e7eb;
+}
+[data-bs-theme="dark"] .dropdown-item:hover {
+  background-color: #374151;
+  color: #facc15;
+}
+
+/* ===== Alerts ===== */
+[data-bs-theme="dark"] .alert {
+  background-color: #272f3f;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+[data-bs-theme="dark"] .alert-success {
+  background-color: #14532d;
+  border-color: #22c55e;
+  color: #bbf7d0;
+}
+[data-bs-theme="dark"] .alert-danger {
+  background-color: #7f1d1d;
+  border-color: #ef4444;
+  color: #fecaca;
+}
+
+/* ===== Welcome Page ===== */
+[data-bs-theme="dark"] .welcome-container{
+  background-color:#171616;
+}
+
+[data-bs-theme="dark"] .welcome-text h1 {
+  color:#efeaea;
+}
+
+[data-bs-theme="dark"] .welcome-text .lead {
+  color:#f4ecec;
+}
+
+[data-bs-theme="dark"] .doran-features {
+  background-color: #171616;
+}
+
+[data-bs-theme="dark"] .welcome-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+[data-bs-theme="dark"] .welcome-buttons a {
+  display: block;
+  text-align: center;
+  padding: 12px;
+  font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  background-color: #05339C;
+  color: #eff2f2
+}
+
+[data-bs-theme="dark"] .welcome-buttons a:hover {
+  background-color: #FFD93D;
+  color: #1f1e1e
+}
+
+/* ===== Admin Page ===== */
+[data-bs-theme="dark"] .card-header.sticky-header {
+  background-color: #1f1f1f;
+}
+
+[data-bs-theme="dark"] .card-header h5 {
+  color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .card-body.flex-grow-1 {
+  background-color: #1f1f1f;
+}
+
+[data-bs-theme="dark"] .futuristic-card {
+  background: #1f1f1f;
+  border-radius: 20px;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 2px solid #333;
+}

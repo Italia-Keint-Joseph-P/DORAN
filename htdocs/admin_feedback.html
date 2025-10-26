@@ -1,0 +1,140 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-dashboard">
+  <div class="row">
+    <div class="col-md-12 mb-4 d-flex justify-content-between align-items-center">
+      <h2 class="futuristic-header">Admin Dashboard - Feedback</h2>
+      <button class="futuristic-button" onclick="location.href='/admin'" title="Back to Dashboard">
+        <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-12">
+      <div class="card border-0 shadow-lg rounded-4 futuristic-card">
+        <div class="card-header">
+        <h3 class="card-title mb-0 futuristic-header">
+          User Feedback
+        </h3>
+        <button class="btn btn-sm btn-outline-light ms-auto" id="showFinishedFeedbackBtn" title="Finished feedbacks">
+          <i class="fas fa-check-circle"></i>
+        </button>
+      </div>
+      <div class="card-body flex-grow-1 overflow-auto" style="max-height: 600px;">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle futuristic-feedback-table" id="feedback-table" style="margin-bottom: 0;">
+            <thead class="table-primary sticky-top">
+              <tr>
+                <th>User</th>
+                <th>Message</th>
+                <th>Timestamp</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if feedbacks %}
+                {% for feedback in feedbacks %}
+                  <tr data-feedback-id="{{ feedback.id }}" data-feedback-message="{{ feedback.message|e }}" data-feedback-timestamp="{{ feedback.formatted_timestamp }}">
+                    <td>{{ feedback.user.username if feedback.user else 'Guest' }}</td>
+                    <td style="white-space: pre-wrap;">{{ feedback.message }}</td>
+                    <td>{{ feedback.formatted_timestamp }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-success mark-done-btn" title="Mark as Done">Mark as Done</button>
+                      <button class="btn btn-sm btn-info view-feedback-btn" title="View Feedback">View</button>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="4" class="text-center">No feedback submitted yet.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for viewing feedback details -->
+  <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content futuristic-card">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="feedbackModalLabel">Feedback Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Timestamp:</strong> <span id="modal-feedback-timestamp"></span></p>
+          <p><strong>Message:</strong></p>
+          <pre id="modal-feedback-message" style="white-space: pre-wrap;"></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for confirming mark as done -->
+  <div class="modal fade" id="markDoneModal" tabindex="-1" aria-labelledby="markDoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content futuristic-card">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="markDoneModalLabel">Confirm Mark as Done</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to mark the following feedback as done?</p>
+          <p><strong>Timestamp:</strong> <span id="markDoneFeedbackTimestamp"></span></p>
+          <p><strong>Message:</strong></p>
+          <pre id="markDoneFeedbackMessage" style="white-space: pre-wrap;"></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-success" id="confirmMarkDoneBtn">Mark as Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for finished feedback -->
+<div class="modal fade" id="finishedFeedbackModal" tabindex="-1" aria-labelledby="finishedFeedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+    <div class="modal-content futuristic-card">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="finishedFeedbackModalLabel">Finished Feedback</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="finishedFeedbackContent">
+          <!-- Finished feedback grouped by date will be loaded here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/admin_mark_done.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/admin_finished_feedback.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    });
+  </script>
+{% endblock %}

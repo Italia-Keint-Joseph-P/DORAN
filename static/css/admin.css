@@ -1,0 +1,440 @@
+/* ===== Global Reset ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+background: #dee2e6;
+margin: 0;
+padding: 0;
+color: #1a1a1a;
+
+}
+
+/* ===== Layout ===== */
+.admin-dashboard.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+/* ===== Dashboard Header ===== */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* ===== Cards ===== */
+.futuristic-card {
+  background: #f2efef;
+  border-radius: 20px;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 2px solid #d1d1d1;
+}
+.futuristic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 30px rgba(0,0,0,0.2);
+}
+
+/* ===== Card Header with Filters ===== */
+.card-header.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #fdfafa;
+  border-bottom: 1px solid #dee2e6;
+}
+.card-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(90deg, #1e40af 0%, #2563eb 60%, #2563eb 100%);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.card-header h5 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #111010;
+}
+
+/* ===== Scrollable Body ===== */
+.card-body.flex-grow-1 {
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #fdfafa;
+  backdrop-filter: blur(6px);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+#rules-container {
+  scroll-behavior: smooth;
+}
+
+/* ===== Form Inputs & Selects ===== */
+input[type="text"],
+select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(30, 64, 175, 0.4);
+  background: rgba(255,255,255,0.9);
+  font-size: 0.95rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  color: #1a1a1a;
+}
+input[type="text"]:focus,
+select:focus {
+  border-color: #facc15;
+  box-shadow: 0 0 6px rgba(250, 204, 21, 0.5);
+  outline: none;
+}
+#location-image-dropzone {
+  border: 2px dashed #6c757d;       /* dashed border for dropzone */
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #262729;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  cursor: pointer;                  /* show pointer on hover */
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+#location-image-dropzone:hover {
+  background-color: #97b0ff;
+  color:#111010
+}
+
+#visual-media-dropzone {
+  border: 2px dashed #6c757d;       /* dashed border for dropzone */
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #262729;
+  font-size: 1rem;
+  background-color: #2563eb;
+  cursor: pointer;                  /* show pointer on hover */
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+#visual-media-dropzone:hover {
+  background-color: #97b0ff;
+  color:#111010
+}
+/* ===== Buttons ===== */
+button, .futuristic-button {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  border: none;
+  border-radius: 12px;
+  padding: 0.5rem 1.2rem;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+button:hover, .futuristic-button:hover {
+  background: linear-gradient(135deg, #2563eb, #2563eb);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+}
+/* Base style for toggle buttons */
+.btn-toggle {
+  border: none;
+  padding: 8px 20px;
+  font-weight: 500;
+  background: #e0e0e0;          /* bland inactive state */
+  color: #333;
+  transition: all 0.3s ease;
+  border-radius: 6px 6px 0 0;    /* optional rounded top for card header feel */
+}
+
+/* Hover effect on inactive buttons */
+.btn-toggle:hover {
+  background: #d6d6d6;
+}
+
+/* Active button style */
+.btn-toggle.active {
+  background: linear-gradient(90deg, #007bff, #007bff);  /* blue-yellow gradient */
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional: focus style for accessibility */
+.btn-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+/* dark alt button */
+#showFinishedFeedbackBtn {
+  background: linear-gradient(135deg, #374151, #1f2937);
+}
+#showFinishedFeedbackBtn:hover {
+  background: linear-gradient(135deg, #2563eb, #2563eb);
+}
+
+/* ===== Table ===== */
+.futuristic-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.futuristic-table th,
+.futuristic-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-size: 0.95rem;
+}
+.futuristic-table th {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+}
+.futuristic-table tr:nth-child(even) {
+  background: rgba(250, 204, 21, 0.05);
+}
+.futuristic-table tr:hover {
+  background: rgba(250, 204, 21, 0.12);
+  transition: background 0.25s ease;
+}
+
+/* ===== Action Buttons ===== */
+.edit-btn, .delete-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.edit-btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+}
+.edit-btn:hover {
+  background: linear-gradient(135deg, #facc15, #16a34a);
+  transform: scale(1.05);
+}
+.delete-btn {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+}
+.delete-btn:hover {
+  background: linear-gradient(135deg, #facc15, #b91c1c);
+  transform: scale(1.05);
+
+}
+#add-category-btn {
+  color: #fff;
+}
+#add-category-btn:hover {
+  color: #1d1d1b;
+}
+#remove-category-btn {
+  color: #fff ;
+}
+#remove-category-btn:hover {
+  color: #1d1d1b ;
+}
+/* ===== Scrollbar Style ===== */
+.card-body::-webkit-scrollbar {
+  width: 8px;
+}
+.card-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.card-body::-webkit-scrollbar-thumb {
+  background: rgba(30,64,175,0.4);
+  border-radius: 4px;
+}
+.card-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(250,204,21,0.7);
+}
+
+/* ===== Admin Dashboard Styles ===== */
+.admin-dashboard {
+  min-height: 100vh;
+  color: #1f1f1f;
+}
+
+/* ===== Notification Badges ===== */
+.notification-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #dc3545;
+  color: #fff;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+futuristic-header {
+  font-weight: 700;
+  font-size: 2.5rem;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.card-title {
+  font-weight: 600;
+  color: #908f8f;
+}
+
+.card-text {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  min-height: 60px;
+}
+
+.btn {
+  border-radius: 12px;
+  font-weight: 500;
+  padding: 10px;
+  transition: all 0.3s ease;
+  color: #000000;
+  border: 2px solid #8d8e91; /* sleek dark blue border */
+}
+
+.futuristic-btn { background: linear-gradient(90deg, #667eea, #764ba2); }
+.futuristic-btn-green { background: linear-gradient(90deg, #38f9d7, #43e97b); }
+.futuristic-btn-blue { background: linear-gradient(90deg, #36d1dc, #5b86e5); }
+.futuristic-btn-yellow { background: linear-gradient(90deg, #f7971e, #ffd200);}
+.futuristic-btn-red { background: linear-gradient(90deg, #ff416c, #ff4b2b); }
+.futuristic-btn-gray { background: linear-gradient(90deg, #bdc3c7, #2c3e50); }
+.futuristic-btn-dark { background: linear-gradient(90deg, #f363c3, #a030a8); }
+
+
+.btn:hover {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+.icon-gradient {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+
+}
+.icon-gradient-green { background: linear-gradient(90deg, #43e97b, #38f9d7); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+.icon-gradient-blue { background: linear-gradient(90deg, #36d1dc, #5b86e5); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+.icon-gradient-yellow { background: linear-gradient(90deg, #f7971e, #ffd200); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+.icon-gradient-red { background: linear-gradient(90deg, #ff416c, #ff4b2b); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+.icon-gradient-gray { background: linear-gradient(90deg, #bdc3c7, #2c3e50); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+.icon-gradient-dark { background: linear-gradient(90deg, #c88bcc, #a030a8, #a030a8); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+
+/* ===== Individual Card Text Colors ===== */
+.rules-card .card-title { color: #667eea; }
+.rules-card .card-text { color: #a0aec0; }
+
+.faqs-card .card-title { color: #43e97b; }
+.faqs-card .card-text { color: #a0aec0; }
+
+.locations-card .card-title { color: #36d1dc; }
+.locations-card .card-text { color: #a0aec0; }
+
+.visuals-card .card-title { color: #f7971e; }
+.visuals-card .card-text { color: #a0aec0; }
+
+.emails-card .card-title { color: #ff416c; }
+.emails-card .card-text { color: #a0aec0; }
+
+.accounts-card .card-title { color: #7f91a4; }
+.accounts-card .card-text { color: #a0aec0; }
+
+.feedback-card .card-title { color: #a030a8; }
+.feedback-card .card-text { color: #a0aec0; }
+
+/* ===== Visual Cards Layout ===== */
+.visual-card {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  flex-shrink: 0;
+  min-height: 300px;
+}
+
+.visual-card-content {
+  flex-grow: 1;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+.visual-card-content p {
+  font-weight: normal;
+}
+
+.visual-card-content strong {
+  font-weight: bold;
+}
+
+.visual-card-buttons {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ===== Location Cards Layout ===== */
+.location-card {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  flex-shrink: 0;
+  min-height: 300px;
+}
+
+.location-card-content {
+  flex-grow: 1;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+.location-card-content p {
+  font-weight: normal;
+}
+
+.location-card-content strong {
+  font-weight: bold;
+}
+
+.location-card-buttons {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ===== Edit Visual Modal ===== */
+.edit-visual-modal .modal-content {
+  background: #f8f9fa;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+

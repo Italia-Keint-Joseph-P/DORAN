@@ -1,0 +1,157 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-dashboard">
+
+  <!-- ===== Dashboard Header ===== -->
+  <div class="row">
+    <div class="col-md-12 mb-4 d-flex justify-content-between align-items-center">
+      <h2 class="futuristic-header">Admin Dashboard - User Accounts</h2>
+      <button class="futuristic-button" onclick="location.href='/admin'" title="Back to Dashboard">
+        <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== Pending Users Table ===== -->
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-lg rounded-4">
+        <div class="card-header">
+          <h5 class="mb-0">Pending User Confirmations</h5>
+        </div>
+        <div class="card-body">
+          {% if pending_users %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-primary">
+                <tr>
+                  <th style="width: 25%;">Username</th>
+                  <th style="width: 35%;">Email</th>
+                  <th style="width: 20%;">Signup Date</th>
+                  <th style="width: 20%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in pending_users %}
+                <tr data-user-id="{{ user.id }}">
+                  <td>{{ user.username }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.created_at.strftime('%B %d, %Y %H:%M') }}</td>
+                  <td>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-success approve-user" data-user-id="{{ user.id }}">
+                        <i class="fas fa-check me-1"></i> Approve
+                      </button>
+                      <button class="btn btn-sm btn-danger reject-user" data-user-id="{{ user.id }}">
+                        <i class="fas fa-times me-1"></i> Reject
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-5">
+            <h5 class="text-muted">No pending user confirmations.</h5>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success/Error Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow-lg">
+      <div class="modal-header">
+        <h5 class="modal-title" id="resultModalTitle">Result</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="resultModalBody">
+        <!-- Message will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle approve user
+  document.querySelectorAll('.approve-user').forEach(button => {
+    button.addEventListener('click', function() {
+      const userId = this.getAttribute('data-user-id');
+      const row = this.closest('tr');
+
+      fetch(`/admin/accounts/approve/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          row.remove();
+          showResultModal('Success', data.message);
+        } else {
+          showResultModal('Error', data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showResultModal('Error', 'An error occurred while processing the request.');
+      });
+    });
+  });
+
+  // Handle reject user
+  document.querySelectorAll('.reject-user').forEach(button => {
+    button.addEventListener('click', function() {
+      const userId = this.getAttribute('data-user-id');
+      const row = this.closest('tr');
+
+      if (confirm('Are you sure you want to reject this user? This action cannot be undone.')) {
+        fetch(`/admin/accounts/reject/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            row.remove();
+            showResultModal('Success', data.message);
+          } else {
+            showResultModal('Error', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showResultModal('Error', 'An error occurred while processing the request.');
+        });
+      }
+    });
+  });
+
+  function showResultModal(title, message) {
+    document.getElementById('resultModalTitle').textContent = title;
+    document.getElementById('resultModalBody').textContent = message;
+    const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+    modal.show();
+  }
+});
+</script>
+{% endblock %}

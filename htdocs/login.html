@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+<div class="login-container">
+    <div class="login-card card border-0 shadow-lg">
+        <div class="login-card-header card-header py-3">
+            <h2 class="card-title mb-0 text-center">
+                {% if user_type == 'admin' %}
+                    Admin Login
+                {% elif user_type == 'user' %}
+                    User Login
+                {% else %}
+                    Guest Login
+                {% endif %}
+            </h2>
+        </div>
+        <div class="login-card-body card-body">
+            <form method="POST" action="{% if user_type == 'admin' %}{{ url_for('admin_login') }}{% else %}{{ url_for('login', user_type=user_type) }}{% endif %}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+
+                {% if user_type == 'guest' %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" class="form-control" id="username" name="username" autocomplete="username" required>
+                    </div>
+                </div>
+                {% else %}
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" autocomplete="email" required>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if user_type != 'guest' %}
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" required>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if user_type == 'user' %}
+                <div class="mb-3">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for message in messages %}
+                                    <div>{{ message }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mt-2">
+                                No account yet? <a href="{{ url_for('signup') }}">Sign Up</a> here.
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                {% else %}
+                <div class="mb-3">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for message in messages %}
+                                    <div>{{ message }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                {% endif %}
+
+                <div class="login-card-footer d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        {% if user_type == 'guest' %}
+                            Continue as Guest
+                        {% else %}
+                            Log in
+                        {% endif %}
+                    </button>
+                    <a href="{{ url_for('welcome') }}" class="btn btn-outline-secondary">Back to Welcome Page</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

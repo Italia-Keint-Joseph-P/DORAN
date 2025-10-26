@@ -1,0 +1,276 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="chat-container">
+  {% if current_user.is_authenticated and session.get('user_type') == 'user' %}
+  <div class="chat-main">
+    <div id="chat-sidebar" class="chat-sidebar">
+      <div class="sidebar-header">
+        <button id="sidebar-minimize" class="btn btn-sm btn-outline-secondary">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <div id="sidebar-content" class="sidebar-content">
+        <button id="new-chat-btn" class="btn btn-primary w-100 mb-3">
+          <i class="fas fa-plus me-2"></i>New Chat
+        </button>
+        <div class="sidebar-section">
+          <h6 class="sidebar-section-title">History</h6>
+          <div id="history-list" class="history-list">
+            <!-- History will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-content">
+      <div id="chat-messages">
+        <div class="chat-welcome">
+          👋 Welcome
+          {% if current_user.is_authenticated %}
+              {{ current_user.username }}
+          {% elif session.get('guest_username') %}
+              {{ session.get('guest_username') }}
+          {% else %}
+              Guest
+          {% endif %}!
+          Ask me anything or choose a suggestion below.
+        </div>
+        <div class="text-center">
+          <button class="suggestion-btn">Where is the SOICT Director Office?</button>
+          <button class="suggestion-btn">What is the Enrollment Requirements?</button>
+          <button class="suggestion-btn">Registrar Email</button>
+        </div>
+      </div>
+      <form id="chat-form">
+        <input type="text" id="user-input" class="form-control" placeholder="Type your message..." autocomplete="off">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <div id="chat-messages">
+    <div class="chat-welcome">
+      👋 Welcome
+      {% if current_user.is_authenticated %}
+          {{ current_user.username }}
+      {% elif session.get('guest_username') %}
+          {{ session.get('guest_username') }}
+      {% else %}
+          Guest
+      {% endif %}!
+      Ask me anything or choose a suggestion below.
+    </div>
+    <div class="text-center">
+          <button class="suggestion-btn">Where is the SOICT Director Office?</button>
+          <button class="suggestion-btn">What is the Enrollment Requirements?</button>
+          <button class="suggestion-btn">Registrar Email</button>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if not (current_user.is_authenticated and session.get('user_type') == 'user') %}
+  <form id="chat-form">
+    <input type="text" id="user-input" class="form-control" placeholder="Type your message..." autocomplete="off">
+    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+  </form>
+  {% endif %}
+</div>
+
+<!-- ✅ Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="feedbackModalLabel">Leave Feedback</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="feedbackForm">
+          <div class="mb-3">
+            <label for="feedbackMessage" class="form-label">Your Feedback</label>
+            <textarea class="form-control" id="feedbackMessage" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Feedback</button>
+        </form>
+        <div id="feedbackAlert" class="alert d-none" role="alert"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% set email_list = emails if emails is defined else [] %}
+<div id="emailListData" data-email-list='{{ email_list|tojson()|replace("'", "&#39;") }}' style="display:none;"></div>
+
+<!-- Bootstrap JS already loaded in layout.html -->
+
+<!-- Your main chat logic -->
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* -------------------------
+     Parse email list
+  --------------------------*/
+  const emailListDataElement = document.getElementById('emailListData');
+  window.emailList = [];
+  if (emailListDataElement) {
+    try {
+      window.emailList = JSON.parse(emailListDataElement.getAttribute('data-email-list'));
+    } catch (e) {
+      console.error('Failed to parse email list JSON:', e);
+    }
+  }
+
+  /* -------------------------
+     Feedback modal open
+  --------------------------*/
+  document.body.addEventListener('click', (e) => {
+    if (e.target.matches('.feedback-link') || e.target.closest('.feedback-link')) {
+      e.preventDefault();
+      const modalEl = document.getElementById('feedbackModal');
+      if (modalEl) {
+        const feedbackModal = new bootstrap.Modal(modalEl);
+        feedbackModal.show();
+      }
+    }
+  });
+
+  /* -------------------------
+     Feedback form submit
+  --------------------------*/
+  const feedbackForm = document.getElementById('feedbackForm');
+  const feedbackAlert = document.getElementById('feedbackAlert');
+
+  if (feedbackForm) {
+    feedbackForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const message = document.getElementById('feedbackMessage').value.trim();
+
+      if (!message) {
+        feedbackAlert.className = 'alert alert-danger';
+        feedbackAlert.textContent = 'Please enter your feedback message.';
+        feedbackAlert.classList.remove('d-none');
+        return;
+      }
+
+      fetch('/submit_feedback', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ message })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          feedbackAlert.className = 'alert alert-success';
+          feedbackAlert.textContent = data.message;
+          feedbackAlert.classList.remove('d-none');
+          feedbackForm.reset();
+
+          setTimeout(() => {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
+            if (modal) modal.hide();
+            feedbackAlert.classList.add('d-none');
+          }, 2000);
+        } else {
+          feedbackAlert.className = 'alert alert-danger';
+          feedbackAlert.textContent = data.message || 'An error occurred.';
+          feedbackAlert.classList.remove('d-none');
+        }
+      })
+      .catch(() => {
+        feedbackAlert.className = 'alert alert-danger';
+        feedbackAlert.textContent = 'An error occurred.';
+        feedbackAlert.classList.remove('d-none');
+      });
+    });
+  }
+
+  /* -------------------------
+     Email buttons
+  --------------------------*/
+  document.body.addEventListener('click', (e) => {
+    if (e.target.matches('.email-btn')) {
+      const school = e.target.getAttribute('data-school');
+      const emails = window.emailList || [];
+      const emailEntry = emails.find(el => el.school === school);
+      if (!emailEntry) return;
+
+      const chatMessages = document.getElementById('chat-messages');
+      if (!chatMessages) return;
+
+      chatMessages.insertAdjacentHTML('beforeend', `
+        <div class="message message-bot">
+          <div class="message-content"><strong>${emailEntry.school}</strong> Email: ${emailEntry.email}</div>
+          <div class="message-time"><i class="fas fa-robot me-1"></i> ${new Date().toLocaleString()}</div>
+        </div>
+      `);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  });
+
+  /* -------------------------
+     Fallback with feedback link
+  --------------------------*/
+  window.showEmailDirectoryFallback = (responseText, counter) => {
+    const chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+
+    if (counter < 3) {
+      chatMessages.insertAdjacentHTML('beforeend', `
+        <div class="message message-bot">
+          <div class="message-content">${responseText}</div>
+          <div class="message-time"><i class="fas fa-robot me-1"></i> ${new Date().toLocaleString()}</div>
+        </div>
+      `);
+    } else {
+      chatMessages.insertAdjacentHTML('beforeend', `
+        <div class="message message-bot">
+          <div class="message-content">
+            It seems I couldn't respond properly after 3 attempts. Here are some helpful contacts:
+          </div>
+          <div class="message-time"><i class="fas fa-robot me-1"></i> ${new Date().toLocaleString()}</div>
+        </div>
+      `);
+
+      const buttonDiv = document.createElement('div');
+      buttonDiv.classList.add('message','message-bot');
+
+      const buttonContentDiv = document.createElement('div');
+      buttonContentDiv.classList.add('message-content');
+
+      const emailButtons = [
+        { school: 'SOICT', email: 'soict@example.com' },
+        { school: 'SOED',  email: 'soed@example.com'  },
+        { school: 'SOIT',  email: 'soit@example.com'  },
+        { school: 'SOBM',  email: 'sobm@example.com'  }
+      ];
+
+      emailButtons.forEach(eBtn => {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-outline-primary me-2 mb-2 email-btn';
+        btn.dataset.school = eBtn.school;
+        btn.textContent = `${eBtn.school} Email`;
+        buttonContentDiv.appendChild(btn);
+      });
+
+      const explanation = document.createElement('p');
+      explanation.textContent = 'Click the buttons above to get email addresses. For others like Registrar, ask me "How to get Registrar email".';
+      buttonContentDiv.appendChild(explanation);
+
+      const feedbackP = document.createElement('p');
+      feedbackP.innerHTML = `<a href="javascript:void(0);" class="feedback-link">Leave Feedback</a>`;
+      buttonContentDiv.appendChild(feedbackP);
+
+      buttonDiv.appendChild(buttonContentDiv);
+      buttonDiv.innerHTML += `<div class="message-time"><i class="fas fa-robot me-1"></i> ${new Date().toLocaleString()}</div>`;
+      chatMessages.appendChild(buttonDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  };
+});
+</script>
+{% endblock %}

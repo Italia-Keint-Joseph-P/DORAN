@@ -1,0 +1,674 @@
+{
+    "SOICT": [
+        {
+            "question": "How can I request a grade reevaluation?",
+            "answer": "Yes, your subject teacher will provide you with the grade reevaluation form, which you will need to accomplish.",
+            "id": "fe5009e0-ea58-46b0-9f23-c24775b74077"
+        },
+        {
+            "question": "Where can I have my documents notarized?",
+            "answer": "The university does not provide on-campu notarization services due to the absence of an assigned legal officer. You will need to have your documents notarized externally.",
+            "id": "a1255f84-bff7-401b-ae4d-62a6216d8b17"
+        },
+        {
+            "question": "How do I drop a subject mid-semester?",
+            "answer": "Dropping subjects mid-semester will require the approval of your subject teacher.",
+            "id": "e7623291-91dc-4931-aa8d-8cb272d2110f"
+        },
+        {
+            "question": "How long is an INC grade valid?",
+            "answer": "An INC grade is valid for one year for minor subjects and one semester for major subjects.",
+            "id": "9735a75a-a6a2-4fb6-b12a-42f314084ca3"
+        },
+        {
+            "question": "Can an INC grade affect my next semester?",
+            "answer": "Yes, an INC grade can affect your next semester, especially if it is a prerequisite or a major subject.",
+            "id": "560493c2-8c32-4a46-8388-6e0e433466da"
+        },
+        {
+            "question": "What happens if I drop a subject officially?",
+            "answer": "If you officially drop a subject, you will need to retake it in the following semester.",
+            "id": "82e36620-5484-4798-b23d-8a49ae651079"
+        },
+        {
+            "question": "What is the difference between a dropped and a withdrawn subject?",
+            "answer": "A student is considered 'dropped' if they have already taken the midterm exam. 'Withdrawal' is allowed only up to 2 weeks before the end of classes.",
+            "id": "9af698b5-8381-4b72-9004-696f3751fc79"
+        },
+        {
+            "question": "Can I request a digital diploma?",
+            "answer": "At present, digital diplomas are not available. Only printed copies are issued by the Registrar’s Office.",
+            "id": "f0880c5d-2fad-4acf-bf1f-a3d58203883b"
+        },
+        {
+            "question": "How can I get a Certificate of Graduation?",
+            "answer": "You may request a Certificate of Graduation directly from the Registrar’s Office after verification of records.",
+            "id": "f1990828-85f3-45ca-b91f-c56fc7dd3669"
+        },
+        {
+            "question": "Can pending fees delay the release of my records or documents?",
+            "answer": "Yes, unsettled fees can delay the release of your records or documents. Please ensure all balances are cleared before making a request.",
+            "id": "9ab26702-667c-4094-afae-12a2c8966831"
+        },
+        {
+            "question": "What is the policy for delayed or irregular students?",
+            "answer": "For delayed or irregular students, summer classes and approval from the Board of Regents (BOR) may be required.",
+            "id": "daaf74ec-fea6-4e0a-81d1-a6449487351a"
+        },
+        {
+            "question": "What are the steps to apply for graduation?",
+            "answer": "To apply for graduation, you must complete all academic requirements and submit the necessary documents to the Registrar’s Office.",
+            "id": "d635608e-0cc7-41b8-96c0-dacb39d4f0d2"
+        },
+        {
+            "question": "How are graduation candidates notified?",
+            "answer": "Graduation candidates are officially notified through the Director’s Office.",
+            "id": "1afda156-78b5-4d9e-a8ae-20b346c3b3bb"
+        },
+        {
+            "question": "What happens if I miss the deadline for graduation requirements?",
+            "answer": "If you miss the deadline for graduation requirements, you will not be included in the current list of candidates for graduation.",
+            "id": "7eb1008a-6606-453c-87eb-c198d34076f6"
+        },
+        {
+            "question": "How is the diploma released?",
+            "answer": "The release of diplomas follows the same process and timeline as the Transcript of Records (TOR).",
+            "id": "8457865b-622a-417d-a205-2812c4dc9b85"
+        },
+        {
+            "question": "Can someone else claim my diploma on my behalf?",
+            "answer": "Yes, a representative may claim your diploma with an authorization letter, a valid ID of the graduate, and the diploma jacket.",
+            "id": "36134dab-866f-436c-9a06-3689bc2922e1"
+        },
+        {
+            "question": "When is the diploma released?",
+            "answer": "Diplomas are released once all processing and verification steps are completed.",
+            "id": "90d20055-793f-4b79-ae15-61218da85f2c"
+        },
+        {
+            "question": "What is the procedure for requesting Latin honors?",
+            "answer": "Latin honors are awarded upon the recommendation of the Academic Council, based on your academic performance and records.",
+            "id": "0a392507-b602-4595-8fe4-fad82cb06d31"
+        },
+        {
+            "question": "How can I check my submitted grades?",
+            "answer": "You may check your submitted grades through the official IUIS portal.",
+            "id": "74e3b0a1-3b96-4746-81d7-24b26c9afa57"
+        },
+        {
+            "question": "Who is the director of SOICT Year 2006?",
+            "answer": "Dr. Manuel S. Libutaque",
+            "id": "b885dba7-9593-4b0e-a433-776e82748fff"
+        }
+    ],
+    "SOIT": [
+        {
+            "question": "How can I contact the SOIT office?",
+            "answer": "You may contact the SOIT office via its official Facebook page or through the designated email address.",
+            "id": "25abc23a-ff06-466d-b9ab-1052ebc535a8"
+        },
+        {
+            "question": "What academic honors and awards does SOIT provide to students?",
+            "answer": "SOIT grants Latin Honors for graduating students and Proficiency Awards for undergraduates. The Dean's List is also recognized separately.",
+            "id": "e86656d5-3c88-4b46-9bcf-5621563aaf0c"
+        },
+        {
+            "question": "Are there scholarship opportunities available for SOIT students?",
+            "answer": "Scholarship opportunities for SOIT students can be inquired at the Office of Student Affairs (OSA).",
+            "id": "87a3bcc5-b817-4fbc-914a-dad46f40f5d0"
+        },
+        {
+            "question": "What is the official Facebook page of SOIT?",
+            "answer": "You may visit the official SOIT Facebook page here:<a href='https://www.facebook.com/wvsupcsoit' target='_blank'>SOIT Facebook Page</a>.",
+            "id": "07493de7-2f44-46ed-b416-da59a4fa7112"
+        },
+        {
+            "question": "Who is the current director of SOIT?",
+            "answer": "The current SOIT Director is Dr. Pablo L. Lauro.",
+            "id": "850a57f5-7eb7-49ad-96de-0716772f508f"
+        },
+        {
+            "question": "Does SOIT have an official website?",
+            "answer": "You may access the official SOIT website here: (link).",
+            "id": "9b6902f8-1ca2-4b74-98fa-01d9721aa878"
+        },
+        {
+            "question": "What are the office hours of SOIT?",
+            "answer": "SOIT office hours are from 8:00 AM – 12:00 NN and 1:00 PM – 5:00 PM.",
+            "id": "5b7fc752-3c68-43ad-b299-2c86948a00f5"
+        },
+        {
+            "question": "What is the main objective of SOIT?",
+            "answer": "SOIT is committed to producing competent and socially responsible individuals who meet industry demands, guided by strong values and continuous program improvement.",
+            "id": "669cdc44-154a-4fc4-8089-acfe56b38f33"
+        },
+        {
+            "question": "Where can I find official announcements from SOIT?",
+            "answer": "Official announcements are regularly posted on the SOIT Facebook page.",
+            "id": "5bcc84a9-050e-4178-a341-fc65191f69f5"
+        },
+        {
+            "question": "What student organizations are available in SOIT?",
+            "answer": "SOIT student organizations include the Student Council, Curriculum Officers, and SOIT Communicators.",
+            "id": "0718ef29-2a43-4dc4-993f-0fa54ebf4ab8"
+        },
+        {
+            "question": "How can students join organizations in SOIT?",
+            "answer": "Students are welcome to join SOIT organizations during the recruitment period announced each semester.",
+            "id": "0e687c16-d4a6-40ec-85a8-56e2dd09ec88"
+        },
+        {
+            "question": "What competitions are organized by SOIT?",
+            "answer": "SOIT competitions are held through convocations, subject-based activities, and institutional programs.",
+            "id": "b9e18fe4-d25c-4938-8110-1aff6ea2c1d9"
+        },
+        {
+            "question": "What activities are included in SOIT convocations?",
+            "answer": "Recent SOIT convocation activities included AVT Lighting, Ignition and Driving, Battle of Sound, Accounting Measure, Fruit Carving, and T-shirt Printing.",
+            "id": "74f951d5-235d-49a3-9669-627634b5ee54"
+        },
+        {
+            "question": "What extracurricular activities are available in SOIT?",
+            "answer": "Extracurricular involvement is encouraged through groups like the Curriculum Officers and SOIT Communicators.",
+            "id": "ce96263a-ed85-4fff-a01e-af9153cc1136"
+        },
+        {
+            "question": "What leadership opportunities does SOIT provide to students?",
+            "answer": "Leadership opportunities include serving in the Student Council, Curriculum Officers, or other trained officer positions.",
+            "id": "826af8fd-c478-496e-a1d9-aa09a82c8aa0"
+        },
+        {
+            "question": "What are the rules inside the SOIT laboratory?",
+            "answer": "Laboratory rules: Observe safety protocols, avoid horseplay, and clean your area after use.",
+            "id": "1b9b48a1-053e-4311-8664-c0e548b0206a"
+        },
+        {
+            "question": "What events does SOIT regularly host?",
+            "answer": "SOIT regularly hosts events such as the Convocation Program and academic competitions.",
+            "id": "74b6f454-0d5e-4453-a4b7-bb6626ded9b7"
+        },
+        {
+            "question": "How can I borrow equipment for a project in SOIT?",
+            "answer": "To borrow equipment, secure a Borrower's Slip from your instructor for approval.",
+            "id": "e1ffef2b-783e-4c1d-992a-5cfd8b088bb9"
+        },
+        {
+            "question": "How do I report issues in SOIT?",
+            "answer": "Issues may be reported to the Department Chair or the Department Supply Office.",
+            "id": "c0545b51-9acd-47dc-8b93-4e4263d4fab1"
+        },
+        {
+            "question": "What are the laboratory protocols in SOIT?",
+            "answer": "Follow lab protocols: Wear PPE, switch off equipment after use, and report any damage to your instructor.",
+            "id": "e2a73fec-9b74-414c-81e8-a50ea92e21c6"
+        },
+        {
+            "question": "How can I apply for an internship through SOIT?",
+            "answer": "Students must be officially enrolled and cleared in their checklist before applying for SOIT OJT deployment.",
+            "id": "34708c6e-12d8-432b-b904-fded3f3162a3"
+        },
+        {
+            "question": "Who oversees internships at SOIT?",
+            "answer": "Internships are supervised by the respective Industry Liaison and Deployment Officer (ILDO).",
+            "id": "7502ce7a-b211-41bf-a718-4ce919fa0806"
+        },
+        {
+            "question": "test",
+            "answer": "testing",
+            "id": "26d66a43-e3fa-4c7e-a67e-eb0a7a07a69f"
+        },
+        {
+            "question": "who was the soit director 2000",
+            "answer": "Dr. Manuel S. Libutaque served as the SOIT Director in 2000.",
+            "id": "19a90cf9-d9eb-4754-a9aa-daa51c50a28e"
+        },
+        {
+            "question": "who was the soit director 2019",
+            "answer": "Mr. Eugene P. Tañedo served as the SOIT Director in 2019.",
+            "id": "8b79cbe0-c931-4066-9bcc-f37fa2627604"
+        },
+        {
+            "question": "who was the soit director 2019-2020",
+            "answer": "Dr. Virginia B. Parrenas served as the SOIT Director from 2019 to 2020.",
+            "id": "a7ddad8d-3e7f-4cc5-9499-a6e148dbfb2e"
+        }
+    ],
+    "SOBM": [
+        {
+            "question": "Are there scholarship opportunities available for SOBM students?",
+            "answer": "I don't have enough knowledge about scholarship but ask OSA",
+            "id": "61f5f16f-e5a7-469e-adcc-d56f269c305c"
+        },
+        {
+            "question": "What are the office hours of SOBM?",
+            "answer": "contact our facebook page(link),",
+            "id": "c765d983-b213-4626-86b6-09983b881a83"
+        },
+        {
+            "question": "Where can I find announcements and events of SOBM?",
+            "answer": "You can stay updated for SOBM announcements and events by visiting on their facebook page.",
+            "id": "6f30879f-468e-482e-bec1-212e9387a532"
+        },
+        {
+            "question": "How can I apply for an internship through SOBM?",
+            "answer": "Each students has 2 sets, for 2nd year is Summer only and for 4th year is whole semester. They have a requirements for an internship which is grades complete, others documents, med. exam. And the parents must attended for OJT orientation.",
+            "id": "0a16f930-f3c7-43df-a0d9-fd2ccc87c82f"
+        },
+        {
+            "question": "Who oversees internships at SOBM?",
+            "answer": "The OJT coordinator, Course coordinator, and Adviser.",
+            "id": "530ccbe6-c08f-4490-9cf3-a1d89658be38"
+        },
+        {
+            "question": "Does SOBM have job placement programs?",
+            "answer": "Yes, You can contact them through facebook page and Email",
+            "id": "6b159bac-e27d-4cfa-b255-7310433dd0c8"
+        },
+        {
+            "question": "What certifications are required before graduation in SOBM?",
+            "answer": "They need complete grades and OJT research 1&2",
+            "id": "35354b45-73c0-4d6d-8a3f-383fa0e356c5"
+        },
+        {
+            "question": "Does SOBM have partnerships for career growth?",
+            "answer": "It depends on OJT if they will absorb you or not",
+            "id": "294b8b55-555f-46b3-a724-cb25575a2399"
+        },
+        {
+            "question": "Can I request an endorsement for internship in SOBM?",
+            "answer": "There is no endorsement, it depends on the student performance",
+            "id": "abad0a66-91a6-4805-a2a1-6f8547a79b66"
+        },
+        {
+            "question": "Are there part-time opportunities available for SOBM students?",
+            "answer": "Yes, It is catering or on call",
+            "id": "75e1e648-2adf-4288-a666-cc8490bf0a58"
+        },
+        {
+            "question": "Where can I find job postings for SOBM students?",
+            "answer": "Job is sometimes posted on their facebook page.",
+            "id": "bc5f1f00-834f-4193-8d26-3edb53827888"
+        },
+        {
+            "question": "Can students borrow equipment for projects in SOBM?",
+            "answer": "Yes, but only inside the school and it needed borrowers form care of offfice of SOBM",
+            "id": "ad1cbe94-2571-4074-bc31-556e711e3877"
+        },
+        {
+            "question": "How can I report technical issues in SOBM?",
+            "answer": "You can check to faculty office of SOBM",
+            "id": "83091863-ab29-4ccb-af30-1e93c54df5e9"
+        },
+        {
+            "question": "Can I shift to another program within SOBM?",
+            "answer": "Assess subject to others major subject, you must repeat your major subject except the subject you've already taken in your previous school and there's admission or either, you will back to 1st year",
+            "id": "7074c9d2-42d5-48da-b875-1e37b29bdabc"
+        },
+        {
+            "question": "Are there prerequisites for subjects in SOBM?",
+            "answer": "Yes",
+            "id": "b4d38a61-8a2e-43eb-9039-15c2d7d0ec57"
+        },
+        {
+            "question": "What is the retention policy in SOBM?",
+            "answer": "The only retention policy is It must have no failing grades",
+            "id": "4affca14-13f7-4f5c-9e8c-e475c8677143"
+        },
+        {
+            "question": "Does SOBM grant academic honors and awards?",
+            "answer": "Yes, It could be Latin Honors, Proficiency Awards, and grades must not lower than 2.00 GWA",
+            "id": "4c1a07e7-81b1-4fa8-86ce-4b6c9a2480d7"
+        },
+        {
+            "question": "Can students request an overload in SOBM?",
+            "answer": "SOBM doesn't allow overload ggrades or maybe  for graduating students only becuase  7 unit are allowed",
+            "id": "f324c370-3b36-47f2-8490-76160f35ef25"
+        },
+        {
+            "question": "What student organizations are available in SOBM?",
+            "answer": "There's no other organizations that availabe on SOBM only the SSC",
+            "id": "0acc15b9-0932-4c14-a802-e02a974cebc7"
+        },
+        {
+            "question": "What competitions are held in SOBM?",
+            "answer": "There's competitions that mostly posted on  Facebook and the competitions are involve on Convocation prorgram",
+            "id": "47df531b-a32d-413a-a143-1741bba9935f"
+        },
+        {
+            "question": "What extracurricular activities are available in SOBM?",
+            "answer": "It depends on your class subject but mostly P.E. is the one has extra curricular activities",
+            "id": "a6bdd7b6-9e02-4187-a139-52a508153e3c"
+        },
+        {
+            "question": "What leadership opportunities does SOBM provide?",
+            "answer": "Yes, there's a seminars and officers in hotel",
+            "id": "f89cc116-9078-433b-9d48-da10a8663c3a"
+        },
+        {
+            "question": "Can students create new organizations in SOBM?",
+            "answer": "You can ask director for approval first but for now SOBM didn't accept new  student organizations",
+            "id": "54b6d9ac-93ea-411f-8696-6cb227a35848"
+        },
+        {
+            "question": "Who are the advisers of SOBM student organizations?",
+            "answer": "there's no organizations in SOBM except student council",
+            "id": "3800d7cd-06fe-42a6-9a74-7e671802ed3b"
+        },
+        {
+            "question": "What events are held annually in SOBM?",
+            "answer": "on SOBM Only Convocation program",
+            "id": "b80ddfb5-942c-4889-9df5-08aade463aea"
+        },
+        {
+            "question": "test",
+            "answer": "test",
+            "id": "f64e978a-669e-4ac9-b201-41c9e990c567"
+        },
+        {
+            "question": "Who are the SOBM Directors?",
+            "answer": "The past school directors of SOBM WVSU-Pototan Campus include Mrs. Lolita Pendon and Mrs. Luz P. Padalezo (no specific timeline), Dr. Ruby P. Cervantes (2019–2022), \r\nDr. Vilma E. Litan (2022–2023), and Dr. Felix B. Aldabon (June–October 2023).\r\nCurrently, Dr. Ruby P. Cervantes serves as the School Director of the School of Business and Management (SOBM).",
+            "id": "2dd0689d-3273-4fe4-861e-dd534cfc2233"
+        },
+        {
+            "question": "who is the sobm director june 2023 october 2023",
+            "answer": "Dr. Felix B. Aldabon served as the School Director of school of business and management from June to October 2023.",
+            "id": "7df8bdb3-8a89-4eef-a9a4-ddd9eedba75a"
+        },
+        {
+            "question": "who is the sobm director on 2022-2024",
+            "answer": "Dr. Vilma E. Litan  served as the School of business and management Director from 2022 until 2024.",
+            "id": "f68fdf18-74cb-4d24-ae5f-3bb48e0e99ac"
+        },
+        {
+            "question": "who is the current sobm director?",
+            "answer": "Dr. Ruby P. Cervantes is currently the School Director of the School of Business and Management (SOBM).",
+            "id": "9793964b-0b1e-4be3-bf3e-72967bc07e3b"
+        },
+        {
+            "question": "who are the soit directors?",
+            "answer": "The past and present SOIT Directors include Dr. Manuel S. Libutaque (2000), Mr. Eugene P. Tañedo (2019), Dr. Virginia B. Parrenas (2019–2020), and Dr. Pablo L. Lauro, who currently serves as the SOIT Director from 2020 to the present.",
+            "id": "dbfa49ea-47ce-4b3f-bdf1-49857be1579d"
+        },
+        {
+            "question": "who is the current soit director?",
+            "answer": "Dr. Pablo L. Lauro, who currently serves as the SOIT Director from 2020 to the present.",
+            "id": "6de04542-ee2f-42dc-aacb-9683babaaa18"
+        }
+    ],
+    "Registrar": [
+        {
+            "question": "How can I request for a grade reevaluation?",
+            "answer": "Yes, your subject teacher will provide you with the grade reevaluation form, which you will need to accomplish.",
+            "id": "cc5c8ae3-670c-4e0c-a0c9-d88aa18c6675"
+        },
+        {
+            "question": "What is the policy for lost documents?",
+            "answer": "In case of lost documents, you are required to secure and submit an Affidavit of Loss.",
+            "id": "f0a4a370-af9f-4726-8cf3-f864f8e4a173"
+        },
+        {
+            "question": "Does the school offer notarization services for documents?",
+            "answer": "Notarization services are not available on campus since no lawyer is assigned here. You may have your documents notarized outside the university.",
+            "id": "be115d00-0a46-420f-85bd-076693851358"
+        },
+        {
+            "question": "How can I drop a subject?",
+            "answer": "Dropping subjects mid-semester will require the approval of your subject teacher.",
+            "id": "51a9e8a6-5fe2-425e-88cb-7e49916413be"
+        },
+        {
+            "question": "How long do students have to complete INC grades?",
+            "answer": "For INC grades, the validity is 1 year for minor subjects and 1 semester for major subjects.",
+            "id": "c9b735ee-a6a8-4a84-b57b-40cf96da4159"
+        },
+        {
+            "question": "Can an INC grade affect enrollment for the next semester?",
+            "answer": "Yes, an INC grade can affect your next semester, especially if it is a prerequisite or a major subject.",
+            "id": "a77826b1-aa7d-48c0-817d-0b58fd9280af"
+        },
+        {
+            "question": "What is the process of dropping a subject?",
+            "answer": "If you officially drop a subject, you will need to retake it in the following semester.",
+            "id": "6016a6a0-7652-4af9-8248-2979e34af0f9"
+        },
+        {
+            "question": "What is the difference between dropped and withdrawn subjects?",
+            "answer": "A student is considered 'dropped' if they have already taken the midterm exam. 'Withdrawal' is allowed only up to 2 weeks before the end of classes.",
+            "id": "64672c9e-b8a1-4793-a194-94ab831055c0"
+        },
+        {
+            "question": "Can I request a digital diploma?",
+            "answer": "At present, digital diplomas are not available. Only printed copies are issued by the Registrar's Office.",
+            "id": "ba0e2639-dc6c-4f10-a946-621f078ca21c"
+        },
+        {
+            "question": "How can I request a Certificate of Graduation?",
+            "answer": "You may request a Certificate of Graduation directly from the Registrar's Office after verification of records.",
+            "id": "7cc29c6f-6d50-4481-8d09-2dd3254233ec"
+        },
+        {
+            "question": "Can pending fees delay the release of documents?",
+            "answer": "Yes, unsettled fees can delay the release of your records or documents. Please ensure all balances are cleared before making a request.",
+            "id": "6a8f665c-6f02-4dec-a33c-9e0f8ea57c35"
+        },
+        {
+            "question": "What is the policy for delayed or irregular students?",
+            "answer": "For delayed or irregular students, summer classes and approval from the Board of Regents (BOR) may be required.",
+            "id": "daee625a-f6f8-41d6-9858-00edcb317b9e"
+        },
+        {
+            "question": "What are the steps to apply for graduation?",
+            "answer": "To apply for graduation, you must complete all academic requirements and submit the necessary documents to the Registrar's Office.",
+            "id": "1b5034f7-d694-41ef-8421-acfac7401009"
+        },
+        {
+            "question": "How are graduation candidates notified?",
+            "answer": "Graduation candidates are officially notified through the Director's Office.",
+            "id": "9058b4f2-d074-4f7d-ab48-73be9d515e7f"
+        },
+        {
+            "question": "What happens if I miss the deadline for graduation requirements?",
+            "answer": "If you miss the deadline for graduation requirements, you will not be included in the current list of candidates for graduation.",
+            "id": "4c437746-bcf9-4d79-bc48-071aa3f50d19"
+        },
+        {
+            "question": "What documents are required for the release of diplomas?",
+            "answer": "The release of diplomas follows the same process and timeline as the Transcript of Records (TOR).",
+            "id": "f1ad49f5-9e7f-41c9-b8dd-293ca28bf312"
+        },
+        {
+            "question": "Can a representative claim my diploma?",
+            "answer": "Yes, a representative may claim your diploma with an authorization letter, a valid ID of the graduate, and the diploma jacket.",
+            "id": "3994c94c-f749-4454-97c8-20086f2f1dc3"
+        },
+        {
+            "question": "When are diplomas released?",
+            "answer": "Diplomas are released once all processing and verification steps are completed.",
+            "id": "a8105049-0609-48c1-92d6-eb343831f4ce"
+        },
+        {
+            "question": "What is the procedure for requesting Latin Honors?",
+            "answer": "Latin honors are awarded upon the recommendation of the Academic Council, based on your academic performance and records.",
+            "id": "5f091a3c-aef8-4d3b-bcc0-ae57a1f15357"
+        },
+        {
+            "question": "Where can I check my submitted grades?",
+            "answer": "You may check your submitted grades through the official IUIS portal.",
+            "id": "40a7da2d-23c8-4cd3-8930-a5db55857bd0"
+        }
+    ],
+    "Faculty": [],
+    "SOED": [
+        {
+            "question": "who are the Directors of Academic Affairs?",
+            "answer": "The past to present Directors of Academic Affairs that include Dr. Victoria P. Padilla (2013–2017), Dr. Lina P. Grabato (2017–2019), Dr. Milagros Matillano (2019–2022), Dr. Lauro E. Estecomen (2022–2023), Dr. Milagros Matillano (2024–2025), and Dr. Nove D. Jalandoni, PhD, RGC, who currently serves as the School Director of Academic Affairs from 2025 to the present.",
+            "id": "23f252a5-48ec-4792-a67c-beb2bb069f19"
+        },
+        {
+            "question": "who was the director of academic affairs 2013-2017",
+            "answer": "Dr. Victoria P. Padilla served as the Director of Academic Affairs from 2013 to 2017.",
+            "id": "672ee8b1-b077-4b1a-b172-a0664ef1f676"
+        },
+        {
+            "question": "who was the director of academic affairs 2017-2019",
+            "answer": "Dr. Lina P. Grabato served as the Director of Academic Affairs from 2017 to 2019.",
+            "id": "be18e3ac-ba62-4e4a-9f56-bf39864a334e"
+        },
+        {
+            "question": "who was the director of academic affairs 2019-2022",
+            "answer": "Dr. Milagros Matillano served as the Director of Academic Affairs from 2019 to 2022.",
+            "id": "9204356a-dca8-4f0b-ae36-90ece3cdf213"
+        },
+        {
+            "question": "who was the director of Academic Affairs  2022-2023",
+            "answer": "Dr. Lauro E. Estecomen served as the Director of Academic Affairs from 2022 to 2023.",
+            "id": "b47df677-059c-41bf-8a6c-e467ccb490ca"
+        },
+        {
+            "question": "who was the director of Academic Affairs 2024-2025",
+            "answer": "Dr. Milagros Matillano served as the Director of Academic Affairs from 2024 to 2025.",
+            "id": "fa475bb9-96b5-4324-b80e-4ce00eb0d9cd"
+        },
+        {
+            "question": "who is the current director of Academic Affairs ?",
+            "answer": "Nove D. Jalandoni, PhD, RGC, is the current Director of Academic Affairs, serving from 2025 to the present.",
+            "id": "b4e6c575-f965-4fb9-b452-0b3c369c09e8"
+        },
+        {
+            "question": "who are the soed directors",
+            "answer": "The past to present School Directors of the School of Education (SOED) include Mrs. Rosario Adorable (2010), Dr. Lina P. Grabato (2016–2017), Dr. Victoria P. Padilla (2019–2020), Mrs. Lolita Pendon (2017–2025), and Dr. Marlene S. Gloria, who currently serves as the School Director from 2025 to the present.",
+            "id": "776a2333-f286-4f51-b3e0-d0184002d957"
+        },
+        {
+            "question": "who was the soed director 2010",
+            "answer": "Mrs. Rosario Adorable served as the SOED Director in 2010.",
+            "id": "2f8924d7-337b-4e9d-b40d-0dc38d0c707b"
+        },
+        {
+            "question": "who was the director 2016-2017",
+            "answer": "Dr. Lina P. Grabato served as the SOED Director from 2016 to 2017.",
+            "id": "c40c1649-b42e-4f4b-9295-48ce95d3debe"
+        },
+        {
+            "question": "who was the director 2019-2020",
+            "answer": "Dr. Victoria P. Padilla served as the SOED Director from 2019 to 2020.",
+            "id": "3a501e13-f7d6-4691-9df5-1ea67ac2d3ff"
+        },
+        {
+            "question": "who was the director 2017-2025",
+            "answer": "Mrs. Lolita Pendon served as the SOED Director from 2017 to 2025.",
+            "id": "7c43ce54-8077-4fc7-b6a2-3eb41965fe20"
+        },
+        {
+            "question": "who is the current soed director?",
+            "answer": "Dr. Marlene S. Gloria is the current SOED Director, serving from 2025 to the present.",
+            "id": "dcf380e4-2015-41c8-bfa8-62bc12768bb5"
+        },
+        {
+            "question": "who was the soed director 2016-2017",
+            "answer": "Dr. Lina P. Grabato served as the SOED Director from 2016 to 2017.",
+            "id": "e6879232-9dea-4c7b-8861-613ef18a2179"
+        },
+        {
+            "question": "who was the soed director 2019-2020",
+            "answer": "Dr. Victoria P. Padilla served as the SOED Director from 2019 to 2020.",
+            "id": "baef477f-5c20-44fd-bd58-2bddf6cdcbe5"
+        },
+        {
+            "question": "who was the soed director 2017-2025",
+            "answer": "Mrs. Lolita Pendon served as the SOED Director from 2017 to 2025.",
+            "id": "79106d72-4a95-4ff4-9341-6e6754ecb51f"
+        }
+    ],
+    "OSA": [
+        {
+            "question": "who are the osa?",
+            "answer": "The past to present Office of Student Affairs include Dr. Lina P. Grabato (2016–2018), Mrs. Ramona Bais (2019), Dr. Naneth A. Anadon (2020–2021), Dr. Nove D. Jalandoni (2021–2025), and Mr. Harrace Gem Caver, who currently serves as the Office os Student Affairs from 2025 to the present.",
+            "id": "09dd7176-c492-4120-9b70-b7f48b30d763"
+        },
+        {
+            "question": "who was the osa 2016–2018",
+            "answer": "Dr. Lina P. Grabato served as the Office of Student Affairs from 2016 to 2018.",
+            "id": "e5ad22a4-db5d-424a-9d85-fed489757a03"
+        },
+        {
+            "question": "who was the osa 2019",
+            "answer": "Mrs. Ramona Bais served as the Office of Student Affairs in 2019.",
+            "id": "10f43e01-3cd4-49a1-83fa-d3fdf6aceadc"
+        },
+        {
+            "question": "who was the osa 2020–2021",
+            "answer": "Dr. Naneth A. Anadon served as the Office of Student Affairs from 2020 to 2021.",
+            "id": "5690bcb5-c493-45fe-af88-327b2d3b6a2c"
+        },
+        {
+            "question": "who was the osa 2021–2025",
+            "answer": "Dr. Nove D. Jalandoni served as the Office of Student Affairs from 2021 to 2025.",
+            "id": "14bf2131-2084-4a6f-b39b-32774dd502f5"
+        },
+        {
+            "question": "who is the current osa?",
+            "answer": "Mr. Harrace Gem Caver is the current Office of Student Affairs, serving from 2025 to the present.",
+            "id": "fa76f459-f788-4291-9b3e-a97fcf6408a7"
+        }
+    ],
+    "west history": [
+        {
+            "question": "what is the history of wvsu pototan campus?",
+            "answer": "WEST VISAYAS STATE UNIVERSITY\r\nPOTOTAN CAMPUS\r\n1945\r\nThe establishment of post-war refresher classes at the Pototan Regional High School (Iloilo Branch)\r\n1946\r\nRenamed Pototan High School (PHS)\r\n\r\n1947\r\nRenamed Iloilo Provincial High School\r\nJune 22, 1957\r\nConverted to Pototan Vocational School (PVS)\r\n(Republic Act No. 1924)\r\nJune 24, 1983\r\nConverted to Pototan College of Arts and Sciences (PCAS)\r\n(Batas Pambansa Bilang 610)\r\nJanuary 29, 1999\r\nIntegrated to West Visayas State University (WVSU),\r\nLa Paz, Iloilo City\r\n(Special Provision No. 9, Republic Act No. 8760)\r\nAugust 22, 2000\r\nImplementation of Republic Act No. 8760 to officially mark the integration of PCAS to\r\nWest Visayas State University (Pototan Campus)\r\n(CHED Memorandum No. 27, s. 2000)",
+            "id": "a27edd08-5569-47c2-b603-130f10a6b37a"
+        },
+        {
+            "question": "what is the history of west visayas state university pototan campus?",
+            "answer": "WEST VISAYAS STATE UNIVERSITY\r\nPOTOTAN CAMPUS\r\n1945\r\nThe establishment of post-war refresher classes at the Pototan Regional High School (Iloilo Branch)\r\n1946\r\nRenamed Pototan High School (PHS)\r\n\r\n1947\r\nRenamed Iloilo Provincial High School\r\nJune 22, 1957\r\nConverted to Pototan Vocational School (PVS)\r\n(Republic Act No. 1924)\r\nJune 24, 1983\r\nConverted to Pototan College of Arts and Sciences (PCAS)\r\n(Batas Pambansa Bilang 610)\r\nJanuary 29, 1999\r\nIntegrated to West Visayas State University (WVSU),\r\nLa Paz, Iloilo City\r\n(Special Provision No. 9, Republic Act No. 8760)\r\nAugust 22, 2000\r\nImplementation of Republic Act No. 8760 to officially mark the integration of PCAS to\r\nWest Visayas State University (Pototan Campus)\r\n(CHED Memorandum No. 27, s. 2000)",
+            "id": "8daad9fd-c2db-4df7-bba4-907bb22caa18"
+        },
+        {
+            "question": "what is the history of wvsu pc?",
+            "answer": "WEST VISAYAS STATE UNIVERSITY\r\nPOTOTAN CAMPUS\r\n1945\r\nThe establishment of post-war refresher classes at the Pototan Regional High School (Iloilo Branch)\r\n1946\r\nRenamed Pototan High School (PHS)\r\n\r\n1947\r\nRenamed Iloilo Provincial High School\r\nJune 22, 1957\r\nConverted to Pototan Vocational School (PVS)\r\n(Republic Act No. 1924)\r\nJune 24, 1983\r\nConverted to Pototan College of Arts and Sciences (PCAS)\r\n(Batas Pambansa Bilang 610)\r\nJanuary 29, 1999\r\nIntegrated to West Visayas State University (WVSU),\r\nLa Paz, Iloilo City\r\n(Special Provision No. 9, Republic Act No. 8760)\r\nAugust 22, 2000\r\nImplementation of Republic Act No. 8760 to officially mark the integration of PCAS to\r\nWest Visayas State University (Pototan Campus)\r\n(CHED Memorandum No. 27, s. 2000)",
+            "id": "1ea1ab6f-97a3-408a-bb03-1a690d78d056"
+        }
+    ],
+    "admin": [
+        {
+            "question": "who are the campus administrator",
+            "answer": "The past to present Campus Administrators include Dr. Victor T. Gonzales, Mr. Rodeline M. Pasuelo, Dr. Virginia B. Parreñas, Prof./Dr. Lucia P. Libutaque, Dr. Dominador L. Lisao, and Dr. Raymund B. Gemora. Their exact years of service are not available.",
+            "id": "0961e0e9-bdd5-468f-a1b8-1b87b82205ed"
+        },
+        {
+            "question": "who is the director, research Innovation and extension",
+            "answer": "The director of research Innovation and extension is Dr. Raquel P. Pedrajas",
+            "id": "b6920e0e-b339-426c-ad46-992ba7ef9c70"
+        },
+        {
+            "question": "Dr. Raquel P. Pedrajas",
+            "answer": "The director of research Innovation and extension is Dr. Raquel P. Pedrajas",
+            "id": "911706d1-956b-4d14-9163-66e7480b0365"
+        },
+        {
+            "question": "Ma. Mercedes C. Sumagaysay",
+            "answer": "The Campus administrative officer V at west visayas state university Potota Campus is Ma. Mercedes C. Sumagaysay",
+            "id": "ed3ffaed-ab86-4f13-88c1-028be96d976a"
+        },
+        {
+            "question": "who is Campus administrative officer",
+            "answer": "The Campus administrative officer V at west visayas state university Potota Campus is Ma. Mercedes C. Sumagaysay",
+            "id": "e2d4d8ba-61e7-4f42-8943-8da0b6544a34"
+        },
+        {
+            "question": "who is the Campus secretary?",
+            "answer": "The campus secretary at West Visayas State University Pototan Campus is Dr. Renelyn M. Alcantara",
+            "id": "44c262b9-2f99-4909-9dd8-46cb2ed6df22"
+        },
+        {
+            "question": "Dr. Renelyn M. Alcantara",
+            "answer": "The campus secretary at West Visayas State University Pototan Campus is Dr. Renelyn M. Alcantara",
+            "id": "6afe27e2-4f59-44db-b34f-012fdfaf7cde"
+        },
+        {
+            "question": "adrian taleon",
+            "answer": "Sgt. Adrian B. Taleon is the ROTC Admin at West Visayas State University Pototan Campus",
+            "id": "1a666eb8-be93-425a-8bbc-05d2e657a655"
+        }
+    ]
+}

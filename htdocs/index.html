@@ -1,0 +1,200 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<style>
+
+  .welcome-image-wrapper {
+    flex: 1 1 300px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+  }
+
+  .welcome-image {
+    width: 300px;
+    border-radius: 16px;
+    filter: drop-shadow(0 0 15px rgba(26, 188, 156, 0.6));
+    /* Remove animation on load */
+    /* animation: fadeInUp 1s ease-out, pulseOutline 3s ease-in-out infinite; */
+    display: none; /* Hide initially */
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 1s ease;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(26, 188, 156, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(26, 188, 156, 0.4);
+    }
+  }
+
+  @keyframes pulseOutline {
+    0%, 100% {
+      filter: drop-shadow(0 0 15px rgba(26, 188, 156, 0.3));
+    }
+    50% {
+      filter: drop-shadow(0 0 25px rgba(26, 188, 156, 0.6));
+    }
+  }
+
+  #intro-video-container {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    margin: 0 auto 20px auto;
+  }
+
+  #intro-video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+</style>
+
+<div id="main-content" style="display: block;">
+  <div class="welcome-container">
+    <div class="welcome-text">
+      <h1>Welcome to DORAN</h1>
+      <p class="lead">Your intelligent assistant for WVSU PC-related queries.</p>
+      <div class="welcome-buttons">
+        <a href="{{ url_for('login', user_type='user') }}">User Login</a>
+        <a href="{{ url_for('signup') }}">Sign Up</a>
+        <a href="{{ url_for('login', user_type='guest') }}">Continue as Guest</a>
+      </div>
+    </div>
+
+    <div id="intro-video-container">
+      <video id="intro-video" autoplay muted playsinline>
+        <source src="{{ url_for('static', filename='media/DORAN (2).mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <img src="{{ url_for('static', filename='media/SiDORAN.png') }}" alt="DORAN" class="welcome-image" id="welcome-image" />
+      <div class="doran-message" style="
+        display: none;
+        position: absolute;
+        top: 85px;
+        left: -150px;
+        background-color: rgba(66, 82, 79, 0.9);
+        color: rgb(255, 255, 255);
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-weight: 600;
+        max-width: 200px;
+        box-shadow: 0 0 10px rgba(21, 105, 88, 0.7);
+        z-index: 10;
+        ">
+        Hello, I am DORAN, your friendly WVSU-PC Virtual Assistant!
+      </div>
+    </div>
+
+    <style>
+      #intro-video-container:hover .doran-message,
+      .doran-message:hover {
+        display: block;
+        animation: fadeInUp 0.5s ease forwards;
+      }
+    </style>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const introVideo = document.getElementById('intro-video');
+        const welcomeImage = document.getElementById('welcome-image');
+        const doranMessage = document.querySelector('.doran-message');
+
+        welcomeImage.style.opacity = 0;
+        welcomeImage.style.position = 'absolute';
+        welcomeImage.style.top = '0';
+        welcomeImage.style.left = '0';
+
+        introVideo.addEventListener('ended', () => {
+          introVideo.style.transition = 'opacity 1s ease';
+          introVideo.style.opacity = 0;
+          setTimeout(() => {
+            // introVideo.style.display = 'none';
+            welcomeImage.style.display = 'block'; // Show image
+            // Trigger reflow to enable transition
+            void welcomeImage.offsetWidth;
+            welcomeImage.style.opacity = 1;
+          }, 1000);
+        });
+
+        // Show message on hover over image or message
+        welcomeImage.addEventListener('mouseenter', () => {
+          doranMessage.style.display = 'block';
+          doranMessage.style.animation = 'fadeInUp 0.5s ease forwards';
+        });
+        welcomeImage.addEventListener('mouseleave', () => {
+          doranMessage.style.display = 'none';
+          doranMessage.style.animation = '';
+        });
+        doranMessage.addEventListener('mouseenter', () => {
+          doranMessage.style.display = 'block';
+          doranMessage.style.animation = 'fadeInUp 0.5s ease forwards';
+        });
+        doranMessage.addEventListener('mouseleave', () => {
+          doranMessage.style.display = 'none';
+          doranMessage.style.animation = '';
+        });
+      });
+    </script>
+  </div>
+
+  <div class="container mt-4 text-dark border rounded p-4 doran-features">
+    <h2>What can DORAN do?</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="d-flex align-items-center mb-2">
+          <i class="fas fa-comment-dots text-primary me-2 fa-lg"></i>
+          <h3 class="h5 mb-0">Answer Questions</h3>
+        </div>
+        <p>Get quick answers about WVSU-PC office hours, locations, and more.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex align-items-center mb-2">
+          <i class="fas fa-history text-info me-2 fa-lg"></i>
+          <h3 class="h5 mb-0">Chat History</h3>
+        </div>
+        <p>Registered users can access their conversation history.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex align-items-center mb-2">
+          <i class="fas fa-cogs text-warning me-2 fa-lg"></i>
+          <h3 class="h5 mb-0">Settings</h3>
+        </div>
+        <p>Customize your experience with various settings options.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

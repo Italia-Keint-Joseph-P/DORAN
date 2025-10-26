@@ -1,0 +1,636 @@
+const deleteButtons = document.querySelectorAll('.delete-rule');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const ruleId = this.getAttribute('data-rule-id');
+
+            if (confirm('Are you sure you want to delete this rule?')) {
+                try {
+                    const result = await fetch('/delete_rule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken()
+                        },
+                        body: JSON.stringify({
+                            rule_id: ruleId
+                        }),
+                    });
+
+                    const data = await result.json();
+
+                    if (data.status === 'success') {
+                        // Remove the row from the table
+                        const row = this.closest('tr');
+                        row.remove();
+
+                        // If no rules left, show empty message
+                        if (rulesTable.querySelectorAll('tbody tr').length === 0) {
+                            const emptyRow = document.createElement('tr');
+                            emptyRow.innerHTML = '<td colspan="3" class="text-center">No rules defined yet.</td>';
+                            rulesTable.querySelector('tbody').appendChild(emptyRow);
+                        }
+                    } else {
+                        alert(data.message || 'Failed to delete rule');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        });
+    });
+
+    // Edit rule
+    const editButtons = document.querySelectorAll('.edit-rule');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const ruleId = this.getAttribute('data-rule-id');
+
+            // If already in edit mode, do nothing
+            if (row.classList.contains('editing')) {
+                return;
+            }
+
+            row.classList.add('editing');
+
+            // Get current keywords and response
+            const keywordsCell = row.querySelector('td:nth-child(1) div');
+            const responseCell = row.querySelector('td:nth-child(2)');
+
+            const currentKeywords = Array.from(keywordsCell.querySelectorAll('.keyword-badge'))
+                .map(badge => badge.textContent).join(', ');
+            const currentResponse = responseCell.textContent.trim();
+
+            // Replace keywords cell content with input
+            keywordsCell.innerHTML = `<input type="text" class="form-control form-control-sm edit-keywords" value="${currentKeywords}">`;
+
+            // Replace response cell content with textarea
+            responseCell.innerHTML = `<textarea class="form-control form-control-sm edit-response" rows="3">${currentResponse}</textarea>`;
+
+            // Replace actions cell buttons
+            const actionsCell = row.querySelector('td:nth-child(3)');
+            actionsCell.innerHTML = `
+                <button class="btn btn-sm btn-success save-edit" data-rule-id="${ruleId}">
+                    <i class="fas fa-save"></i>
+                </button>
+                <button class="btn btn-sm btn-secondary cancel-edit">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // Add event listener for save button
+            actionsCell.querySelector('.save-edit').addEventListener('click', async () => {
+                const newKeywords = actionsCell.closest('tr').querySelector('.edit-keywords').value.trim();
+                const newResponse = actionsCell.closest('tr').querySelector('.edit-response').value.trim();
+
+                if (!newKeywords || !newResponse) {
+                    alert('Keywords and response cannot be empty.');
+                    return;
+                }
+
+                try {
+                    const result = await fetch('/edit_rule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken()
+                        },
+                        body: JSON.stringify({
+                            rule_id: ruleId,
+                            keywords: newKeywords,
+                            response: newResponse
+                        }),
+                    });
+
+                    const data = await result.json();
+
+                    if (data.status === 'success') {
+                        // Reload the page to reflect changes
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Failed to update rule');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+
+            // Add event listener for cancel button
+            actionsCell.querySelector('.cancel-edit').addEventListener('click', () => {
+                // Reload the page to cancel editing
+                location.reload();
+            });
+        });
+    });
+=======
+    // Function to attach event listeners for edit and delete buttons in a given table
+    function attachRuleEventListeners(tableElement) {
+        if (!tableElement) return;
+
+        // Delete rule buttons
+        const deleteButtons = tableElement.querySelectorAll('.delete-rule');
+        deleteButtons.forEach(button => {
+            // Remove existing listeners to avoid duplicates
+            button.replaceWith(button.cloneNode(true));
+        });
+        // Re-query after cloning
+        const freshDeleteButtons = tableElement.querySelectorAll('.delete-rule');
+        freshDeleteButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const ruleId = this.getAttribute('data-rule-id');
+
+                if (confirm('Are you sure you want to delete this rule?')) {
+                    try {
+                        const result = await fetch('/delete_rule', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCsrfToken()
+                            },
+                            body: JSON.stringify({
+                                rule_id: ruleId
+                            }),
+                        });
+
+                        const data = await result.json();
+
+                        if (data.status === 'success') {
+                            // Remove the row from the table
+                            const row = this.closest('tr');
+                            row.remove();
+
+                            // Check if the table is empty and show empty message
+                            const tbody = tableElement.querySelector('tbody');
+                            if (tbody.querySelectorAll('tr').length === 0) {
+                                const emptyRow = document.createElement('tr');
+                                emptyRow.innerHTML = '<td colspan="3" class="text-center">No rules defined yet.</td>';
+                                tbody.appendChild(emptyRow);
+                            }
+                        } else {
+                            alert(data.message || 'Failed to delete rule');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                }
+            });
+        });
+
+        // Edit rule buttons
+        const editButtons = tableElement.querySelectorAll('.edit-rule');
+        editButtons.forEach(button => {
+            // Remove existing listeners to avoid duplicates
+            button.replaceWith(button.cloneNode(true));
+        });
+        // Re-query after cloning
+        const freshEditButtons = tableElement.querySelectorAll('.edit-rule');
+        freshEditButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const ruleId = this.getAttribute('data-rule-id');
+
+                // If already in edit mode, do nothing
+                if (row.classList.contains('editing')) {
+                    return;
+                }
+
+                row.classList.add('editing');
+
+                // Get current keywords and response
+                const keywordsCell = row.querySelector('td:nth-child(1) div');
+                const responseCell = row.querySelector('td:nth-child(2)');
+
+                const currentKeywords = Array.from(keywordsCell.querySelectorAll('.keyword-badge'))
+                    .map(badge => badge.textContent).join(', ');
+                const currentResponse = responseCell.textContent.trim();
+
+                // Replace keywords cell content with input
+                keywordsCell.innerHTML = `<input type="text" class="form-control form-control-sm edit-keywords" value="${currentKeywords}">`;
+
+                // Replace response cell content with textarea
+                responseCell.innerHTML = `<textarea class="form-control form-control-sm edit-response" rows="3">${currentResponse}</textarea>`;
+
+                // Replace actions cell buttons
+                const actionsCell = row.querySelector('td:nth-child(3)');
+                actionsCell.innerHTML = `
+                    <button class="btn btn-sm btn-success save-edit" data-rule-id="${ruleId}">
+                        <i class="fas fa-save"></i>
+                    </button>
+                    <button class="btn btn-sm btn-secondary cancel-edit">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+
+                // Add event listener for save button
+                actionsCell.querySelector('.save-edit').addEventListener('click', async () => {
+                    const newKeywords = actionsCell.closest('tr').querySelector('.edit-keywords').value.trim();
+                    const newResponse = actionsCell.closest('tr').querySelector('.edit-response').value.trim();
+
+                    if (!newKeywords || !newResponse) {
+                        alert('Keywords and response cannot be empty.');
+                        return;
+                    }
+
+                    try {
+                        const result = await fetch('/edit_rule', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCsrfToken()
+                            },
+                            body: JSON.stringify({
+                                rule_id: ruleId,
+                                keywords: newKeywords,
+                                response: newResponse
+                            }),
+                        });
+
+                        const data = await result.json();
+
+                        if (data.status === 'success') {
+                            // Reload the page to reflect changes
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Failed to update rule');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+
+                // Add event listener for cancel button
+                actionsCell.querySelector('.cancel-edit').addEventListener('click', () => {
+                    // Reload the page to cancel editing
+                    location.reload();
+                });
+            });
+        });
+    }
+>>>>>>> REPLACE
+
+<<<<<<< SEARCH
+const deleteButtons = document.querySelectorAll('.delete-rule');
+deleteButtons.forEach(button => {
+    button.addEventListener('click', async function() {
+        const ruleId = this.getAttribute('data-rule-id');
+
+        if (confirm('Are you sure you want to delete this rule?')) {
+            try {
+                const result = await fetch('/delete_rule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        rule_id: ruleId
+                    }),
+                });
+
+                const data = await result.json();
+
+                if (data.status === 'success') {
+                    // Remove the row from the table
+                    const row = this.closest('tr');
+                    row.remove();
+
+                    // If no rules left, show empty message
+                    if (rulesTable.querySelectorAll('tbody tr').length === 0) {
+                        const emptyRow = document.createElement('tr');
+                        emptyRow.innerHTML = '<td colspan="3" class="text-center">No rules defined yet.</td>';
+                        rulesTable.querySelector('tbody').appendChild(emptyRow);
+                    }
+                } else {
+                    alert(data.message || 'Failed to delete rule');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+});
+
+// Edit rule
+const editButtons = document.querySelectorAll('.edit-rule');
+editButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const ruleId = this.getAttribute('data-rule-id');
+
+        // If already in edit mode, do nothing
+        if (row.classList.contains('editing')) {
+            return;
+        }
+
+        row.classList.add('editing');
+
+        // Get current keywords and response
+        const keywordsCell = row.querySelector('td:nth-child(1) div');
+        const responseCell = row.querySelector('td:nth-child(2)');
+
+        const currentKeywords = Array.from(keywordsCell.querySelectorAll('.keyword-badge'))
+            .map(badge => badge.textContent).join(', ');
+        const currentResponse = responseCell.textContent.trim();
+
+        // Replace keywords cell content with input
+        keywordsCell.innerHTML = `<input type="text" class="form-control form-control-sm edit-keywords" value="${currentKeywords}">`;
+
+        // Replace response cell content with textarea
+        responseCell.innerHTML = `<textarea class="form-control form-control-sm edit-response" rows="3">${currentResponse}</textarea>`;
+
+        // Replace actions cell buttons
+        const actionsCell = row.querySelector('td:nth-child(3)');
+        actionsCell.innerHTML = `
+            <button class="btn btn-sm btn-success save-edit" data-rule-id="${ruleId}">
+                <i class="fas fa-save"></i>
+            </button>
+            <button class="btn btn-sm btn-secondary cancel-edit">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        // Add event listener for save button
+        actionsCell.querySelector('.save-edit').addEventListener('click', async () => {
+            const newKeywords = actionsCell.closest('tr').querySelector('.edit-keywords').value.trim();
+            const newResponse = actionsCell.closest('tr').querySelector('.edit-response').value.trim();
+
+            if (!newKeywords || !newResponse) {
+                alert('Keywords and response cannot be empty.');
+                return;
+            }
+
+            try {
+                const result = await fetch('/edit_rule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        rule_id: ruleId,
+                        keywords: newKeywords,
+                        response: newResponse
+                    }),
+                });
+
+                const data = await result.json();
+
+                if (data.status === 'success') {
+                    // Reload the page to reflect changes
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to update rule');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        // Add event listener for cancel button
+        actionsCell.querySelector('.cancel-edit').addEventListener('click', () => {
+            // Reload the page to cancel editing
+            location.reload();
+        });
+    });
+});
+
+// Toggle between user and guest rules tables
+const showUserRulesBtn = document.getElementById('show-user-rules');
+const showGuestRulesBtn = document.getElementById('show-guest-rules');
+const rulesTable = document.getElementById('rules-table');
+const guestRulesTable = document.getElementById('guest-rules-table');
+
+function showUserRules() {
+    rulesTable.style.display = '';
+    guestRulesTable.style.display = 'none';
+    showUserRulesBtn.classList.add('btn-primary');
+    showUserRulesBtn.classList.remove('btn-secondary');
+    showGuestRulesBtn.classList.add('btn-secondary');
+    showGuestRulesBtn.classList.remove('btn-primary');
+}
+
+function showGuestRules() {
+    rulesTable.style.display = 'none';
+    guestRulesTable.style.display = '';
+    showGuestRulesBtn.classList.add('btn-primary');
+    showGuestRulesBtn.classList.remove('btn-secondary');
+    showUserRulesBtn.classList.add('btn-secondary');
+    showUserRulesBtn.classList.remove('btn-primary');
+}
+
+showUserRulesBtn.addEventListener('click', showUserRules);
+showGuestRulesBtn.addEventListener('click', showGuestRules);
+
+// Function to attach event listeners for edit and delete buttons in a given table
+function attachRuleEventListeners(tableElement) {
+    if (!tableElement) return;
+
+    // Delete rule buttons
+    const deleteButtons = tableElement.querySelectorAll('.delete-rule');
+    deleteButtons.forEach(button => {
+        // Remove existing listeners to avoid duplicates
+        button.replaceWith(button.cloneNode(true));
+    });
+    // Re-query after cloning
+    const freshDeleteButtons = tableElement.querySelectorAll('.delete-rule');
+    freshDeleteButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const ruleId = this.getAttribute('data-rule-id');
+
+            if (confirm('Are you sure you want to delete this rule?')) {
+                try {
+                    const result = await fetch('/delete_rule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken()
+                        },
+                        body: JSON.stringify({
+                            rule_id: ruleId
+                        }),
+                    });
+
+                    const data = await result.json();
+
+                    if (data.status === 'success') {
+                        // Remove the row from the table
+                        const row = this.closest('tr');
+                        row.remove();
+
+                        // Check if the table is empty and show empty message
+                        const tbody = tableElement.querySelector('tbody');
+                        if (tbody.querySelectorAll('tr').length === 0) {
+                            const emptyRow = document.createElement('tr');
+                            emptyRow.innerHTML = '<td colspan="3" class="text-center">No rules defined yet.</td>';
+                            tbody.appendChild(emptyRow);
+                        }
+                    } else {
+                        alert(data.message || 'Failed to delete rule');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        });
+    });
+
+    // Edit rule buttons
+    const editButtons = tableElement.querySelectorAll('.edit-rule');
+    editButtons.forEach(button => {
+        // Remove existing listeners to avoid duplicates
+        button.replaceWith(button.cloneNode(true));
+    });
+    // Re-query after cloning
+    const freshEditButtons = tableElement.querySelectorAll('.edit-rule');
+    freshEditButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const ruleId = this.getAttribute('data-rule-id');
+
+            // If already in edit mode, do nothing
+            if (row.classList.contains('editing')) {
+                return;
+            }
+
+            row.classList.add('editing');
+
+            // Get current keywords and response
+            const keywordsCell = row.querySelector('td:nth-child(1) div');
+            const responseCell = row.querySelector('td:nth-child(2)');
+
+            const currentKeywords = Array.from(keywordsCell.querySelectorAll('.keyword-badge'))
+                .map(badge => badge.textContent).join(', ');
+            const currentResponse = responseCell.textContent.trim();
+
+            // Replace keywords cell content with input
+            keywordsCell.innerHTML = `<input type="text" class="form-control form-control-sm edit-keywords" value="${currentKeywords}">`;
+
+            // Replace response cell content with textarea
+            responseCell.innerHTML = `<textarea class="form-control form-control-sm edit-response" rows="3">${currentResponse}</textarea>`;
+
+            // Replace actions cell buttons
+            const actionsCell = row.querySelector('td:nth-child(3)');
+            actionsCell.innerHTML = `
+                <button class="btn btn-sm btn-success save-edit" data-rule-id="${ruleId}">
+                    <i class="fas fa-save"></i>
+                </button>
+                <button class="btn btn-sm btn-secondary cancel-edit">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // Add event listener for save button
+            actionsCell.querySelector('.save-edit').addEventListener('click', async () => {
+                const newKeywords = actionsCell.closest('tr').querySelector('.edit-keywords').value.trim();
+                const newResponse = actionsCell.closest('tr').querySelector('.edit-response').value.trim();
+
+                if (!newKeywords || !newResponse) {
+                    alert('Keywords and response cannot be empty.');
+                    return;
+                }
+
+                try {
+                    const result = await fetch('/edit_rule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken()
+                        },
+                        body: JSON.stringify({
+                            rule_id: ruleId,
+                            keywords: newKeywords,
+                            response: newResponse
+                        }),
+                    });
+
+                    const data = await result.json();
+
+                    if (data.status === 'success') {
+                        // Reload the page to reflect changes
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Failed to update rule');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+
+            // Add event listener for cancel button
+            actionsCell.querySelector('.cancel-edit').addEventListener('click', () => {
+                // Reload the page to cancel editing
+                location.reload();
+            });
+        });
+    });
+}
+
+// Toggle between user and guest rules tables
+const showUserRulesBtn = document.getElementById('show-user-rules');
+const showGuestRulesBtn = document.getElementById('show-guest-rules');
+const rulesTable = document.getElementById('rules-table');
+const guestRulesTable = document.getElementById('guest-rules-table');
+
+function showUserRules() {
+    rulesTable.style.display = 'table';
+    guestRulesTable.style.display = 'none';
+    showUserRulesBtn.classList.add('btn-primary');
+    showUserRulesBtn.classList.remove('btn-secondary');
+    showGuestRulesBtn.classList.add('btn-secondary');
+    showGuestRulesBtn.classList.remove('btn-primary');
+    attachRuleEventListeners(rulesTable);
+}
+
+function showGuestRules() {
+    rulesTable.style.display = 'none';
+    guestRulesTable.style.display = 'table';
+    showGuestRulesBtn.classList.add('btn-primary');
+    showGuestRulesBtn.classList.remove('btn-secondary');
+    showUserRulesBtn.classList.add('btn-secondary');
+    showUserRulesBtn.classList.remove('btn-primary');
+    attachRuleEventListeners(guestRulesTable);
+}
+
+showUserRulesBtn.addEventListener('click', showUserRules);
+showGuestRulesBtn.addEventListener('click', showGuestRules);
+
+// Initialize with user rules shown
+showUserRules();
+=======
+    // New code to toggle between user and guest rules tables
+    const showUserRulesBtn = document.getElementById('show-user-rules');
+    const showGuestRulesBtn = document.getElementById('show-guest-rules');
+
+    function showUserRules() {
+        rulesTable.style.display = '';
+        guestRulesTable.style.display = 'none';
+        showUserRulesBtn.classList.add('btn-primary');
+        showUserRulesBtn.classList.remove('btn-secondary');
+        showGuestRulesBtn.classList.add('btn-secondary');
+        showGuestRulesBtn.classList.remove('btn-primary');
+        attachRuleEventListeners(rulesTable);
+    }
+
+    function showGuestRules() {
+        rulesTable.style.display = 'none';
+        guestRulesTable.style.display = '';
+        showGuestRulesBtn.classList.add('btn-primary');
+        showGuestRulesBtn.classList.remove('btn-secondary');
+        showUserRulesBtn.classList.add('btn-secondary');
+        showUserRulesBtn.classList.remove('btn-primary');
+        attachRuleEventListeners(guestRulesTable);
+    }
+
+    showUserRulesBtn.addEventListener('click', showUserRules);
+    showGuestRulesBtn.addEventListener('click', showGuestRules);
+
+    // Initialize with user rules shown
+    showUserRules();

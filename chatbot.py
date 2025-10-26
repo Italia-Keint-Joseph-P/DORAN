@@ -2,110 +2,882 @@ import logging
 import string
 import re
 from uuid import uuid4
-import soict  # Import the SOICT knowledge base
 
-# Simple tokenizer function
 def simple_tokenize(text):
-    """Split text into tokens by whitespace and punctuation"""
-    # Convert to lowercase
-    text = text.lower()
-    # Remove punctuation
-    text = text.translate(str.maketrans('', '', string.punctuation))
-    # Split by whitespace
-    return text.split()
+    """
+    Simple tokenizer that converts text to lowercase and splits on non-alphanumeric characters, but keeps hyphens in words.
+    """
+    return re.findall(r'\b[\w-]+\b', text.lower())
+
+import database.email_directory as email_directory
+import database.user_database.rule_utils as rule_utils
+
+import json
+import os
+
+from nlp_utils import semantic_similarity, preprocess_text
 
 class Chatbot:
     def __init__(self):
-        # Initialize rules list with uuid for identification
-        self.rules = []
-        self.fallback_responses = [
-            "I'm sorry, I don't understand that query. Could you please rephrase?",
-            "I don't have information on that topic yet. Please try asking something else.",
-            "I couldn't find a match for your query. Please try using different keywords."
-        ]
+        # Keep all other initialization code unchanged
+
+        # Initialize rules attributes
+        self.rules = self.get_rules()
+        self.guest_rules = self.get_guest_rules()
+
+        # Load chatbot answer images from locations.json
+        locations_path = os.path.join("database", "locations", "locations.json")
+        try:
+            with open(locations_path, "r", encoding="utf-8") as f:
+                locations_data = json.load(f)
+                self.chatbot_images = []
+                for entry in locations_data:
+                    questions = entry.get("questions", [])
+                    image_entry = {
+                        "id": entry.get("id", ""),
+                        "questions": questions,
+                        "url": entry.get("url", ""),
+                        "description": entry.get("description", "")
+                    }
+                    self.chatbot_images.append(image_entry)
+        except Exception:
+            self.chatbot_images = []
+
+        # Load location-based rules from locations.json
+        self.location_rules = self.get_location_rules()
+
+        # Load visual-based rules from visuals.json
+        self.visual_rules = self.get_visual_rules()
+
+        # Email keywords for triggering email search
+        self.email_keywords = ["email", "contact", "mail", "reach", "address", "send", "message"]
+
+        # Load FAQs
+        with open('database/faqs.json', 'r', encoding='utf-8') as f:
+            self.faqs = json.load(f)
+
+        # Initialize fallback tracking attributes
+        self.consecutive_fallbacks = 0
         self.fallback_index = 0
-        
-        # Load rules from soict.py
-        for rule in soict.get_all_rules():
-            rule_id = str(uuid4())
-            self.rules.append({
-                'id': rule_id,
-                'keywords': rule["keywords"],
-                'response': rule["response"]
-            })
-            
-        logging.debug("Chatbot initialized with rules from soict.py")
-    
-    def add_rule(self, keywords, response):
-        """Add a new rule to the chatbot's knowledge base"""
-        rule_id = str(uuid4())
-        self.rules.append({
-            'id': rule_id,
-            'keywords': keywords,
-            'response': response
-        })
-        
-        # Also add to soict.py for persistence
-        soict.add_rule(keywords, response)
-        
-        logging.debug(f"Added rule: {keywords} -> {response}")
-        return rule_id
-    
-    def delete_rule(self, rule_id):
-        """Delete a rule by its ID"""
-        # Find the rule in our internal list
-        for i, rule in enumerate(self.rules):
-            if rule['id'] == rule_id:
-                keywords = rule['keywords']
-                del self.rules[i]
-                
-                # Find and delete the matching rule in soict.py
-                for j, soict_rule in enumerate(soict.get_all_rules()):
-                    if soict_rule['keywords'] == keywords:
-                        soict.delete_rule(soict_rule['id'])
-                        break
-                
-                logging.debug(f"Deleted rule: {rule_id}")
-                return True
-                
-        logging.debug(f"Rule not found for deletion: {rule_id}")
-        return False
-    
+        self.fallback_responses = [
+            "I'm sorry, I didn't quite get that. Could you please rephrase?",
+            "Hmm, I'm not sure I understand. Can you try asking differently?",
+            "Apologies, I couldn't find an answer. Could you ask something else?"
+        ]
+
+    def recompute_embeddings(self):
+        """
+        No longer needed with NLTK-based similarity.
+        """
+        pass
+
+    def search_emails(self, user_input):
+        """
+        Search the email directory for entries matching the user input.
+        Returns a response string if matches are found, else None.
+        """
+        tokens = simple_tokenize(user_input.lower())
+        has_email_keyword = any(keyword in tokens for keyword in self.email_keywords)
+
+        # Special case for "registrar data" to return full directory
+        if "registrar" in tokens and "data" in tokens:
+            try:
+                all_emails = email_directory.get_all_emails()
+            except Exception as e:
+                logging.error(f"Error fetching emails: {e}")
+                return None
+            if not all_emails:
+                return None
+            response = "Here is the full email directory:\n"
+            for entry in all_emails:
+                response += f"- {entry['school']}: {entry['email']}\n"
+            return response.strip()
+
+        # Get all emails
+        try:
+            all_emails = email_directory.get_all_emails()
+        except Exception as e:
+            logging.error(f"Error fetching emails: {e}")
+            return None
+
+        # Find matching schools/positions
+        matches = []
+        for entry in all_emails:
+            school_lower = entry['school'].lower()
+            if any(token in school_lower for token in tokens):
+                matches.append(entry)
+
+        if not matches:
+            return None
+
+        # Format response
+        response = "Here are the relevant email contacts:\n"
+        for match in matches:
+            if match['school'].lower() == 'registrar':
+                response += f"- Registrar: {match['email']}\n"
+            else:
+                response += f"- {match['school']}: {match['email']}\n"
+        return response.strip()
+
     def get_rules(self):
-        """Get all current rules"""
-        return self.rules
-    
-    def get_response(self, user_input):
-        """Generate a response based on user input and defined rules"""
+        # Load and return all user rules from the combined all_user_rules.json file
+        import json
+        import os
+        rules = []
+        user_rules_path = os.path.join("database", "user_database", "all_user_rules.json")
+        rules_updated = False
+
+        try:
+            with open(user_rules_path, "r", encoding="utf-8") as f:
+                rules_data = json.load(f)
+                # Handle new categorized structure
+                if isinstance(rules_data, dict):
+                    # New categorized structure
+                    for category, category_rules in rules_data.items():
+                        for rule in category_rules:
+                            # Use question as the matching text, not keywords
+                            # Preserve existing ID or generate new one if missing
+                            if 'id' not in rule:
+                                rule['id'] = str(uuid4())
+                                rules_updated = True
+                            rule_id = rule.get("id")
+                            rule_obj = {
+                                "category": category,
+                                "question": rule.get("question", ""),
+                                "response": rule.get("answer", ""),
+                                "id": rule_id
+                            }
+                            rules.append(rule_obj)
+                else:
+                    # Legacy flat array structure (fallback)
+                    for rule in rules_data:
+                        # Preserve existing ID or generate new one if missing
+                        if 'id' not in rule:
+                            rule['id'] = str(uuid4())
+                            rules_updated = True
+                        rule_id = rule.get("id")
+                        rule_obj = {
+                            "category": "combined_user",
+                            "question": rule.get("question", ""),
+                            "response": rule.get("answer", ""),
+                            "id": rule_id
+                        }
+                        rules.append(rule_obj)
+
+            # Save updated rules back to file if any IDs were added
+            if rules_updated:
+                with open(user_rules_path, "w", encoding="utf-8") as f:
+                    json.dump(rules_data, f, indent=4, ensure_ascii=False)
+
+        except Exception:
+            # Fallback to original method if combined file not found
+            rules = []
+            user_db_path = os.path.join("database", "user_database")
+            try:
+                for filename in os.listdir(user_db_path):
+                    if filename.endswith("_rules.json") and filename != "locations_rules.json":
+                        category = filename.replace("_rules.json", "")
+                        filepath = os.path.join(user_db_path, filename)
+                        try:
+                            with open(filepath, "r", encoding="utf-8") as f:
+                                rules_data = json.load(f)
+                                for rule in rules_data:
+                                    rule['category'] = category
+                                    rule['question'] = rule.get('question', '')
+                                    rule['response'] = rule.get('answer', '')
+                                    if 'id' not in rule:
+                                        rule['id'] = str(uuid4())
+                                    rules.append(rule)
+                        except Exception:
+                            continue
+            except Exception:
+                category_files = {
+                    "soict": "database/user_database/soict_rules.json",
+                    "soed": "database/user_database/soed_rules.json",
+                    "sobm": "database/user_database/sobm_rules.json",
+                    "soit": "database/user_database/soit_rules.json",
+                    "faculty_staff": "database/user_database/faculty_staff_rules.json"
+                }
+                for category, filepath in category_files.items():
+                    try:
+                        with open(filepath, "r", encoding="utf-8") as f:
+                            rules_data = json.load(f)
+                            for rule in rules_data:
+                                rule['category'] = category
+                                rule['question'] = rule.get('question', '')
+                                rule['response'] = rule.get('answer', '')
+                                if 'id' not in rule:
+                                    rule['id'] = str(uuid4())
+                                rules.append(rule)
+                    except Exception:
+                        continue
+
+
+
+        return rules
+
+    def get_guest_rules(self):
+        # Load and return all guest rules from the combined all_guest_rules.json file
+        import json
+        import os
+        rules = []
+        guest_rules_path = os.path.join("database", "guest_database", "all_guest_rules.json")
+        rules_updated = False
+
+        try:
+            with open(guest_rules_path, "r", encoding="utf-8") as f:
+                rules_data = json.load(f)
+                # Handle new categorized structure
+                if isinstance(rules_data, dict):
+                    # New categorized structure
+                    for category, category_rules in rules_data.items():
+                        for rule in category_rules:
+                            # Use question as the matching text, not keywords
+                            # Preserve existing ID or generate new one if missing
+                            if 'id' not in rule:
+                                rule['id'] = str(uuid4())
+                                rules_updated = True
+                            rule_id = rule.get("id")
+                            rule_obj = {
+                                "category": category,
+                                "question": rule.get("question", ""),
+                                "response": rule.get("answer", ""),
+                                "id": rule_id
+                            }
+                            rules.append(rule_obj)
+                else:
+                    # Legacy flat array structure (fallback)
+                    for rule in rules_data:
+                        # Preserve existing ID or generate new one if missing
+                        if 'id' not in rule:
+                            rule['id'] = str(uuid4())
+                            rules_updated = True
+                        rule_id = rule.get("id")
+                        rule_obj = {
+                            "category": "combined_guest",
+                            "question": rule.get("question", ""),
+                            "response": rule.get("answer", ""),
+                            "id": rule_id
+                        }
+                        rules.append(rule_obj)
+
+            # Save updated rules back to file if any IDs were added
+            if rules_updated:
+                with open(guest_rules_path, "w", encoding="utf-8") as f:
+                    json.dump(rules_data, f, indent=4, ensure_ascii=False)
+
+        except Exception:
+            rules = []
+            guest_db_path = os.path.join("database", "guest_database")
+            try:
+                for filename in os.listdir(guest_db_path):
+                    if filename.endswith("_guest_rules.json"):
+                        category = filename.replace("_guest_rules.json", "")
+                        filepath = os.path.join(guest_db_path, filename)
+                        try:
+                            with open(filepath, "r", encoding="utf-8") as f:
+                                rules_data = json.load(f)
+                                for rule in rules_data:
+                                    rule['category'] = category
+                                    rule['question'] = rule.get('question', '')
+                                    rule['response'] = rule.get('answer', '')
+                                    if 'id' not in rule or not rule['id']:
+                                        rule['id'] = str(uuid4())
+                                    rules.append(rule)
+                        except Exception:
+                            continue
+            except Exception:
+                category_files = {
+                    "soict": "database/guest_database/soict_guest_rules.json",
+                    "soed": "database/guest_database/soed_guest_rules.json",
+                    "sobm": "database/guest_database/sobm_guest_rules.json",
+                    "soit": "database/guest_database/soit_guest_rules.json",
+                    "faculty_staff": "database/guest_database/faculty_staff_guest_rules.json"
+                }
+                for category, filepath in category_files.items():
+                    try:
+                        with open(filepath, "r", encoding="utf-8") as f:
+                            rules_data = json.load(f)
+                            for rule in rules_data:
+                                rule['category'] = category
+                                rule['question'] = rule.get('question', '')
+                                rule['response'] = rule.get('answer', '')
+                                if 'id' not in rule or not rule['id']:
+                                    rule['id'] = str(uuid4())
+                                rules.append(rule)
+                    except Exception:
+                        continue
+        return rules
+
+    def normalize_keywords(self, keywords):
+        """
+        Normalize keywords to lowercase, handling both flat lists and nested lists.
+        Converts all keywords to strings first to handle mixed types.
+        """
+        if isinstance(keywords, list):
+            if keywords and isinstance(keywords[0], list):
+                # Nested: list of keyword sets
+                return [[str(k).lower() for k in sublist] for sublist in keywords]
+            else:
+                # Flat: single list
+                return [str(k).lower() for k in keywords]
+        return []
+
+    def get_location_rules(self):
+        """
+        Load location-based rules from database/locations/locations.json
+        Converts each image entry to a rule with keywords and response containing description and all image URLs.
+        """
+        locations_path = os.path.join("database", "locations", "locations.json")
+        try:
+            with open(locations_path, "r", encoding="utf-8") as f:
+                locations_data = json.load(f)
+                location_rules = []
+                for entry in locations_data:
+                    questions = entry.get("questions", [])
+                    if isinstance(questions, str):
+                        questions = [questions]
+                    flattened_questions = []
+                    for q in questions:
+                        if isinstance(q, str):
+                            flattened_questions.append(q)
+                        elif isinstance(q, list):
+                            flattened_questions.extend(q)
+                    # Include description in questions for NLP matching
+                    description = entry.get("description", "")
+                    flattened_questions.append(description)
+                    keywords = [word for q in flattened_questions for word in q.lower().split()]
+                    image_urls = entry.get("urls", [])
+                    # Compose response with description and all image HTML tags
+                    images_html = ""
+                    if len(image_urls) > 2:
+                        # Show first image with overlay for additional images
+                        static_img_url = image_urls[0]
+                        if not static_img_url.startswith("/static/"):
+                            static_img_url = "/static/" + static_img_url
+                        additional_count = len(image_urls) - 1
+                        prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
+                        images_html = f"""
+                        <div class="image-gallery" data-images='{",".join(prefixed_urls)}'>
+                            <img src='{static_img_url}' alt='Location Image' class='message-image'>
+                            <div class="image-overlay">+{additional_count} more</div>
+                        </div>
+                        """
+                    else:
+                        # Show all images if 2 or fewer
+                        for img_url in image_urls:
+                            static_img_url = img_url
+                            if not img_url.startswith("/static/"):
+                                static_img_url = "/static/" + img_url
+                            prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
+                            images_html += f"<img src='{static_img_url}' alt='Location Image' class='message-image' data-images='{','.join(prefixed_urls)}'>"
+                    response = f"{description}<br>{images_html}"
+                    rule = {
+                        "id": entry.get("id", ""),
+                        "questions": flattened_questions,
+                        "response": response,
+                        "category": "locations",
+                        "user_type": entry.get("user_type", "both")
+                    }
+                    location_rules.append(rule)
+                return location_rules
+        except Exception:
+            return []
+
+    def get_visual_rules(self):
+        """
+        Load visual-based rules from database/visuals/visuals.json
+        Converts each image entry to a rule with questions and response containing description and all image URLs.
+        """
+        visuals_path = os.path.join("database", "visuals", "visuals.json")
+        try:
+            with open(visuals_path, "r", encoding="utf-8") as f:
+                visuals_data = json.load(f)
+                visual_rules = []
+                for entry in visuals_data:
+                    questions = entry.get("questions", [])
+                    description = entry.get("description", "")
+                    image_urls = entry.get("urls", [])
+                    # Compose response with description and all image HTML tags
+                    images_html = ""
+                    if len(image_urls) > 2:
+                        # Show first image with overlay for additional images
+                        static_img_url = image_urls[0]
+                        if not static_img_url.startswith("/static/"):
+                            static_img_url = "/static/" + static_img_url
+                        additional_count = len(image_urls) - 1
+                        prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
+                        images_html = f"""
+                        <div class="image-gallery" data-images='{",".join(prefixed_urls)}'>
+                            <img src='{static_img_url}' alt='Visual Image' class='message-image'>
+                            <div class="image-overlay">+{additional_count} more</div>
+                        </div>
+                        """
+                    else:
+                        # Show all images if 2 or fewer
+                        for img_url in image_urls:
+                            static_img_url = img_url
+                            if not img_url.startswith("/static/"):
+                                static_img_url = "/static/" + img_url
+                            prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
+                            images_html += f"<img src='{static_img_url}' alt='Visual Image' class='message-image' data-images='{','.join(prefixed_urls)}'>"
+                    response = f"{description}<br>{images_html}"
+                    rule = {
+                        "id": entry.get("id", ""),
+                        "questions": questions,
+                        "response": response,
+                        "category": "visuals",
+                        "user_type": entry.get("user_type", "user")
+                    }
+                    visual_rules.append(rule)
+                return visual_rules
+        except Exception:
+            return []
+
+    def get_response(self, user_input, user_role=None):
+        """
+        Generate a response by collecting all matches above threshold and selecting the best overall match.
+        Improved keyword matching with fuzzy partial matches, integrated fuzzy matching earlier,
+        and adjusted thresholds for better accuracy.
+
+        Args:
+            user_input (str): The input message from the user.
+            user_role (str): The role of the user ('guest' or other).
+
+        Returns:
+            str: The chatbot's response from rules, info.json, or fallback message.
+        """
         if not user_input.strip():
             return "Please type a message to chat with DORAN."
-        
+
         # Preprocess user input
-        user_input = user_input.lower()
-        tokens = simple_tokenize(user_input)
-        
-        # Check each rule for keyword matches
-        best_match = None
-        most_matches = 0
-        
-        for rule in self.rules:
-            matches = sum(1 for keyword in rule['keywords'] if keyword in tokens)
-            match_ratio = matches / len(rule['keywords'])
-            
-            # Consider it a match if all keywords are present
-            if match_ratio == 1.0:
-                return rule['response']
-            
-            # Keep track of the best partial match (most keywords matched)
-            if matches > most_matches and matches >= 1:
-                most_matches = matches
-                best_match = rule
-        
-        # Return best partial match if it exists and has at least 2 keywords or more than 50% match
-        if best_match and (most_matches >= 2 or most_matches / len(best_match['keywords']) > 0.5):
-            return best_match['response']
-        
-        # Return fallback response if no match found
+        processed_input = preprocess_text(user_input)
+        user_tokens = simple_tokenize(processed_input)
+
+        # Check for email queries first to prioritize over rules
+        has_email_keyword = any(keyword in user_tokens for keyword in self.email_keywords)
+        if has_email_keyword:
+            email_response = self.search_emails(user_input)
+            if email_response:
+                self.consecutive_fallbacks = 0
+                return self.append_image_to_response(email_response)
+
+        # Collect all potential matches with their scores
+        candidates = []  # List of (rule, score, match_type, original_score)
+
+        # Determine rules to use based on user role
+        if user_role == 'guest':
+            rules_to_use = self.guest_rules + self.location_rules + self.visual_rules
+        else:
+            rules_to_use = self.rules + self.guest_rules + self.location_rules + self.visual_rules
+
+        # Jaccard similarity for all rules
+        for r in rules_to_use:
+            rule_user_type = r.get('user_type', 'both')
+            if user_role == 'guest' and rule_user_type == 'user':
+                continue
+            elif user_role != 'guest' and rule_user_type == 'guest':
+                continue
+            questions = r.get('questions', []) or r.get('question', '')
+            if isinstance(questions, str):
+                questions = [questions]
+            flattened_questions = []
+            for q in questions:
+                if isinstance(q, str):
+                    flattened_questions.append(q)
+                elif isinstance(q, list):
+                    flattened_questions.extend(q)
+            for q in flattened_questions:
+                _, similarity = semantic_similarity(user_input, [q], threshold=0.0)
+                threshold = 0.2  # Lowered threshold for better accuracy across all categories
+                if similarity >= threshold:
+                    # Boost similarity for location/visual queries containing 'where' to prioritize location matches
+                    if r.get('category') in ['locations', 'visuals'] and 'where' in processed_input:
+                        similarity += 0.1
+                    candidates.append((r, similarity, 'jaccard', similarity))
+
+        # FAQs Jaccard similarity
+        faq_questions = [item['question'] for item in self.faqs]
+        faq_answers = [item['answer'] for item in self.faqs]
+        best_faq_question, faq_similarity_score = semantic_similarity(user_input, faq_questions, threshold=0.2)  # Lowered threshold
+        if best_faq_question:
+            index = faq_questions.index(best_faq_question)
+            faq_rule = {'response': faq_answers[index], 'category': 'faqs'}
+            candidates.append((faq_rule, faq_similarity_score, 'faq', faq_similarity_score))
+
+        # Additional Jaccard search for location questions to ensure all are analyzed
+        if not candidates or max(candidates, key=lambda x: x[1])[1] < 0.5:  # If no strong match, search deeper
+            for rule in rules_to_use:
+                if rule.get('category') in ['locations', 'visuals']:
+                    questions = rule.get('questions', []) or rule.get('question', '')
+                    flattened_questions = []
+                    for q in questions:
+                        if isinstance(q, str):
+                            flattened_questions.append(q)
+                        elif isinstance(q, list):
+                            flattened_questions.extend(q)
+                    for q in flattened_questions:
+                        _, similarity = semantic_similarity(user_input, [q], threshold=0.0)
+                        if similarity >= 0.1:  # Very low threshold to catch more matches
+                            candidates.append((rule, similarity, 'deep_jaccard', similarity))
+
+        # Select the best match across all candidates
+        if candidates:
+            best_candidate = max(candidates, key=lambda x: x[1])
+            best_rule, best_score, match_type, original_score = best_candidate
+            logging.info(f"Best match: {match_type} with hybrid score {best_score:.3f} (original {original_score:.3f}) for rule category {best_rule.get('category', 'unknown')}")
+            self.consecutive_fallbacks = 0
+            return self.append_image_to_response(best_rule['response'])
+
+
+
+        # Fallback responses
+        self.consecutive_fallbacks += 1
         fallback = self.fallback_responses[self.fallback_index]
         self.fallback_index = (self.fallback_index + 1) % len(self.fallback_responses)
-        return fallback
+        return self.append_image_to_response(fallback)
+
+    def append_image_to_response(self, response_text, rule_keywords=None):
+        """
+        Append a chatbot image as an HTML <img> tag to the response text if available and keywords match.
+        Only append the chatbot image if keywords match chatbot image questions.
+        Do not append chatbot image as a fallback for all responses.
+        """
+        if self.chatbot_images and rule_keywords:
+            # Flatten rule_keywords if nested
+            flattened_keywords = []
+            if isinstance(rule_keywords, list):
+                for item in rule_keywords:
+                    if isinstance(item, list):
+                        flattened_keywords.extend(item)
+                    else:
+                        flattened_keywords.append(item)
+            else:
+                flattened_keywords = rule_keywords
+            # Find an image whose questions contain any of the flattened_keywords
+            for image in self.chatbot_images:
+                image_questions = image.get("questions", [])
+                # Check if any keyword is in any question
+                match = any(any(kw.lower() in q.lower() for kw in flattened_keywords) for q in image_questions)
+                if match:
+                    image_url = image.get("url", "")
+                    if image_url:
+                        if not image_url.startswith("/static/"):
+                            image_url = "/static/" + image_url
+                        response_text += f"<img src='{image_url}' alt='Chatbot Image' class='message-image'>"
+                    break  # Append only one image
+        return response_text
+
+    def add_rule(self, question, response, user_type='user', category='soict'):
+        from uuid import uuid4
+        if category == "locations":
+            # Add location rule directly to location_rules list
+            new_rule = {
+                "id": str(uuid4()),
+                "questions": [question],  # Store as questions instead of keywords
+                "response": response,
+                "category": category
+            }
+            self.location_rules.append(new_rule)
+            self.save_location_rules()
+            return {"location": new_rule["id"]}
+        elif category == "visuals":
+            # Add visual rule directly to visual_rules list
+            new_rule = {
+                "id": str(uuid4()),
+                "questions": [question],  # Store as questions instead of keywords
+                "response": response,
+                "category": category
+            }
+            self.visual_rules.append(new_rule)
+            self.save_visual_rules()
+            return {"visual": new_rule["id"]}
+        else:
+            # Use the centralized add_rule function from rule_utils to add and save rules
+            # This will update the "all" files correctly without creating unnecessary category files
+            added_id = rule_utils.add_rule(user_type, category, question, response)
+
+            # Reload rules to update in-memory state without double-saving
+            if user_type == 'user' or user_type == 'both':
+                self.rules = self.get_rules()
+            if user_type == 'guest' or user_type == 'both':
+                self.guest_rules = self.get_guest_rules()
+            # Recompute embeddings after adding rules
+            self.recompute_embeddings()
+            return {"user": added_id} if user_type == "user" else {"guest": added_id}
+
+    def save_location_rules(self):
+        """
+        Save the current location rules to database/locations/locations.json.
+        """
+        import json
+        locations_path = os.path.join("database", "locations", "locations.json")
+        try:
+            # Convert location_rules to the format expected in locations.json
+            locations_data = []
+            for rule in self.location_rules:
+                # Extract image URL from response HTML if possible
+                import re
+                url_match = re.search(r"<img src='([^']+)'", rule.get("response", ""))
+                url = url_match.group(1) if url_match else ""
+                # Remove /static/ prefix if present
+                if url.startswith("/static/"):
+                    url = url[len("/static/"):]
+                # Extract description (text before <br>)
+                description = rule.get("response", "").split("<br>")[0]
+                # Extract URLs from HTML
+                img_matches = re.findall(r"<img src='([^']+)'", rule.get("response", ""))
+                urls = []
+                for img_url in img_matches:
+                    if img_url.startswith("/static/"):
+                        img_url = img_url[len("/static/"):]
+                    urls.append(img_url)
+                locations_data.append({
+                    "id": rule.get("id", ""),
+                    "questions": rule.get("questions", []),
+                    "url": url,
+                    "urls": urls,
+                    "description": description,
+                    "user_type": rule.get("user_type", "both")
+                })
+            with open(locations_path, "w", encoding="utf-8") as f:
+                logging.info("Saving location rules to %s", locations_path)
+                json.dump(locations_data, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            import logging
+            logging.error(f"Error saving location rules to {locations_path}: {e}")
+
+    def save_visual_rules(self):
+        """
+        Save the current visual rules to database/visuals/visuals.json.
+        """
+        import json
+        visuals_path = os.path.join("database", "visuals", "visuals.json")
+        try:
+            # Convert visual_rules to the format expected in visuals.json
+            visuals_data = []
+            for rule in self.visual_rules:
+                # Extract image URLs from response HTML
+                import re
+                img_matches = re.findall(r"<img src='([^']+)'", rule.get("response", ""))
+                urls = []
+                for img_url in img_matches:
+                    if img_url.startswith("/static/"):
+                        img_url = img_url[len("/static/"):]
+                    urls.append(img_url)
+                # Primary url
+                url = urls[0] if urls else ""
+                # Extract description (text before <br>)
+                description = rule.get("response", "").split("<br>")[0]
+                visuals_data.append({
+                    "id": rule.get("id", ""),
+                    "questions": rule.get("questions", []),
+                    "url": url,
+                    "urls": urls,
+                    "description": description
+                })
+            with open(visuals_path, "w", encoding="utf-8") as f:
+                logging.info("Saving visual rules to %s", visuals_path)
+                json.dump(visuals_data, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            import logging
+            logging.error(f"Error saving visual rules to {visuals_path}: {e}")
+
+    def delete_rule(self, rule_id, user_type=None):
+        import logging
+        logging.debug(f"Deleting rule with id: {rule_id}, user_type: {user_type}")
+        deleted = False
+
+        if user_type == 'guest':
+            # Check guest rules first
+            for i in reversed(range(len(self.guest_rules))):
+                rule = self.guest_rules[i]
+                logging.debug(f"Checking guest rule id: {rule.get('id')}")
+                if str(rule.get("id")) == str(rule_id):
+                    category = rule.get("category", "SOICT")
+                    del self.guest_rules[i]
+                    # Remove from JSON file using rule_utils
+                    from database.user_database import rule_utils
+                    deleted = rule_utils.delete_rule(rule_id, user_type='guest', category=category)
+                    self.guest_rules = self.get_guest_rules()
+                    logging.debug(f"Rule with id {rule_id} deleted from guest rules.")
+                    return deleted
+
+            # Then check user rules
+            for i, rule in enumerate(self.rules):
+                logging.debug(f"Checking user rule id: {rule.get('id')}")
+                if str(rule.get("id")) == str(rule_id):
+                    category = rule.get("category", "SOICT")
+                    # Remove from in-memory list
+                    del self.rules[i]
+                    # Remove from JSON file using rule_utils
+                    from database.user_database import rule_utils
+                    deleted = rule_utils.delete_rule(rule_id, user_type='user', category=category)
+                    # Reload rules
+                    self.rules = self.get_rules()
+                    # Recompute embeddings after deleting rules
+                    self.recompute_embeddings()
+                    logging.debug(f"Rule with id {rule_id} deleted from user rules.")
+                    return deleted
+        else:
+            # Check user rules first (default)
+            for i, rule in enumerate(self.rules):
+                logging.debug(f"Checking user rule id: {rule.get('id')}")
+                if str(rule.get("id")) == str(rule_id):
+                    category = rule.get("category", "SOICT")
+                    # Remove from in-memory list
+                    del self.rules[i]
+                    # Remove from JSON file using rule_utils
+                    from database.user_database import rule_utils
+                    deleted = rule_utils.delete_rule(rule_id, user_type='user', category=category)
+                    # Reload rules
+                    self.rules = self.get_rules()
+                    logging.debug(f"Rule with id {rule_id} deleted from user rules.")
+                    return deleted
+
+            # Then check guest rules
+            for i in reversed(range(len(self.guest_rules))):
+                rule = self.guest_rules[i]
+                logging.debug(f"Checking guest rule id: {rule.get('id')}")
+                if str(rule.get("id")) == str(rule_id):
+                    category = rule.get("category", "SOICT")
+                    del self.guest_rules[i]
+                    # Remove from JSON file using rule_utils
+                    from database.user_database import rule_utils
+                    deleted = rule_utils.delete_rule(rule_id, user_type='guest', category=category)
+                    self.guest_rules = self.get_guest_rules()
+                    # Recompute embeddings after deleting rules
+                    self.recompute_embeddings()
+                    logging.debug(f"Rule with id {rule_id} deleted from guest rules.")
+                    return deleted
+
+        if not deleted:
+            # Check location rules
+            for i, rule in enumerate(self.location_rules):
+                logging.debug(f"Checking location rule id: {rule.get('id')}")
+                if str(rule.get("id")) == str(rule_id):
+                    del self.location_rules[i]
+                    self.save_location_rules()
+                    self.location_rules = self.get_location_rules()
+                    logging.debug(f"Rule with id {rule_id} deleted from location rules.")
+                    deleted = True
+                    break
+
+        if not deleted:
+            # Check visual rules
+            for i, rule in enumerate(self.visual_rules):
+                logging.debug(f"Checking visual rule id: {rule.get('id')}")
+                if str(rule.get("id")) == str(rule_id):
+                    del self.visual_rules[i]
+                    self.save_visual_rules()
+                    self.visual_rules = self.get_visual_rules()
+                    logging.debug(f"Rule with id {rule_id} deleted from visual rules.")
+                    deleted = True
+                    break
+        return deleted
+
+    def edit_rule(self, rule_id, question, response, user_type='user'):
+        # Edit rule in user, guest, or location rules
+        edited = False
+
+        # Choose the appropriate rules list based on user_type
+        if user_type == 'user':
+            rules_list = self.rules
+        elif user_type == 'guest':
+            rules_list = self.guest_rules
+        else:
+            # Try user rules first, then guest rules
+            rules_list = self.rules
+
+        # Edit rules in the selected list
+        for rule in rules_list:
+            if str(rule.get("id")) == str(rule_id):
+                category = rule.get("category", "SOICT")
+                # Use rule_utils to edit the rule
+                from database.user_database import rule_utils
+                edited = rule_utils.edit_rule(rule_id, question, response, user_type=user_type, category=category)
+                # Update in-memory rule
+                rule["question"] = question
+                rule["response"] = response
+                # Recompute embeddings after editing rules
+                self.recompute_embeddings()
+                break
+
+        if not edited:
+            # Edit location rules (if not found in user/guest rules)
+            for rule in self.location_rules:
+                if str(rule.get("id")) == str(rule_id):
+                    rule["questions"] = [question]  # Store as questions instead of keywords
+                    rule["response"] = response
+                    self.save_location_rules()
+                    edited = True
+                    break
+
+        if not edited:
+            # Edit visual rules (if not found in user/guest rules)
+            for rule in self.visual_rules:
+                if str(rule.get("id")) == str(rule_id):
+                    rule["questions"] = [question]  # Store as questions instead of keywords
+                    rule["response"] = response
+                    self.save_visual_rules()
+                    edited = True
+                    break
+        return edited
+
+    def reload_faqs(self):
+        """
+        Reload FAQs from database/faqs.json into memory.
+        """
+        try:
+            with open('database/faqs.json', 'r', encoding='utf-8') as f:
+                self.faqs = json.load(f)
+        except Exception as e:
+            logging.error(f"Error reloading FAQs: {e}")
+            self.faqs = []
+
+    def reload_location_rules(self):
+        """
+        Reload location rules from database/locations/locations.json into memory.
+        """
+        self.location_rules = self.get_location_rules()
+
+    def reload_visual_rules(self):
+        """
+        Reload visual rules from database/visuals/visuals.json into memory.
+        """
+        self.visual_rules = self.get_visual_rules()
+
+    def create_category_files(self, category):
+        """
+        Create JSON files for a new category in both user and guest databases.
+        """
+        import json
+        import os
+
+        # Define paths
+        user_file = os.path.join("database", "user_database", f"{category}_rules.json")
+        guest_file = os.path.join("database", "guest_database", f"{category}_guest_rules.json")
+
+        # Create empty category files if they don't exist
+        for file_path in [user_file, guest_file]:
+            if not os.path.exists(file_path):
+                try:
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        json.dump([], f, indent=4)
+                except Exception as e:
+                    logging.error(f"Error creating category file {file_path}: {e}")
+
+        # Update CATEGORY_FILES in rule_utils if needed
+        try:
+            from database.user_database import rule_utils
+            if category not in rule_utils.CATEGORY_FILES:
+                rule_utils.CATEGORY_FILES[category] = {
+                    "user": user_file,
+                    "guest": guest_file
+                }
+        except Exception as e:
+            logging.error(f"Error updating CATEGORY_FILES: {e}")
+
+
+
+

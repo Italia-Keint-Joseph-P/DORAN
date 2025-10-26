@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-login-logs py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="futuristic-header">Login Logs</h2>
+      <p class="text-muted">View all login activities for users, guests, and admins</p>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="futuristic-card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                  <tr>
+                    <th scope="col">User Type</th>
+                    <th scope="col">Identifier</th>
+                    <th scope="col">Login Time</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for log in login_logs %}
+                  <tr>
+                    <td>
+                      <span class="badge
+                        {% if log.user_type == 'admin' %}bg-danger
+                        {% elif log.user_type == 'user' %}bg-primary
+                        {% else %}bg-secondary{% endif %}">
+                        {{ log.user_type.title() }}
+                      </span>
+                    </td>
+                    <td>
+                      <a href="{{ url_for('admin_user_chat_history', identifier=log.identifier, user_type=log.user_type) }}" style="color: inherit; text-decoration: none;">
+                        {{ log.identifier }}
+                      </a>
+                    </td>
+                    <td>{{ log.formatted_timestamp }}</td>
+                    <td>
+                      <button class="btn btn-danger btn-sm" data-id="{{ log.id }}" onclick="deleteLog(this)">
+                        <i class="fas fa-trash"></i> Delete
+                      </button>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  {% if not login_logs %}
+                  <tr>
+                    <td colspan="4" class="text-center text-muted">No login logs available</td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function deleteLog(button) {
+    const logId = button.getAttribute('data-id');
+    if (confirm('Are you sure you want to delete this login log?')) {
+        fetch(`/admin/login_logs/delete/${logId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert('Error deleting log: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the log.');
+        });
+    }
+}
+</script>
+
+{% endblock %}

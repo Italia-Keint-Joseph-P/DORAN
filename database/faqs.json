@@ -1,0 +1,352 @@
+[
+    {
+        "question": "What is DORAN?",
+        "answer": "DORAN stands for Digital Outreach for Resource Assistance and Navigation. I\u2019m here to help you find information, get assistance, and navigate your needs around campus."
+    },
+    {
+        "question": "What's is your purpose?",
+        "answer": "I'm Digital Outreach for Resource Assistance and Navigation (DORAN). I\u2019m here to help you find information, get assistance, and navigate your needs around campus. \ud83d\ude0a"
+    },
+    {
+        "question": "Where is WVSU - Pototan Campus located and how can one contact them?",
+        "answer": "The campus is situated in Barangay Cau-ayan, Pototan, Iloilo, Philippines, postal code 5008. You can reach them via telefax at (033)-592-8710 or by email at pototan@wvsu.edu.ph."
+    },
+    {
+        "question": "What is the historical evolution of WVSU-Pototan Campus?",
+        "answer": "It began in 1945 as post-war classes under Iloilo High School, evolving through various stages\u2014Pototan Regional High School (1946), Pototan High School (1947\u20131957), Pototan Vocational School (1957), Pototan College of Arts and Sciences (1983)\u2014then formally integrated into WVSU on August 22, 2000."
+    },
+    {
+        "question": "What academic programs are offered at WVSU-Pototan?",
+        "answer": "The campus offers a range of baccalaureate programs including:<br>\u2022 Elementary & Secondary Education (majors in English, Mathematics, Social Studies)<br>\u2022 Technical Vocational Teacher Education<br>\u2022 Industrial Technology (Automotive, Electrical, Drafting, Electronics & Communications, Food, Welding)<br>\u2022 Information Systems & Information Technology<br>\u2022 Hospitality Management (BSHM)"
+    },
+    {
+        "question": "What are the course that offered at WVSU-Pototan?",
+        "answer": "The campus offers courses for School of Education (SOED) are Bachelor of Elementary Education (BEEd),Bachelor of Secondary Education (BSEd) Major in English, Major in Mathematics, Major in Social Studies. And for School of Business and Management (SOBM) is Bachelor of Science in Hospitality Management (BSHM). School of Industrial Technology (SOIT) Major in Automotive Technology, Major in Electrical Technology, Major in Electronics Technology, Major in Drafting Technology, Major in Food Technology, Major in Welding Technology, Bachelor of Technical-Vocational Teacher Education (BTVTEd). for School of Information and Communications Technology (SOICT) is Bachelor of Science in Information Systems (BSIS) and Bachelor of Science in Information Technology (BSInfoTech)"
+
+
+    },
+    {
+        "question": "Does WVSU-Pototan offer TESDA-accredited technical-vocational courses?",
+        "answer": "Yes. It offers TESDA-approved TVET courses such as Bread and Pastry Production NC II, Cookery NC II, Housekeeping NC II, and Food and Beverage Services NC II\u2014with durations ranging approximately from 141 to 552 hours."
+    },
+    {
+        "question": "Who currently oversees the administration at WVSU-Pototan Campus?",
+        "answer": "The WVSU Pototan Campus Administrator is Dr. Raymund B. Gemora, who represents the campus in official collaborations and events."
+    },
+    {
+        "question": "What innovation or research collaborations has the campus engaged in recently?",
+        "answer": "In July 2024, the campus partnered with the Pototan Multi-Purpose Cooperative via a Technical Licensing Agreement to commercialize a souring agent derived from batuan and taro powder\u2014highlighting its active role in research and community development."
+    },
+    {
+        "question": "Has WVSU-Pototan organized international or language programs?",
+        "answer": "Yes. On March 21, 2025, the campus hosted a French Language & Culture Crash Course\u2014led by a visiting instructor from Universit\u00e9 Toulouse II\u2014aimed at hospitality and management students to broaden global cultural competence."
+    },
+    {
+        "question": "What capacity-building initiatives has WVSU-Pototan conducted for faculty and staff?",
+        "answer": "On November 16, 2024, the campus hosted a training titled 'Caveats and Cautions of Data Sets' for Research, Innovation, and Extension personnel, focusing on designing CNA tools and report writing."
+    },
+    {
+        "question": "Is WVSU-Pototan pursuing accreditation for its programs and library?",
+        "answer": "Yes. The campus is pursuing Level II accreditation with AACCUP. Its library\u2019s vision is to serve as a globally responsive knowledge hub supporting instruction, research, and extension services."
+    },
+    {
+        "question": "How have students and faculty utilized the WVSU-Pototan library?",
+        "answer": "A study revealed that both faculty and students highly value the library\u2014favoring reserve books and general reference materials, and often seeking assistance from librarians or staff to fulfill their research and assignment needs."
+    },
+    {
+        "question": "What are the opening hours of West Visayas State University Pototan Campus (WVSU-PC)?",
+        "answer": "Our office hours are from 6:00 AM to 5:00 PM, Monday to Friday."
+    },
+    {
+        "question": "What are the enrollment requirements for freshmen or first year or 1st year?",
+        "answer": "Original Grade 12 card,Original Good Moral Certificate, Photocopy of PSA Birth Certificate,2x2 ID picture, WVSU Admission Result, Medical and Dental Certificate, Colored folder as required by the school."
+    },
+    {
+        "question": "What are the enrollment requirements for transferees?",
+        "answer": "Transcript of Records (TOR) and Transfer Credentials."
+    },
+    {
+        "question": "What are the enrollment requirements for returning students?",
+        "answer": "Leave of Absence (LOA), Re-entry Form signed by the Director for Academic Affairs (DAA) with a maximum of 2 years leave, and complete grades."
+    },
+    {
+        "question": "How can I students shift course?",
+        "answer": "Subject to approval by the concerned school directors (SOICT, SOBM, SOED, SOIT)."
+    },
+    {
+        "question": "Is late enrollment or a grace period allowed?",
+        "answer": "No, the school does not allow late enrollment beyond the scheduled period."
+    },
+    {
+        "question": "What happens if a student misses the enrollment deadline?",
+        "answer": "You cannot enroll. Please visit the registrar\u2019s office for guidance."
+    },
+    {
+        "question": "Is pre-registration mandatory?",
+        "answer": "Yes."
+    },
+    {
+        "question": "Can a student enroll if they have pending grades?",
+        "answer": "Yes, for minor subjects, pending grades are valid for 1 year. For major subjects, grades are required. Pending grades for major subjects are valid for only 1 semester."
+    },
+    {
+        "question": "What are the common reasons enrollment gets rejected?",
+        "answer": "Enrollment is generally not rejected unless you miss the enrollment schedule."
+    },
+    {
+        "question": "What is the process for subject overload requests?",
+        "answer": "Special arrangements may be made, but only for graduating students."
+    },
+    {
+        "question": "What is the maximum allowable units per semester?",
+        "answer": "15 units. However, this may vary depending on the regular load of each course."
+    },
+    {
+        "question": "How are students informed about their enrollment status?",
+        "answer": "Through orientations, social media posts, and posters on campus."
+    },
+    {
+        "question": "How does cross-enrollment work in WVSU-PC?",
+        "answer": "Cross-enrollment applies to NSTP courses and requires a Memorandum of Agreement (MOA)."
+    },
+    {
+        "question": "How can students request their Transcript of Records (TOR), Diploma, or Certifications?",
+        "answer": "Comply with the requirements: complete grades, student clearance, supplemental clearance, thesis clearance, barangay certification as a first-time job seeker, surrender of school ID, upload of graduation picture in the IUIS, and certification from the School of Education stating the date of board exam (for board exam purposes)."
+    },
+    {
+        "question": "How can a I student request a certificate of grades?",
+        "answer": "Submit your request to the registrar\u2019s office."
+    },
+    {
+        "question": "How long does it take to process grade-related requests?",
+        "answer": "Processing is done as soon as possible, provided all requirements are complete."
+    },
+    {
+        "question": "Are grades final once posted?",
+        "answer": "Yes, grades are final once posted and cannot be changed."
+    },
+    {
+        "question": "What is the process for securing a Certificate of Good Moral Character?",
+        "answer": "Request the certificate from the Guidance Office."
+    },
+    {
+        "question": "What is the fee for requesting a Transcript of Records (TOR) or other records?",
+        "answer": "\u20b150 for a Transcript of Records (TOR)."
+    },
+    {
+        "question": "Can academic records be released to a representative?",
+        "answer": "Yes, through an authorization letter with a valid ID of both the representative and the student."
+    },
+    {
+        "question": "Are there express or rush processing options?",
+        "answer": "No, documents are released on time as scheduled."
+    },
+    {
+        "question": "Can students request their academic records before clearance?",
+        "answer": "No, clearance must be completed before requesting academic records."
+    },
+    {
+        "question": "How can students verify if their records have been updated?",
+        "answer": "You can check your IUIS account."
+    },
+    {
+        "question": "What is the process for name correction in records?",
+        "answer": "Present your updated PSA with the necessary amendments."
+    },
+    {
+        "question": "Can a student graduate with incomplete grades?",
+        "answer": "No, all grades must be completed before graduation."
+    },
+    {
+        "question": "Is there a separate process for summer graduates?",
+        "answer": "Yes, summer graduates follow a different process."
+    },
+    {
+        "question": "What is the university's policy on academic probation?",
+        "answer": "Policies may vary depending on each school director."
+    },
+    {
+        "question": "Can I students retake failed subjects during summer?",
+        "answer": "No, the school does not allow block sectioning during summer classes."
+    },
+    {
+        "question": "What are the policies regarding dropping subjects?",
+        "answer": "Dropped subjects must be retaken."
+    },
+    {
+        "question": "What is the retention policy of WVSU-PC?",
+        "answer": "Retention policies are handled by each school director."
+    },
+    {
+        "question": "Can students inquire through social media or Messenger?",
+        "answer": "You may inquire only through the official link provided by the registrar."
+    },
+    {
+        "question": "What are the registrar\u2019s office hours?",
+        "answer": "The registrar\u2019s office is open from 8:00 AM to 5:00 PM, Monday to Friday (no noon break)."
+    },
+    {
+        "question": "Is there a dedicated email for student inquiries?",
+        "answer": "Yes, you may contact the registrar at (insert official email link)."
+    },
+    {
+        "question": "Are there scheduled times for requesting documents?",
+        "answer": "Requests may be made anytime on weekdays."
+    },
+    {
+        "question": "How does the registrar make any announcement?",
+        "answer": "Announcements are posted on official channels such as social media and bulletin boards."
+    },
+    {
+        "question": "Is there a feedback form for registrar services?",
+        "answer": "Yes, there is a feedback form available."
+    },
+    {
+        "question": "What is the policy for lost documents?",
+        "answer": "You must secure an affidavit of loss."
+    },
+    {
+        "question": "How does the registrar handle confidential student data?",
+        "answer": "By strictly following the Data Privacy Act."
+    },
+    {
+        "question": "Are there services for alumni document requests?",
+        "answer": "Yes, requests may be coordinated through the alumni office."
+    },
+    {
+        "question": "Can students request official forms online?",
+        "answer": "Yes, sometimes soft copies of forms are provided through official links."
+    },
+    {
+        "question": "Are original copies or photocopies required for requests?",
+        "answer": "It depends on the registrar\u2019s specific instructions."
+    },
+    {
+        "question": "What is the enrollment requirements?",
+        "answer": "Original Grade 12 card, Original Good Moral Certificate, Photocopy of PSA Birth Certificate, 2x2 ID picture,WVSU Admission Result, Medical and Dental Certificate,Colored folder as required by the school"
+    },
+    {
+        "question": "What is the Mission and Vision of School of business and management,SOBM,Bachelor of science in hospitality management BSHM",
+        "answer": "Provide education and training in the hospitality,tourism,and resturant business. Broaden the acess of deserving and qualified/youths to the program in response to the national development needs. Enhance the dissemination of knowledge, skills, and technology in the hotel and restaurant occupation. Establish linkages with hotels, restaurants, and other hospitality or allied institutions in the local, regional, national and international levels. Develop entrepreneurial competencies that will lead to self-employment. and Equip students with skills for administrative and supervisory manpower of the industries in hotels/restaurants and other allied institutions."
+    },
+    {
+        "question": "who are you",
+        "answer": "  Hello I'm DORAN or Digital Outreach for Resource and Assistance and Navigation."
+    },
+    {
+        "question": "Hi",
+        "answer": "Hello I'm Doran, how can I help you today?"
+    },
+    {
+        "question": "Hello",
+        "answer": "Hello I'm Doran, how can I help you today?"
+    },
+    {
+        "question": "what is the meaning of DORAN?",
+        "answer": "DORAN stands for Digital Outreach for Resource and Assistance and Navigation."
+    },
+    {
+        "question": "Thank you",
+        "answer": "You're welcome, If you need more information I'm happy to help."
+    },
+    {
+        "question": "How can I students request or get the  Transcript of Records TOR, Diploma, or Certifications?",
+        "answer": "Comply with the requirements: complete grades, student clearance, supplemental clearance, thesis clearance, barangay certification as a first-time job seeker, surrender of school ID, upload of graduation picture in the IUIS, and certification from the School of Education stating the date of board exam (for board exam purposes)."
+    },
+    {
+        "question": "What is the vision of WVSU?",
+        "answer": "West Visayas State University envisions itself as a research university in the Visayas recognized for its distinction in instruction, research, extension, and production."
+    },
+    {
+        "question": "What is the mission of WVSU?",
+        "answer": "WVSU is committed to develop life-long learners empowered to generate knowledge and technology, and transform communities as agents of change for sustainable development."
+    },
+    {
+        "question": "What are the values of WVSU?",
+        "answer": "The university upholds the values of Excellence, Service, and Harmony (ESH)."
+    },
+    {
+        "question": "What student organizations are active at WVSU-Pototan Campus?",
+        "answer": "WVSU-PC hosts various organizations including the Supreme Student Council (SSC), program-based organizations (SOICT, SOBM, SOED, SOIT clubs), academic societies, sports clubs, and cultural groups."
+    },
+    {
+        "question": "Does WVSU-Pototan Campus participate in university-wide events?",
+        "answer": "Yes. Students and faculty actively join intramurals, cultural festivals, academic competitions, and research congresses hosted by WVSU main campus and partner institutions."
+    },
+    {
+        "question": "What facilities are available at WVSU-Pototan Campus?",
+        "answer": "The campus has classrooms, laboratories (computer, industrial technology, hospitality), a library, gymnasium, student center, and spaces for research and extension services."
+    },
+    {
+        "question": "What is the student population of WVSU-Pototan Campus?",
+        "answer": "As of 2024\u20132025, WVSU-PC serves around 3,000 students across its four schools: SOICT, SOBM, SOED, and SOIT."
+    },
+    {
+        "question": "Does WVSU-PC have a publication or student media?",
+        "answer": "Yes. The campus supports a student publication that provides news, opinion, and creative works from the student body."
+    },
+    {
+        "question": "What extension services does WVSU-PC provide?",
+        "answer": "The campus conducts community outreach programs including livelihood training, agricultural technology support, youth development workshops, and local business assistance."
+    },
+    {
+        "question": "What research activities are conducted at WVSU-Pototan?",
+        "answer": "Faculty and students engage in applied research on education, information systems, industrial technology innovations, food science, and local community development."
+    },
+    {
+        "question": "Does WVSU-PC have international linkages?",
+        "answer": "Yes. The campus, through WVSU, maintains partnerships with ASEAN universities and participates in academic exchange and collaborative research."
+    },
+    {
+        "question": "What is the Supreme Student Council (SSC) at WVSU-PC?",
+        "answer": "The SSC is the highest student government body at WVSU-PC. It represents student concerns, organizes activities, and serves as a bridge between the administration and the student body."
+    },
+    {
+        "question": "What are the four schools at WVSU-Pototan Campus?",
+        "answer": "The campus is composed of: <br>\u2022 School of Information and Communication Technology (SOICT)<br>\u2022 School of Business and Management (SOBM)<br>\u2022 School of Education (SOED)<br>\u2022 School of Industrial Technology (SOIT)."
+    },
+    {
+        "question": "Is WVSU-Pototan involved in accreditation?",
+        "answer": "Yes. The campus actively participates in AACCUP accreditation visits to improve quality assurance in its academic programs."
+    },
+    {
+        "question": "When was WVSU founded?",
+        "answer": "WVSU traces its roots to 1902 as Iloilo Normal School, later evolving into West Visayas State College in 1924, and eventually granted university status in 1986."
+    },
+    {
+        "question": "Who are you?",
+        "answer": "Hello, I am DORAN. I\u2019m here to help you find information, get assistance, and navigate your needs around campus. \ud83d\ude0a"
+    },
+    {
+        "question": "What programs in ICT are offered at WVSU-Pototan?",
+        "answer": "At WVSU-Pototan, the following ICT-related bachelor\u2019s programs are listed: Bachelor of Science in Information Systems; Bachelor of Science in Information Technology."
+    },
+    {
+        "question": "What is Bachelor of Science in Information Systems (BSIS)",
+        "answer": "The BS Information Systems programs includes the study of application and effect of information technology to organizations. Graduates of the program should be able to implement an information system, which considers complex technological and organizational factors affecting it. These include components, tools, techniques, strategies, methodologies,"
+    },
+    {
+        "question": "What is BSIS",
+        "answer": "The BS Information Systems programs includes the study of application and effect of information technology to organizations. Graduates of the program should be able to implement an information system, which considers complex technological and organizational factors affecting it. These include components, tools, techniques, strategies, methodologies,"
+    },
+    {
+        "question": "what is Bachelor of Science in Information Technology (BS InfoTech)?",
+        "answer": "he BS Information Technology program includes the study of the utilization of both hardware and software technologies involving planning, installing, customizing, operating, managing and administering, and maintaining information technology infrastructure that provides computing solutions to address the needs of an organization."
+    },
+    {
+        "question": "what is BS InfoTech?",
+        "answer": "he BS Information Technology program includes the study of the utilization of both hardware and software technologies involving planning, installing, customizing, operating, managing and administering, and maintaining information technology infrastructure that provides computing solutions to address the needs of an organization."
+    },
+    {
+        "question": "What courses does SOICT offer at WVSU Pototan Campus?",
+        "answer": "Hi there! The School of Information and Communications Technology (SOICT) at West Visayas State University \u2013 Pototan Campus currently offers two degree programs:\n\n Bachelor of Science in Information Technology (BSIT)\n\n Bachelor of Science in Information Systems (BSIS)\n\nBoth programs aim to equip students with technical and analytical skills in computing, systems development, and digital innovation."
+    },
+    {
+        "question": "When is the enrollment for WVSU Pototan Campus?",
+        "answer": "Enrollment schedules aren\u2019t announced yet. \nPlease wait for the official announcement on the WVSU Pototan Campus Facebook page or other official posts from the Registrar\u2019s Office."
+    },
+    {
+        "question": "When is the entrance exam for WVSU Pototan Campus?",
+        "answer": "The schedule for the WVSU Pototan Campus entrance exam hasn\u2019t been announced yet. \ud83d\udcdd\nPlease wait for updates or official announcements on the WVSU Pototan Campus Facebook page or through the Registrar\u2019s Office."
+    }
+]

@@ -1,0 +1,154 @@
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+=======
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Additional futuristic animations and effects */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 5px var(--primary-color);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--primary-color);
+  }
+  100% {
+    box-shadow: 0 0 5px var(--primary-color);
+  }
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 5px var(--primary-color),
+      0 0 10px var(--primary-color),
+      0 0 20px var(--primary-color),
+      0 0 40px var(--primary-color);
+  }
+  50% {
+    text-shadow:
+      0 0 10px var(--primary-dark),
+      0 0 20px var(--primary-dark),
+      0 0 30px var(--primary-dark),
+      0 0 50px var(--primary-dark);
+  }
+}
+
+.futuristic-header {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 2rem;
+  color: var(--primary-color);
+  animation: neonPulse 3s infinite alternate;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+
+.futuristic-button {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  box-shadow: 0 0 10px var(--primary-color);
+  transition: all 0.4s ease;
+}
+
+.futuristic-button:hover {
+  background-color: var(--primary-color);
+  color: var(--primary-lighter);
+  box-shadow: 0 0 25px 5px var(--primary-color);
+  transform: scale(1.1);
+  animation: pulseGlow 2s infinite alternate;
+}
+
+.futuristic-card {
+  border-radius: 20px;
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 0 20px var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-lighter), var(--primary-light));
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.futuristic-card:hover {
+  box-shadow: 0 0 40px 10px var(--primary-color);
+  transform: translateY(-10px) scale(1.03);
+}
+
+/* Positioning improvements */
+.admin-dashboard {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-header-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.admin-header-buttons .btn {
+  flex: 1;
+}

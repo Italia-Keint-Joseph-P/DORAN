@@ -1,0 +1,95 @@
+l{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-dashboard">
+  <div class="row">
+    <div class="col-md-12 mb-4 d-flex justify-content-between align-items-center">
+      <h2 class="futuristic-header">Admin Dashboard - Emails</h2>
+      <button class="futuristic-button" onclick="location.href='/admin'" title="Back to Dashboard">
+        <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="futuristic-card">
+            <div class="card-header">
+                <h3 class="card-title mb-0 futuristic-header">Email Directory Management</h3>
+            </div>
+            <div class="card-body" style="color: #0b3d91;">
+                <form id="add-email-form" class="mb-3">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="school" class="col-form-label">Position</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="text" id="school" class="form-control" required>
+                        </div>
+                        <div class="col-auto">
+                            <label for="email" class="col-form-label">Email</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="email" id="email" class="form-control" autocomplete="email" required>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="futuristic-button">
+                                <i class="fas fa-plus-circle me-1"></i> Add Email
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Search -->
+                <div class="mb-3">
+                    <input type="text" id="email-search" class="form-control" placeholder="Search emails by position or email..." style="max-width: 400px;">
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="email-table">
+                        <thead>
+                            <tr>
+                            <th>Position</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if emails %}
+                                {% for entry in emails %}
+                                <tr data-id="{{ entry.id }}" data-index="{{ loop.index0 }}">
+                                    <td contenteditable="false" class="editable-school">{{ entry.school }}</td>
+                                    <td contenteditable="false" class="editable-email">{{ entry.email }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary edit-email" data-id="{{ entry.id }}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-success save-email" data-id="{{ entry.id }}" style="display: none;">
+                                            <i class="fas fa-save"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-secondary cancel-edit" data-id="{{ entry.id }}" style="display: none;">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-email" data-id="{{ entry.id }}">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No email entries yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin_emails.js') }}"></script>
+{% endblock %}

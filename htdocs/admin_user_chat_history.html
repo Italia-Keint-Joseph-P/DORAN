@@ -1,0 +1,83 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-user-chat-history py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="futuristic-header">Chat History</h2>
+      <p class="text-muted">Viewing chat history for {{ user_type.title() }}: {{ identifier }}</p>
+      <a href="{{ url_for('admin_login_logs') }}" class="btn btn-secondary">Back to Login Logs</a>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        {% if chat_sessions %}
+          {% for session_id, messages in chat_sessions %}
+          <div class="futuristic-card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Session ID: {{ session_id }}</h5>
+              <div class="chat-messages">
+                {% for message in messages %}
+                <div class="message-item mb-3">
+                  <div class="d-flex">
+                    <div class="message-avatar me-3">
+                      {% if message.sender_type == 'user' %}
+                        <span class="badge bg-primary">User</span>
+                      {% else %}
+                        <span class="badge bg-success">Bot</span>
+                      {% endif %}
+                    </div>
+                    <div class="message-content flex-grow-1">
+                      <div class="message-text">{{ message.message|safe }}</div>
+                      <small class="text-muted">{{ message.timestamp.strftime('%B %d, %Y %H:%M:%S') }}</small>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="futuristic-card">
+            <div class="card-body text-center">
+              <p class="text-muted">No chat history available for this user.</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.chat-messages {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.message-item {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.message-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.message-avatar {
+  min-width: 60px;
+}
+
+.message-text {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+</style>
+
+{% endblock %}

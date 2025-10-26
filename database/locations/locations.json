@@ -1,0 +1,964 @@
+[
+    {
+        "id": "779897e5-4761-4799-befb-c743f9528c10",
+        "description": "E3 room is located at Information and Communication Technology (ICT) Building.",
+        "urls": [
+            "uploads/locations/05238c59870041e9bcc9b01d40c1ef7c_E3_Lab_Room.jpg",
+            "uploads/locations/3868b4cf52db475bb9c3f9ce6b695ea5_E3_Lec_Room.jpg",
+            "uploads/locations/0cd59013b47f4437bd3208b4bbf62c3d_E3.jpg"
+        ],
+        "url": "uploads/locations/05238c59870041e9bcc9b01d40c1ef7c_E3_Lab_Room.jpg",
+        "user_type": "both",
+        "questions": [
+            [
+                "Where is the E3 room?",
+                "How do I get to E3 room?",
+                "What is the location of E3 room?",
+                "Can you show me E3 room?",
+                "Where can I find E3 room?"
+            ]
+        ]
+    },
+    {
+        "id": "9d8fd5e2-9e6d-4f4a-89b7-cb38b30e6072",
+        "description": "J10 room is located at old site building and here are some images of its way",
+        "urls": [
+            "uploads/locations/745d0233a11e440ba159bba8b379b524_IMG_0002.JPG",
+            "uploads/locations/4af9195ec852401c814831c54295a881_IMG_0004.JPG",
+            "uploads/locations/eca129329bf148ef8f83514e63ae5f58_IMG_0025.JPG",
+            "uploads/locations/07f078fafeed4c80a269941d52c648a5_IMG_0024.JPG"
+        ],
+        "url": "uploads/locations/745d0233a11e440ba159bba8b379b524_IMG_0002.JPG",
+        "user_type": "both",
+        "questions": [
+            "Where is the J10 room?",
+            "How do I get to J10 room?",
+            "What is the location of J10 room?",
+            "Can you show me J10 room?",
+            "Where can I find J10 room?"
+        ]
+    },
+    {
+        "id": "5c969771-1a4d-4f2b-bd28-89c7c9326e44",
+        "description": "J11 room is located at old site building and here are some images of its way",
+        "urls": [
+            "uploads/locations/3c848bc7ca6e43f5858e091e21f8f96d_IMG_0005.JPG",
+            "uploads/locations/90475c7023cd4f0caa43d64de50194be_IMG_0007.JPG",
+            "uploads/locations/f9e4e5f872b846af8c1e02a53f91887a_IMG_0016.JPG",
+            "uploads/locations/7efc9afa670547e083301e7e6a3978d9_IMG_0027.JPG"
+        ],
+        "url": "uploads/locations/3c848bc7ca6e43f5858e091e21f8f96d_IMG_0005.JPG",
+        "user_type": "both",
+        "questions": [
+            "Where is the J11 room?",
+            "How do I get to J11 room?",
+            "What is the location of J11 room?",
+            "Can you show me J11 room?",
+            "Where can I find J11 room?"
+        ]
+    },
+    {
+        "id": "ef26449c-2204-4623-8ada-333936836982",
+        "description": "J12 room is located at old site building and here are some images of its way",
+        "urls": [
+            "uploads/locations/93b2d8c322b1487a840c1c9113c59aca_IMG_0008.JPG",
+            "uploads/locations/2106090c8b4741738593d0e51682aa45_IMG_0009.JPG",
+            "uploads/locations/76f4168d2c3e459f892e3be0bee65520_IMG_0017.JPG"
+        ],
+        "url": "uploads/locations/93b2d8c322b1487a840c1c9113c59aca_IMG_0008.JPG",
+        "user_type": "both",
+        "questions": [
+            "Where is the J12 room?",
+            "How do I get to J12 room?",
+            "What is the location of J12 room?",
+            "Can you show me J12 room?",
+            "Where can I find J12 room?"
+        ]
+    },
+    {
+        "id": "7e2a36a2-ed9a-491a-a7b9-513e94229817",
+        "description": "J13 room is located at old site building and here are some images of its way",
+        "urls": [
+            "uploads/locations/c6f093682c174036b91557a29062ce2f_IMG_0014.JPG",
+            "uploads/locations/c679ef5a43e343bda6ba6dc7b571ea51_IMG_0015.JPG",
+            "uploads/locations/628d9fac622945e691a30f6c70ec5498_IMG_0017.JPG"
+        ],
+        "url": "uploads/locations/c6f093682c174036b91557a29062ce2f_IMG_0014.JPG",
+        "user_type": "both",
+        "questions": [
+            "Where is the J13 room?",
+            "How do I get to J13 room?",
+            "What is the location of J13 room?",
+            "Can you show me J13 room?",
+            "Where can I find J13 room?"
+        ]
+    },
+    {
+        "id": "2ad1372f-cc17-4eca-bf60-a44f8a8376d6",
+        "description": "J9 room is located at old site building and here are some images of its way",
+        "urls": [
+            "uploads/locations/9c9335516d4143db81d1063cb9e6a20f_IMG_0022.JPG",
+            "uploads/locations/d83e9a36d5564a2694fa0db572a13617_IMG_0024.JPG",
+            "uploads/locations/52f4826f3d89417b896c1ec306235d48_IMG_0025.JPG"
+        ],
+        "url": "uploads/locations/9c9335516d4143db81d1063cb9e6a20f_IMG_0022.JPG",
+        "user_type": "both",
+        "questions": [
+            "Where is the J9 room?",
+            "How do I get to J9 room?",
+            "What is the location of J9 room?",
+            "Can you show me J9 room?",
+            "Where can I find J9 room?"
+        ]
+    },
+    {
+        "id": "428dd145-846d-4f94-a10d-6a2f4fee9ba0",
+        "description": "ICT council office is located at old site building and here are some images of its way",
+        "urls": [
+            "uploads/locations/1948e1a9d00e4ebf86e0412680cd87f2_IMG_0011.JPG",
+            "uploads/locations/4dc4d7465d8347be97bcd29c2574f254_IMG_0012.JPG",
+            "uploads/locations/7bf25ca7cd4444ba8fc37d9cfaf9d7a1_IMG_0017.JPG"
+        ],
+        "url": "uploads/locations/1948e1a9d00e4ebf86e0412680cd87f2_IMG_0011.JPG",
+        "user_type": "both",
+        "questions": [
+            "Where is the ICT council office?",
+            "How do I find ICT council office?",
+            "What is the location of ICT council office?",
+            "Where can I locate ICT council office?"
+        ]
+    },
+    {
+        "id": "1ad2db16-1f64-4731-9529-3c8fb25450cb",
+        "description": "E4 room is located at Information and Communication Technology (ICT) Building.",
+        "urls": [
+            "uploads/locations/a1e6fb906baf4683bb0904dad887c219_e4.....jpeg",
+            "uploads/locations/80e94ad9989c4fbb982907309e659459_e4.jpeg",
+            "uploads/locations/0f3ec0b956154bb7991961ff73fe9a7b_e4......jpeg",
+            "uploads/locations/a410f44cb8244a27865d2f5101e35caa_e4...jpeg"
+        ],
+        "url": "uploads/locations/a1e6fb906baf4683bb0904dad887c219_e4.....jpeg",
+        "user_type": "both",
+        "questions": [
+            "Where is the E4 room?",
+            "How do I get to E4 room?",
+            "What is the location of E4 room?",
+            "Can you show me E4 room?",
+            "Where can I find E4 room?"
+        ]
+    },
+    {
+        "id": "86b908ba-9ee8-40b3-a531-c2cf27f2877d",
+        "description": "J17 room is located at old site building and here are some images of its way",
+        "urls": [
+            "uploads/locations/61c6d63799ed4cf8bb27fd8f8b20eb4d_ict_lab.jpg",
+            "uploads/locations/f0e481e1037a4b8c97d9a9656e212c0f_IMG_0018.JPG",
+            "uploads/locations/d85dc904f2564f8c8941370567deb2f7_Stair_to_J18-J17.jpg"
+        ],
+        "url": "uploads/locations/61c6d63799ed4cf8bb27fd8f8b20eb4d_ict_lab.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the J17 room?",
+            "How do I get to J17 room?",
+            "What is the location of J17 room?",
+            "Can you show me J17 room?",
+            "Where can I find J17 room?"
+        ]
+    },
+    {
+        "id": "0f3abf00-c750-4a7f-9c9c-01e0bc56be56",
+        "description": "J18 room is located at old site building and here are some images of its way",
+        "urls": [
+            "uploads/locations/c9876f203cf64673b8d67acb4187b1bf_ictlab.jpg",
+            "uploads/locations/d3a159a23dd646ab986de09f87136958_IMG_0018.JPG",
+            "uploads/locations/325d297918ca4ab29d4eb5f121072432_Stair_to_J18-J17.jpg"
+        ],
+        "url": "uploads/locations/c9876f203cf64673b8d67acb4187b1bf_ictlab.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the J18 room?",
+            "How do I get to J18 room?",
+            "What is the location of J18 room?",
+            "Can you show me J18 room?",
+            "Where can I find J18 room?"
+        ]
+    },
+    {
+        "id": "497272f8-815a-4d09-8c72-556cc4243d6d",
+        "description": "SOICT CLAC is located at Information and Communication Technology (ICT) Building.",
+        "urls": [
+            "uploads/locations/30ed78665b0946189ec07cd6f939a7ff_CLAC.jpeg"
+        ],
+        "url": "uploads/locations/30ed78665b0946189ec07cd6f939a7ff_CLAC.jpeg",
+        "user_type": "both",
+        "questions": [
+            "Where is the SOICT CLAC building?",
+            "How do I get to SOICT CLAC building?",
+            "What is the location of SOICT CLAC building?"
+        ]
+    },
+    {
+        "id": "a9f0f5fd-0393-4227-8c8a-b983b7599751",
+        "description": "E7 room is also known a SOICT directors office located at Information and Communication Technology (ICT) Building.",
+        "urls": [
+            "uploads/locations/27eee671de1645b29c9b7761c25bd7d0_e7.jpeg",
+            "uploads/locations/bf99be50f9054775b0594b597db36951_ict_office_-_Copy.jpeg",
+            "uploads/locations/57c9397e1b1b49a09dec3f4f381e8f78_ict_office_2.jpeg"
+        ],
+        "url": "uploads/locations/27eee671de1645b29c9b7761c25bd7d0_e7.jpeg",
+        "user_type": "both",
+        "questions": [
+            [
+                "Where is room E7?",
+                "Where is ICT director office?",
+                "Where is SOICT Director office?"
+            ]
+        ]
+    },
+    {
+        "id": "18256e3e-9f8d-438f-8b48-0ec44654cb12",
+        "description": "E6 room is located at Information and Communication Technology (ICT) 1st floor Building.",
+        "urls": [
+            "uploads/locations/0ec5e149d83e4dea8b6ebb430c7b2cc7_e6.jpeg",
+            "uploads/locations/f0f4085962a64a03a0fc56e94ca77854_ict_office_-_Copy.jpeg",
+            "uploads/locations/4c1f9c6c2822478896ed610424914154_ict_office_2.jpeg"
+        ],
+        "url": "uploads/locations/0ec5e149d83e4dea8b6ebb430c7b2cc7_e6.jpeg",
+        "user_type": "both",
+        "questions": [
+            "Where is the E6 room?",
+            "How do I get to E6 room?",
+            "What is the location of E6 room?",
+            "Can you show me E6 room?",
+            "Where can I find E6 room?"
+        ]
+    },
+    {
+        "id": "2dbd2bfb-caa3-4fd9-965d-e18335a90e5c",
+        "description": "E5 room is located at Information and Communication Technology (ICT) Building.",
+        "urls": [
+            "uploads/locations/1749c187dbcb40dfbf84f7774b7adac3_e5.jpeg"
+        ],
+        "url": "uploads/locations/1749c187dbcb40dfbf84f7774b7adac3_e5.jpeg",
+        "user_type": "both",
+        "questions": [
+            "Where is the E5 room?",
+            "How do I get to E5 room?",
+            "What is the location of E5 room?",
+            "Can you show me E5 room?",
+            "Where can I find E5 room?"
+        ]
+    },
+    {
+        "id": "758a191b-b19d-4f5f-849f-cfd791529426",
+        "description": "E8 room is also ICT faculty office located at Information and Communication Technology (ICT) Building.",
+        "urls": [
+            "uploads/locations/1a8e66632e03466f8133f8c3b57ffa66_e8.jpeg"
+        ],
+        "url": "uploads/locations/1a8e66632e03466f8133f8c3b57ffa66_e8.jpeg",
+        "user_type": "both",
+        "questions": [
+            "Where is the E8 room?",
+            "How do I get to E8 room?",
+            "What is the location of E8 room?",
+            "Can you show me E8 room?",
+            "Where can I find E8 room?"
+        ]
+    },
+    {
+        "id": "1fb694f6-85c2-48c7-a759-09e39a727483",
+        "description": "E9 room is also ICT faculty office located at Information and Communication Technology (ICT) Building.",
+        "urls": [
+            "uploads/locations/ba0195c695a8423cadbd3e19cb93a8ea_e9.jpeg"
+        ],
+        "url": "uploads/locations/ba0195c695a8423cadbd3e19cb93a8ea_e9.jpeg",
+        "user_type": "both",
+        "questions": [
+            "Where is the E9 room?",
+            "How do I get to E9 room?",
+            "What is the location of E9 room?",
+            "Can you show me E9 room?",
+            "Where can I find E9 room?"
+        ]
+    },
+    {
+        "id": "7de60a94-1c3b-46c6-9702-f140fa660e55",
+        "description": "Education building is located at entrance of campus",
+        "urls": [
+            "uploads/locations/f3db389a2fe44d6c87945ad4b44b266e_IMG_20251010_133331_161.jpg",
+            "uploads/locations/c4ca22e18a9e48cf93c3617c69911ffc_IMG_20251010_132532_583.jpg"
+        ],
+        "url": "uploads/locations/f3db389a2fe44d6c87945ad4b44b266e_IMG_20251010_133331_161.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the Education building?",
+            "How do I get to Education building?",
+            "What is the location of Education building?"
+        ]
+    },
+    {
+        "id": "4fb4221a-2c72-4773-adaf-619060b5dbd8",
+        "description": "Directors office of education is located at education building",
+        "urls": [
+            "uploads/locations/440f411cd20644558471584d9104f3c1_IMG_20251010_133352_613.jpg",
+            "uploads/locations/6473fc2d849248fbbc65d7c0c5a0f768_IMG_20251010_133406_405.jpg",
+            "uploads/locations/b6edcdeb064342c8a1587db3857a9aa3_IMG_20251010_133331_161.jpg"
+        ],
+        "url": "uploads/locations/440f411cd20644558471584d9104f3c1_IMG_20251010_133352_613.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the education Directors office?",
+            "How do I find education Directors office?",
+            "What is the location of education Directors office?",
+            "Where can I locate education Directors office?"
+        ]
+    },
+    {
+        "id": "0df845cb-2396-4b70-92b4-5801b6b07837",
+        "description": "education faculty room is located at beside of education directors office",
+        "urls": [
+            "uploads/locations/574a55a26edd4108b4b221e29c00ce64_IMG_20251010_133426_902.jpg",
+            "uploads/locations/d26d9f1a5194441ab8538af44a5bb1a2_IMG_20251010_133352_613.jpg"
+        ],
+        "url": "uploads/locations/574a55a26edd4108b4b221e29c00ce64_IMG_20251010_133426_902.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the education faculty room?",
+            "How do I get to education faculty room?",
+            "What is the location of education faculty room?",
+            "Can you show me education faculty room?",
+            "Where can I find education faculty room?"
+        ]
+    },
+    {
+        "id": "acd57b0a-8f12-433f-b044-6f6ee129a123",
+        "description": "C4 room is located at education building and this image shows the room",
+        "urls": [
+            "uploads/locations/da6c13768e6b405d983250ca674b2074_IMG_20251010_133456_906.jpg"
+        ],
+        "url": "uploads/locations/da6c13768e6b405d983250ca674b2074_IMG_20251010_133456_906.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C4 room?",
+            "How do I get to C4 room?",
+            "What is the location of C4 room?",
+            "Can you show me C4 room?",
+            "Where can I find C4 room?"
+        ]
+    },
+    {
+        "id": "7421ce05-bf27-464d-bcf9-ba118f002b8f",
+        "description": "C5 room is located at education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/bcaa1269f17e4b2caf72ce966d31d7bd_IMG_20251010_133509_622.jpg",
+            "uploads/locations/3ff048ff509e4435878e5d3af4defd9e_IMG_20251010_133512_156.jpg"
+        ],
+        "url": "uploads/locations/bcaa1269f17e4b2caf72ce966d31d7bd_IMG_20251010_133509_622.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C5 room?",
+            "How do I get to C5 room?",
+            "What is the location of C5 room?",
+            "Can you show me C5 room?",
+            "Where can I find C5 room?"
+        ]
+    },
+    {
+        "id": "17144bd4-be7c-4697-b07f-daa3896d36f2",
+        "description": "C6 room is located at education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/c899b58b68574b46bb7c29534fbb7967_IMG_20251010_133524_288.jpg",
+            "uploads/locations/ae816c17d2784cabb7dc2382021e710e_IMG_20251010_133526_873.jpg"
+        ],
+        "url": "uploads/locations/c899b58b68574b46bb7c29534fbb7967_IMG_20251010_133524_288.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C6 room?",
+            "How do I get to C6 room?",
+            "What is the location of C6 room?",
+            "Can you show me C6 room?",
+            "Where can I find C6 room?"
+        ]
+    },
+    {
+        "id": "e2d34212-29de-476a-b5d7-87dc74f4c117",
+        "description": "C7 room is located at education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/163e02d6b1d84fa981ddb76fc39e5da6_IMG_20251010_133535_616.jpg"
+        ],
+        "url": "uploads/locations/163e02d6b1d84fa981ddb76fc39e5da6_IMG_20251010_133535_616.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C7 room?",
+            "How do I get to C7 room?",
+            "What is the location of C7 room?",
+            "Can you show me C7 room?",
+            "Where can I find C7 room?"
+        ]
+    },
+    {
+        "id": "950a3e5d-4008-4e87-a87f-4818dcf65ca4",
+        "description": "C20 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/b723295f9a364febae57b275953f68dd_IMG_20251010_133603_791.jpg"
+        ],
+        "url": "uploads/locations/b723295f9a364febae57b275953f68dd_IMG_20251010_133603_791.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C20 room?",
+            "How do I get to C20 room?",
+            "What is the location of C20 room?",
+            "Can you show me C20 room?",
+            "Where can I find C20 room?"
+        ]
+    },
+    {
+        "id": "0941e61a-7a29-4f16-99a5-144be638947a",
+        "description": "C21 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/7cab304b836d44c7abe1f88a8a69455e_IMG_20251010_133617_383.jpg"
+        ],
+        "url": "uploads/locations/7cab304b836d44c7abe1f88a8a69455e_IMG_20251010_133617_383.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C21 room?",
+            "How do I get to C21 room?",
+            "What is the location of C21 room?",
+            "Can you show me C21 room?",
+            "Where can I find C21 room?"
+        ]
+    },
+    {
+        "id": "ea38014d-4981-4eda-a0c9-8c3f3d50f4d9",
+        "description": "C22 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/f28ee819d6a546e08556d853df132e0b_IMG_20251010_133631_084.jpg"
+        ],
+        "url": "uploads/locations/f28ee819d6a546e08556d853df132e0b_IMG_20251010_133631_084.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C22 room?",
+            "How do I get to C22 room?",
+            "What is the location of C22 room?",
+            "Can you show me C22 room?",
+            "Where can I find C22 room?"
+        ]
+    },
+    {
+        "id": "3ae7c9f2-61bb-4a49-adc8-b1d475660a39",
+        "description": "C23 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/6a84632854254d3799efb0639fddca89_IMG_20251010_133644_736.jpg"
+        ],
+        "url": "uploads/locations/6a84632854254d3799efb0639fddca89_IMG_20251010_133644_736.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C23 room?",
+            "How do I get to C23 room?",
+            "What is the location of C23 room?",
+            "Can you show me C23 room?",
+            "Where can I find C23 room?"
+        ]
+    },
+    {
+        "id": "fafb73c5-8d42-4ce2-8e18-27e971f5edd2",
+        "description": "C24 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/a7aeb51778944e579fc59af453246536_IMG_20251010_133654_301.jpg"
+        ],
+        "url": "uploads/locations/a7aeb51778944e579fc59af453246536_IMG_20251010_133654_301.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C24 room?",
+            "How do I get to C24 room?",
+            "What is the location of C24 room?",
+            "Can you show me C24 room?",
+            "Where can I find C24 room?"
+        ]
+    },
+    {
+        "id": "6164247e-8a42-48d0-872c-2c950d3847eb",
+        "description": "C34 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/688e5a9445a74478b2eac204fbad95d9_IMG_20251010_134230_657.jpg",
+            "uploads/locations/2002109052ce4c4187c909ac1f9cccc2_IMG_20251010_134246_009.jpg",
+            "uploads/locations/431778012cb74529918aae1e9a0474bc_IMG_20251010_134305_049.jpg",
+            "uploads/locations/81c7dd68699448949043fdcb229b6398_IMG_20251010_134308_670.jpg",
+            "uploads/locations/617bc41b909141758900ccb5f3fd24bc_IMG_20251010_134322_993.jpg",
+            "uploads/locations/2280ec70ec70476a98c103522e871577_IMG_20251010_134327_474.jpg"
+        ],
+        "url": "uploads/locations/688e5a9445a74478b2eac204fbad95d9_IMG_20251010_134230_657.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C34 room?",
+            "How do I get to C34 room?",
+            "What is the location of C34 room?",
+            "Can you show me C34 room?",
+            "Where can I find C34 room?"
+        ]
+    },
+    {
+        "id": "75bc1949-2735-433b-842b-2c849d865fed",
+        "description": "C33 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/6f07c6ff703d41b19788ab3edc22d6a5_IMG_20251010_134411_161.jpg",
+            "uploads/locations/be648adcade543b980a170cca838953f_IMG_20251010_134421_514.jpg"
+        ],
+        "url": "uploads/locations/6f07c6ff703d41b19788ab3edc22d6a5_IMG_20251010_134411_161.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C33 room?",
+            "How do I get to C33 room?",
+            "What is the location of C33 room?",
+            "Can you show me C33 room?",
+            "Where can I find C33 room?"
+        ]
+    },
+    {
+        "id": "d862ba8c-0fff-428c-997a-b68231ae3210",
+        "description": "C32 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/cb15b70de2e64cb19e4ed1549d273fcb_IMG_20251010_134430_948.jpg",
+            "uploads/locations/02a369ae9f95454086aad1bcc1492932_IMG_20251010_134439_044.jpg",
+            "uploads/locations/0f41c35645824ee983780e915e5cefb5_IMG_20251010_134450_361.jpg"
+        ],
+        "url": "uploads/locations/cb15b70de2e64cb19e4ed1549d273fcb_IMG_20251010_134430_948.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C32 room?",
+            "How do I get to C32 room?",
+            "What is the location of C32 room?",
+            "Can you show me C32 room?",
+            "Where can I find C32 room?"
+        ]
+    },
+    {
+        "id": "b366a3bb-d132-42f2-be48-f28ef4004fb8",
+        "description": "C31 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/9e8a00047e434b49aba668aaba096856_IMG_20251010_134450_361.jpg",
+            "uploads/locations/3e8ebb3c6e4449f18c84fc765180b20d_IMG_20251010_134453_177.jpg"
+        ],
+        "url": "uploads/locations/9e8a00047e434b49aba668aaba096856_IMG_20251010_134450_361.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C31 room?",
+            "How do I get to C31 room?",
+            "What is the location of C31 room?",
+            "Can you show me C31 room?",
+            "Where can I find C31 room?"
+        ]
+    },
+    {
+        "id": "3079f3c4-f4ee-4f89-b675-0b3c5e16778f",
+        "description": "C30 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/c9a8e514ec6b4889842a212fc732b787_IMG_20251010_134502_884.jpg",
+            "uploads/locations/a400de025c224aefa2f743655695476f_IMG_20251010_134505_381.jpg"
+        ],
+        "url": "uploads/locations/c9a8e514ec6b4889842a212fc732b787_IMG_20251010_134502_884.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C30 room?",
+            "How do I get to C30 room?",
+            "What is the location of C30 room?",
+            "Can you show me C30 room?",
+            "Where can I find C30 room?"
+        ]
+    },
+    {
+        "id": "acd497b7-aa89-431a-9374-15662bb3c767",
+        "description": "C29 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/cf48d72535284675ae0694e6e086447d_IMG_20251010_134520_819.jpg",
+            "uploads/locations/8d2620dbd4ba403686f35b303b6e92bb_IMG_20251010_134522_410.jpg"
+        ],
+        "url": "uploads/locations/cf48d72535284675ae0694e6e086447d_IMG_20251010_134520_819.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C29 room?",
+            "How do I get to C29 room?",
+            "What is the location of C29 room?",
+            "Can you show me C29 room?",
+            "Where can I find C29 room?"
+        ]
+    },
+    {
+        "id": "e7404a5a-ddde-46f6-946f-d87f092521ca",
+        "description": "C28 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/ae9a8779b67e4bf8a9eb5346c69a0caa_IMG_20251010_134529_224.jpg",
+            "uploads/locations/c2ce6d6908a94d9ea6294b470072fa06_IMG_20251010_134531_505.jpg",
+            "uploads/locations/5d1c296acd1d4d7b9d6865d561c975f8_IMG_20251010_134534_435.jpg",
+            "uploads/locations/d3efa3e3a92e4ef38f25a931eeed2af4_IMG_20251010_134539_921.jpg",
+            "uploads/locations/4e445ac76ba84163bb676ef08105f9bc_IMG_20251010_134559_880.jpg"
+        ],
+        "url": "uploads/locations/ae9a8779b67e4bf8a9eb5346c69a0caa_IMG_20251010_134529_224.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C28 room?",
+            "How do I get to C28 room?",
+            "What is the location of C28 room?",
+            "Can you show me C28 room?",
+            "Where can I find C28 room?"
+        ]
+    },
+    {
+        "id": "7732a955-64b9-41bc-b255-7879fede42a6",
+        "description": "C11 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/e5cb4f9a9f1d48bbb28f5940e2c8f3aa_IMG_20251010_133701_488.jpg",
+            "uploads/locations/1b15fd28775d4580a8c8bdd9c61766ab_IMG_20251010_133703_766.jpg",
+            "uploads/locations/c41b271a082649f5bcbaf76ef767dbda_IMG_20251010_134006_401.jpg",
+            "uploads/locations/759b9cc2f6e34f7189b1ff7fccd80221_IMG_20251010_134010_251.jpg",
+            "uploads/locations/d25385aa0bc04e1db4c23dd48efe79f2_IMG_20251010_134022_758.jpg"
+        ],
+        "url": "uploads/locations/e5cb4f9a9f1d48bbb28f5940e2c8f3aa_IMG_20251010_133701_488.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C11 room?",
+            "How do I get to C11 room?",
+            "What is the location of C11 room?",
+            "Can you show me C11 room?",
+            "Where can I find C11 room?"
+        ]
+    },
+    {
+        "id": "63473e66-82af-473b-9b62-fffe179694d8",
+        "description": "C12 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/af408f9bccc44f0fa8b30996825b09b0_IMG_20251010_133716_991.jpg",
+            "uploads/locations/a3fdeafb20154336881092585aa892ce_IMG_20251010_133718_862.jpg"
+        ],
+        "url": "uploads/locations/af408f9bccc44f0fa8b30996825b09b0_IMG_20251010_133716_991.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C12 room?",
+            "How do I get to C12 room?",
+            "What is the location of C12 room?",
+            "Can you show me C12 room?",
+            "Where can I find C12 room?"
+        ]
+    },
+    {
+        "id": "08e32ec6-3f90-4da8-bed4-231dddef763e",
+        "description": "C13 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/bdc2fb3bd1604d7e856acbe1ed4761c3_IMG_20251010_133727_239.jpg",
+            "uploads/locations/ef9b81f168d7435683a8ff5c5532e186_IMG_20251010_133729_157.jpg"
+        ],
+        "url": "uploads/locations/bdc2fb3bd1604d7e856acbe1ed4761c3_IMG_20251010_133727_239.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C13 room?",
+            "How do I get to C13 room?",
+            "What is the location of C13 room?",
+            "Can you show me C13 room?",
+            "Where can I find C13 room?"
+        ]
+    },
+    {
+        "id": "74ad5376-9385-4aed-9a50-ab3040cb4275",
+        "description": "C15 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/6f4f3565d32848099cf7df6e5503d1c6_IMG_20251010_133825_561.jpg",
+            "uploads/locations/ab34d75f555943b08529d915533eb981_IMG_20251010_133829_092.jpg"
+        ],
+        "url": "uploads/locations/6f4f3565d32848099cf7df6e5503d1c6_IMG_20251010_133825_561.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C15 room?",
+            "How do I get to C15 room?",
+            "What is the location of C15 room?",
+            "Can you show me C15 room?",
+            "Where can I find C15 room?"
+        ]
+    },
+    {
+        "id": "a88fb7c9-f1a5-489d-b372-66fdc4f1ad46",
+        "description": "C14 room is located at 2nd floor education building and this image shows the room and its way",
+        "urls": [
+            "uploads/locations/b525fc8103c546a0b5bb846dc0c79466_IMG_20251010_133736_906.jpg",
+            "uploads/locations/d46f4242da8a43ed87a527936b26f080_IMG_20251010_133739_362.jpg"
+        ],
+        "url": "uploads/locations/b525fc8103c546a0b5bb846dc0c79466_IMG_20251010_133736_906.jpg",
+        "user_type": "both",
+        "questions": [
+            "Where is the C14 room?",
+            "How do I get to C14 room?",
+            "What is the location of C14 room?",
+            "Can you show me C14 room?",
+            "Where can I find C14 room?"
+        ]
+    },
+    {
+        "id": "fe6fb749-02cd-47cd-9b66-8c7c85cc2f2f",
+        "description": "Education laboratory room is located at 2nd floor education building at the front of C11 and C28 room and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/cc852f1d1e864afd949ef884fdfef139_Laboratory_room4.jpg",
+            "uploads/locations/1735ae579f6840e69b1ae30ec702f28a_Laboratory_room5.jpg",
+            "uploads/locations/3a9e965448674138965b16ea052ffbcc_Laboratory_room6.jpg",
+            "uploads/locations/401072ecef624147b43b34b6eacced62_Laboratory_room8.jpg",
+            "uploads/locations/8828f03692e24befb2ea1fad29ab6b97_IMG_20251010_134534_435.jpg",
+            "uploads/locations/442194a944c94e7d8e3be35b8a8e0a87_IMG_20251010_134539_921.jpg",
+            "uploads/locations/d2ac7116427d41d481541f8cf29bccaf_Laboratory_room.jpg",
+            "uploads/locations/72c3b70c87794c7ba334fefe14d70774_Laboratory_room1.jpg",
+            "uploads/locations/ce7afeee9c8740919dc663a879733696_Laboratory_room2.jpg"
+        ],
+        "url": "uploads/locations/cc852f1d1e864afd949ef884fdfef139_Laboratory_room4.jpg",
+        "questions": [
+            "Where is the Education laboratory room?",
+            "How do I get to Education laboratory room?",
+            "What is the location of Education laboratory room?",
+            "Can you show me Education laboratory room?",
+            "Where can I find Education laboratory room?"
+        ]
+    },
+    {
+        "id": "6f2d62d9-10a9-400b-ae6f-8571be517fcf",
+        "description": "Amphitheatre room is located at education building and this image shows the room and its way",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/a62b0a9815f14562bf2a4a1b55b8cddf_wvsu_pc_amphitheatre_2.jpg",
+            "uploads/locations/61d896b4022744658ab1d7668930a70e_wvsu_pc_amphitheatre.jpg",
+            "uploads/locations/663d3fbb32d94bcd93734508755eefda_wvsu_pc_amphitheatre1.jpg",
+            "uploads/locations/3ea5f2a32d024c5d8f9d0bb73f16002e_wvsu_pc_amphitheatre2.jpg",
+            "uploads/locations/78cbe96546244a418d72ad818b32ccd1_wvsu_pc_amphitheatre3.jpg",
+            "uploads/locations/049c96a5fbe2405b91fa9191bd7dbc83_wvsu_pc_amphitheatre4.jpg"
+        ],
+        "url": "uploads/locations/a62b0a9815f14562bf2a4a1b55b8cddf_wvsu_pc_amphitheatre_2.jpg",
+        "questions": [
+            "Where is the Amphitheatre room?",
+            "Where is the Amphitheater room?",
+            "How do I get to Amphitheatre room?",
+            "What is the location of Amphitheatre room?",
+            "Can you show me Amphitheatre room?",
+            "Where can I find Amphi room?",
+            "Where can I find Amphitheater?"
+
+        ]
+    },
+    {
+        "id": "ece36410-37f2-44aa-b230-ecf6002b363c",
+        "description": "Girls CR is located at 2nd floor education building at the right side of C11 and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/e449736dafcb48899b7f44d6a0f827d2_ED_CR_girls.jpg",
+            "uploads/locations/669cf5c8a94d4564b9bfc93b61e48d55_ED_CR_WAY.jpg",
+            "uploads/locations/5089fc0bb58a44029b06dcfe439df640_ED_CR_WAY2.jpg",
+            "uploads/locations/445d02df4a57400e9e05156341b4c80e_IMG_20251010_134006_401.jpg",
+            "uploads/locations/d229e2d2aee04f06ab294a1e60e4df4e_IMG_20251010_134010_251.jpg"
+        ],
+        "url": "uploads/locations/e449736dafcb48899b7f44d6a0f827d2_ED_CR_girls.jpg",
+        "questions": [
+            "Where is the Girls CR?",
+            "How do I get to Girls Bathroom?",
+            "What is the location of Women CR?",
+            "Can you show me Women bathroom?",
+            "Where can I find womens bathroom?"
+        ]
+    },
+    {
+        "id": "b96f9d19-e631-4524-9419-7407515cbf6b",
+        "description": "Boys CR is located at 2nd floor education building at the left side of C28 and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/dcd9b03751064b8e867d14040c4fe739_IMG_20251010_134534_435.jpg",
+            "uploads/locations/928a9a076e744f1dbef839c50b541e86_IMG_20251010_133543_133.jpg",
+            "uploads/locations/ceab3cd1814c4dc9bbd417cc8bef5aa8_boys_cr1.jpg"
+        ],
+        "url": "uploads/locations/dcd9b03751064b8e867d14040c4fe739_IMG_20251010_134534_435.jpg",
+        "questions": [
+            "Where is the Boys bathroom?",
+            "How do I get to Boys CR?",
+            "What is the location of Men bathroom?",
+            "Can you show me Men CR?",
+            "Where can I find Mens room?"
+        ]
+    },
+    {
+        "id": "afaae237-2853-464b-8956-383b67814eff",
+        "description": "Library is located at Gabaldon building and this image shows the room and its way",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/c6e433745afd41d1b762f396bc5f9536_Library.jpg",
+            "uploads/locations/8933599d43724fa882ac9bc898bd0fb4_library1.jpg",
+            "uploads/locations/cb9fedffd5c24ae2a0653ce34f847a02_library2.jpg",
+            "uploads/locations/913d00c4dcfa4ef286cff22024a2d92c_Library4.jpg"
+        ],
+        "url": "uploads/locations/c6e433745afd41d1b762f396bc5f9536_Library.jpg",
+        "questions": [
+            "Where is the Library?",
+            "How do I get to Library?",
+            "What is the location of Library?",
+            "Can you show me Library?",
+            "Where can I find Library?"
+        ]
+    },
+    {
+        "id": "e91ef441-e29d-4e28-8b64-9e791c780dad",
+        "description": "Education Entrance is located at education building and this image shows the room and its way",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/c2760d5aea4745d1af43728e46aa35f4_IMG_20251010_132451_702.jpg",
+            "uploads/locations/263431fe36894aeda43066bcc90d4868_IMG_20251010_133352_613.jpg"
+        ],
+        "url": "uploads/locations/c2760d5aea4745d1af43728e46aa35f4_IMG_20251010_132451_702.jpg",
+        "questions": [
+            "Where is the ?Education Entrance",
+            "How do I get to Education Entrance?",
+            "What is the location of Education Entrance?",
+            "Can you show me Education Entrance?",
+            "Where can I find Education Entrance?"
+        ]
+    },
+    {
+        "id": "8c310a6d-df11-4ea4-9e80-927c1d972bc0",
+        "description": "J1 room also called Dance room or Stock room is located at Jroom building, near at ROTC Headquarters and this image shows the room and its way",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/f5e82e2aaea94699a4440675c7ad2670_j1.jpg"
+        ],
+        "url": "uploads/locations/f5e82e2aaea94699a4440675c7ad2670_j1.jpg",
+        "questions": [
+            "Where is the J1 room?",
+            "How do I get to J1 room?",
+            "What is the location of J1 room?",
+            "Can you show me J1 room?",
+            "Where can I find J1 room?"
+        ]
+    },
+    {
+        "id": "b623028f-c21f-441c-ada2-ae10cc80f8ad",
+        "description": "J2 room is located at Jroom building, near at ROTC Headquarters and this image shows the room and its way",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/518191f874774ffab28c8e17a598fe54_J2.jpg"
+        ],
+        "url": "uploads/locations/518191f874774ffab28c8e17a598fe54_J2.jpg",
+        "questions": [
+            "Where is the J2 room?",
+            "How do I get to J2 room?",
+            "What is the location of J2 room?",
+            "Can you show me J2 room?",
+            "Where can I find J2 room?"
+        ]
+    },
+    {
+        "id": "c8c2f6e1-fa00-411e-a418-3c63ade1dbdd",
+        "description": "J3 room is located at Jroom building, near at ROTC Headquarters and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/8eb662f761994c8ab3d803ede84db0e8_j3.jpg"
+        ],
+        "url": "uploads/locations/8eb662f761994c8ab3d803ede84db0e8_j3.jpg",
+        "questions": [
+            "Where is the J3 room?",
+            "How do I get to J3 room?",
+            "What is the location of J3 room?",
+            "Can you show me J3 room?",
+            "Where can I find J3 room?"
+        ]
+    },
+    {
+        "id": "75118d0b-2378-4167-b71f-de7e11611f73",
+        "description": "J4 room is located at Jroom building, near at ROTC Headquarters and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/edfc42ef8c4c4902b9242d1e9f96b50b_j4.jpg"
+        ],
+        "url": "uploads/locations/edfc42ef8c4c4902b9242d1e9f96b50b_j4.jpg",
+        "questions": [
+            "Where is the J4 room?",
+            "How do I get to J4 room?",
+            "What is the location of J4 room?",
+            "Can you show me J4 room?",
+            "Where can I find J4 room?"
+        ]
+    },
+    {
+        "id": "6aee2f36-f67d-4625-a0f8-2d2bfdc078c9",
+        "description": "Resto De Parayan also called as CLAC (Food Preparation and Services) is located at HM Laboratory room and at the right side of CLAC (Housekeeping) and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/5b15726246d34f0aaa83e5454274c648_CLAC_and_laboratory_room.jpg",
+            "uploads/locations/48a77eb5a37348e68bacd04163b7e6e3_CLAC.jpg",
+            "uploads/locations/a6c68927bdb243039cb9b2dd36298847_parayan_villa_2.jpg"
+        ],
+        "url": "uploads/locations/5b15726246d34f0aaa83e5454274c648_CLAC_and_laboratory_room.jpg",
+        "questions": [
+            "Where is the Resto De Parayan?",
+            "How do I get to Food Preparation and Services room?",
+            "What is the location of  room?",
+            "Where can I find SOBM CLAC?"
+        ]
+    },
+    {
+        "id": "7d08c7d3-1136-43b4-9937-2b387f0b8a5d",
+        "description": "HM Laboratory Room is located at HM department and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/716721c626714864ad47d55af2c942aa_CLAC_and_laboratory_room.jpg",
+            "uploads/locations/ba1b61ebe8b94f2b8f0b4a32dbf2603c_labloratory_room.jpg",
+            "uploads/locations/b80da61de6114b188f4fce2eebf6cd35_hm_dept..jpg"
+        ],
+        "url": "uploads/locations/716721c626714864ad47d55af2c942aa_CLAC_and_laboratory_room.jpg",
+        "questions": [
+            "Where is the HM Laboratory?",
+            "How do I get to HM Laboratory room?",
+            "What is the location of BSHM Laboratory room?",
+            "Can you show me BSHM Laboratory room?",
+            "Where can I find HM Laboratory room?"
+        ]
+    },
+    {
+        "id": "e3b3bfc9-929a-4427-ba7e-9b0f5ec72846",
+        "description": "Director's Offce of Hospitality Management is located at HM department and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/7fa78e06668649a180020fb10dda95b7_hm_dept..jpg",
+            "uploads/locations/70ca719146204b1ea457c88eb206ae0f_hm_faculty_room.jpg"
+        ],
+        "url": "uploads/locations/7fa78e06668649a180020fb10dda95b7_hm_dept..jpg",
+        "questions": [
+            "Where is the HM Directors Offce room?",
+            "How do I get to Director's Offce of Hospitality Management room?",
+            "What is the location of HM Directors Offce room?",
+            "Can you show me HM Directors Offce room?",
+            "Where can I find HM Directors Offce room?"
+        ]
+    },
+    {
+        "id": "afb39c1c-55c4-49f0-877f-73e41498dca7",
+        "description": "Parayan VIlla also called as CLAC (Houskeeping) is located at the left side of CLAC (Food Preparation and Services) at Hospitality Management 2 building and this image shows the room and its way.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/7234303d16134df294e6397ae0e71fe3_parayan_villa.jpg",
+            "uploads/locations/f8a546b5101e43998a9e7aad66cae9d6_parayan.jpg"
+        ],
+        "url": "uploads/locations/7234303d16134df294e6397ae0e71fe3_parayan_villa.jpg",
+        "questions": [
+            "Where is the Parayan VIlla room?",
+            "What is the location of HM Houskeeping room?",
+            "Can you show me Parayan VIlla room?",
+            "Where can I find HM CLAC room?"
+        ]
+    },
+    {
+        "id": "14ee838c-1415-45c9-96f8-66643060216d",
+        "description": "SOBM Bench is located at the front of SOICT Building and at the left side of SOBM Director's Office.",
+        "user_type": "both",
+        "urls": [
+            "uploads/locations/66437a9b857e48d59b92e92671097336_hm_bench.jpg",
+            "uploads/locations/635debf3bd084928b646cad13ea6a54b_hm_bench1.jpg"
+        ],
+        "url": "uploads/locations/66437a9b857e48d59b92e92671097336_hm_bench.jpg",
+        "questions": [
+            "Where is the Bench?",
+            "How do I find Resting Place?",
+            "What is the location of Place to Rest?",
+            "Where can I locate Bench?"
+        ]
+    }
+]

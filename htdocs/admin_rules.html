@@ -1,0 +1,247 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-dashboard">
+
+  <!-- ===== Dashboard Header ===== -->
+  <div class="row">
+    <div class="col-md-12 mb-4 d-flex justify-content-between align-items-center">
+      <h2 class="futuristic-header">Admin Dashboard - Rules</h2>
+      <button class="futuristic-button" onclick="location.href='/admin'" title="Back to Dashboard">
+        <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== Two Column Layout ===== -->
+  <div class="row g-4">
+
+    <!-- Left: Add New Rule -->
+    <div class="col-lg-4 col-md-12">
+      <div class="futuristic-card h-100">
+        <div class="card border-0 card-header">
+          <h3 class="card-title mb-0 futuristic-header">Add New Rule</h3>
+        </div>
+        <div class="card-body">
+          <form id="add-rule-form" action="/add_rule" method="POST" novalidate>
+
+            <div class="mb-3">
+              <label for="keywords" class="form-label">
+                Question <i class="fas fa-info-circle"></i>
+              </label>
+              <input type="text" class="form-control" id="keywords" name="keywords" required placeholder="e.g. What is your name?">
+            </div>
+
+            <div class="mb-3">
+              <label for="response" class="form-label">
+                Response <i class="fas fa-info-circle"></i>
+              </label>
+              <textarea class="form-control" id="response" name="response" rows="4" required placeholder="Enter response here..."></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="rule-category" class="form-label">Rule Category (User Type)</label>
+              <select class="form-select" id="rule-category" name="user_type" required>
+                <option value="">Select user type</option>
+                <option value="user">User</option>
+                <option value="guest">Guest</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="category-select" class="form-label">Category</label>
+              <select class="form-select" id="category-select" name="category" required>
+                <option value="">Select a category</option>
+                <!-- Populated by JS -->
+              </select>
+            </div>
+
+            <div class="mb-3 d-flex gap-2">
+              <button type="button" class="btn btn-outline-success flex-fill" id="add-category-btn" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i class="fas fa-plus"></i> Add Category
+              </button>
+              <button type="button" class="btn btn-outline-danger flex-fill" id="remove-category-btn" data-bs-toggle="modal" data-bs-target="#removeCategoryModal">
+                <i class="fas fa-trash"></i> Remove Category
+              </button>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 shadow-sm">
+              <i class="fas fa-plus-circle me-1"></i> Add Rule
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Existing Rules -->
+    <div class="col-lg-8 col-md-12">
+      <div class="card border-0 shadow-lg rounded-4 h-100 d-flex flex-column">
+
+        <!-- 🔥 Header now contains the Search & Filter Bar -->
+        <div class="card-header sticky-header">
+          <div class="d-flex flex-wrap gap-3 align-items-center">
+            <h5 class="mb-0">Existing Rules</h5>
+
+            <input type="text" id="rule-search" class="form-control" placeholder="Search rules..." style="max-width:220px;">
+
+            <select id="search-type" class="form-select" style="max-width:150px;">
+              <option value="question" selected>Question</option>
+              <option value="response">Response</option>
+            </select>
+
+            <select id="category-filter" class="form-select" style="max-width:200px;">
+              <option value="all" selected>All Categories</option>
+            </select>
+
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-toggle active" id="show-user-rules">User Rules</button>
+              <button type="button" class="btn btn-toggle" id="show-guest-rules">Guest Rules</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scrollable content -->
+        <div class="card-body flex-grow-1 overflow-auto" id="rules-container">
+
+          <!-- ========== Categorized Rules ========== -->
+          <div class="categorized-rules-container">
+
+            <!-- User Rules -->
+            <div id="user-rules-container">
+              {% if categorized_user_rules %}
+                {% for category, rules_list in categorized_user_rules.items() %}
+                  {% if rules_list %}
+                  <div class="category-section mb-4" data-category="{{ category }}">
+                    <div class="category-header d-flex justify-content-between align-items-center mb-3">
+                      <h4 class="category-title text-primary">{{ category | upper }}</h4>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle category-table" data-category="{{ category }}">
+                        <thead class="table-primary">
+                          <tr>
+                            <th style="width: 40%;">Question</th>
+                            <th style="width: 50%;">Response</th>
+                            <th style="width: 10%;">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for rule in rules_list %}
+                          <tr data-rule-id="{{ rule.id }}">
+                            <td><div class="card p-2">{{ rule.question }}</div></td>
+                            <td><div class="p-2">{{ rule.response }}</div></td>
+                            <td>
+                              <div class="d-flex flex-column gap-1">
+                                <button class="btn btn-sm btn-danger delete-rule" data-rule-id="{{ rule.id }}"><i class="fas fa-trash-can"></i></button>
+                                <button class="btn btn-sm btn-primary edit-rule" data-rule-id="{{ rule.id }}"><i class="fas fa-pen-to-square"></i></button>
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <div class="text-center py-5"><h5 class="text-muted">No user rules yet.</h5></div>
+              {% endif %}
+            </div>
+
+            <!-- Guest Rules -->
+            <div id="guest-rules-container" style="display: none;">
+              {% if categorized_guest_rules %}
+                {% for category, rules_list in categorized_guest_rules.items() %}
+                  {% if rules_list %}
+                  <div class="category-section mb-4" data-category="{{ category }}">
+                    <div class="category-header d-flex justify-content-between align-items-center mb-3">
+                      <h4 class="category-title text-primary">{{ category | upper }}</h4>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle category-table" data-category="{{ category }}">
+                        <thead class="table-primary">
+                          <tr>
+                            <th style="width: 40%;">Question</th>
+                            <th style="width: 50%;">Response</th>
+                            <th style="width: 10%;">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for rule in rules_list %}
+                          <tr data-rule-id="{{ rule.id }}">
+                            <td><div class="card p-2">{{ rule.question }}</div></td>
+                            <td><div class="p-2">{{ rule.response }}</div></td>
+                            <td>
+                              <div class="d-flex flex-column gap-1">
+                                <button class="btn btn-sm btn-danger delete-rule" data-rule-id="{{ rule.id }}"><i class="fas fa-trash-can"></i></button>
+                                <button class="btn btn-sm btn-primary edit-rule" data-rule-id="{{ rule.id }}"><i class="fas fa-pen-to-square"></i></button>
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <div class="text-center py-5"><h5 class="text-muted">No guest rules yet.</h5></div>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow-lg">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New Category</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="new-category-name" class="form-control mb-3" placeholder="Enter new category">
+        <button type="button" class="btn btn-primary w-100" id="save-category-btn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="removeCategoryModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow-lg">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Remove Categories</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="remove-category-list"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin_categorized.js') }}"></script>
+
+<script>
+  // Scroll back to top when typing in search
+  const searchInput = document.getElementById('rule-search');
+  const rulesContainer = document.getElementById('rules-container');
+
+  searchInput.addEventListener('input', () => {
+    rulesContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    // keep your filtering logic here
+  });
+</script>
+{% endblock %}
