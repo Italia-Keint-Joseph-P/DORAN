@@ -1637,20 +1637,32 @@ def delete_login_log(log_id):
     """
     Delete a login log entry.
     """
+    print(f"DEBUG: Delete route called for log_id: {log_id}")
     if not is_admin(current_user):
+        print(f"DEBUG: Unauthorized access by user: {current_user}")
+        app.logger.warning(f"Unauthorized delete attempt by user: {current_user}")
         return jsonify({'status': 'error', 'message': 'Unauthorized access'})
 
     from models import LoginLog
     log = LoginLog.query.get(log_id)
+    print(f"DEBUG: Log found: {log is not None}")
     if not log:
+        print(f"DEBUG: Login log not found: ID {log_id}")
+        app.logger.warning(f"Login log not found: ID {log_id}")
         return jsonify({'status': 'error', 'message': 'Log not found'})
+
+    print(f"DEBUG: Deleting login log: ID {log_id}, User Type: {log.user_type}, Identifier: {log.identifier}")
+    app.logger.info(f"Deleting login log: ID {log_id}, User Type: {log.user_type}, Identifier: {log.identifier}")
 
     try:
         db.session.delete(log)
         db.session.commit()
+        print(f"DEBUG: Successfully deleted login log: ID {log_id}")
+        app.logger.info(f"Successfully deleted login log: ID {log_id}")
         return jsonify({'status': 'success'})
     except Exception as e:
         db.session.rollback()
+        print(f"DEBUG: Error deleting login log: {str(e)}")
         app.logger.error(f"Error deleting login log: {str(e)}")
         return jsonify({'status': 'error', 'message': 'Failed to delete log'})
 
