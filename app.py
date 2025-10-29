@@ -27,7 +27,7 @@ app.template_folder = 'htdocs'
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 # Add SQLAlchemy configuration for MySQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/doran_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'mysql+pymysql://root:@localhost/doran_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True  # Log SQL statements for debugging
 
