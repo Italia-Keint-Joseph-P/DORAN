@@ -1,6 +1,8 @@
-# TODO: Add Delete Functionality to Admin Login Logs
+# TODO: Update Visuals to Work on Railway
 
-## Tasks
-- [x] Update `htdocs/admin_login_logs.html` to add a delete button in each log row
-- [x] Add `/admin/login_logs/delete/<log_id>` route in `app.py` to handle log deletion from the database
-- [x] Test the delete functionality to ensure logs are removed correctly
+## Completed Tasks
+- [x] Analyze the issue: update_visuals.py doesn't persist on Railway due to ephemeral file system.
+- [x] Plan: Modify get_visual_rules in chatbot.py to generate specific questions dynamically based on descriptions.
+- [x] Edit chatbot.py: Implement dynamic question generation in get_visual_rules method.
+- [x] Test chatbot to verify visuals have specific questions.
+- [x] Ensure reload_visual_rules is called after admin updates for in-memory refresh.

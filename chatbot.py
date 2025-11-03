@@ -388,6 +388,7 @@ class Chatbot:
         """
         Load visual-based rules from database/visuals/visuals.json
         Converts each image entry to a rule with questions and response containing description and all image URLs.
+        Dynamically generates specific questions based on description if questions are generic.
         """
         visuals_path = os.path.join("database", "visuals", "visuals.json")
         try:
@@ -397,6 +398,62 @@ class Chatbot:
                 for entry in visuals_data:
                     questions = entry.get("questions", [])
                     description = entry.get("description", "")
+                    # Check if questions are generic and generate specific ones based on description
+                    if questions == ["What is ?", "Can you show me ?", "Where can I find information about ?", "Tell me about .", "What are the details on ?"]:
+                        desc_lower = description.lower()
+                        if 'uniform' in desc_lower:
+                            school = desc_lower.split('uniform')[0].strip().title()
+                            questions = [
+                                f"What is the uniform for {school}?",
+                                "Can you show me the uniform?",
+                                "Tell me about the uniform.",
+                                "What are the details on the uniform?",
+                                "Where can I find information about the uniform?"
+                            ]
+                        elif 'student council' in desc_lower or 'council' in desc_lower:
+                            council_type = 'ICT Student Council' if 'ict' in desc_lower else 'Student Council'
+                            questions = [
+                                f"Who are the {council_type} members?",
+                                f"Can you show me the {council_type}?",
+                                f"Tell me about the {council_type}.",
+                                f"What are the details on the {council_type}?",
+                                f"Where can I find information about the {council_type}?"
+                            ]
+                        elif 'ictzen' in desc_lower:
+                            # Extract role
+                            if 'is the' in desc_lower:
+                                role = desc_lower.split('is the')[1].split('a.y')[0].strip().title()
+                            else:
+                                role = 'ICTzen staff'
+                            questions = [
+                                f"Who is the {role}?",
+                                f"Can you show me the {role}?",
+                                f"Tell me about the {role}.",
+                                f"What is the {role}'s role?",
+                                f"Where can I find information about the {role}?"
+                            ]
+                        elif 'research coordinator' in desc_lower or 'program head' in desc_lower or 'director' in desc_lower or 'adviser' in desc_lower or 'professor' in desc_lower or 'instructor' in desc_lower or 'lecturer' in desc_lower or 'aide' in desc_lower:
+                            # Person entry
+                            if ',' in description:
+                                name = description.split(',')[0].strip()
+                            else:
+                                name = description.split(' is ')[0].strip()
+                            questions = [
+                                f"Who is {name}?",
+                                f"Can you show me {name}?",
+                                f"Tell me about {name}.",
+                                f"What is {name}'s role?",
+                                f"Where can I find information about {name}?"
+                            ]
+                        else:
+                            # Default
+                            questions = [
+                                "What is this?",
+                                "Can you show me this?",
+                                "Tell me about this.",
+                                "What are the details on this?",
+                                "Where can I find information about this?"
+                            ]
                     image_urls = entry.get("urls", [])
                     # Compose response with description and all image HTML tags
                     images_html = ""

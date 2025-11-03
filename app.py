@@ -970,7 +970,7 @@ def add_visual():
         return jsonify({'status': 'error', 'message': f'Failed to save visual: {str(e)}'})
 
     # Update visuals in memory
-    chatbot.reload_visuals()
+    chatbot.reload_visual_rules()
 
     return jsonify({'status': 'success'})
 
