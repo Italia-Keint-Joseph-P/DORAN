@@ -1067,6 +1067,9 @@ def edit_visual_with_id(visual_id):
     except Exception as e:
         return jsonify({'status': 'error', 'message': f'Failed to save visual: {str(e)}'})
 
+    # Update visuals in memory
+    chatbot.reload_visual_rules()
+
     return jsonify({'status': 'success'})
 
 @app.route('/delete_visual', methods=['POST'])

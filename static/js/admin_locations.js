@@ -194,107 +194,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Create question sets container
                 const questionSetsContainer = document.createElement('div');
+                questionSetsContainer.id = `edit-location-questions-container-${locationId}`;
+                questionSetsContainer.className = 'mb-3';
 
-                // Normalize questions: if flat array, wrap in array; if nested, use as is
-                let questionSets = [];
-                if (currentQuestions.length > 0) {
-                    if (Array.isArray(currentQuestions[0])) {
-                        questionSets = currentQuestions;
-                    } else {
-                        questionSets = [currentQuestions];
-                    }
-                }
-
-                function createQuestionDiv(questionValue = '') {
-                    const questionDiv = document.createElement('div');
-                    questionDiv.className = 'question-item d-flex align-items-center mr-2';
-
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'form-control question-input';
-                    input.placeholder = 'e.g. What is the library?';
-                    input.value = questionValue;
-                    input.required = true;
-                    questionDiv.appendChild(input);
-
-                    const removeBtn = document.createElement('button');
-                    removeBtn.type = 'button';
-                    removeBtn.className = 'btn btn-danger btn-sm ms-2 remove-question';
-                    removeBtn.textContent = '×';
-                    questionDiv.appendChild(removeBtn);
-
-                    return questionDiv;
-                }
-
-                function createSetDiv(set) {
-                    const setDiv = document.createElement('div');
-                    setDiv.className = 'question-set-group mb-3 border p-3 rounded';
-
-                    const questionsContainer = document.createElement('div');
-                    questionsContainer.className = 'questions-container d-flex flex-wrap';
-
+                // Normalize questions: flatten nested arrays to simple list of questions
+                let flattenedQuestions = [];
+                currentQuestions.forEach(set => {
                     if (Array.isArray(set)) {
-                        set.forEach(question => {
-                            questionsContainer.appendChild(createQuestionDiv(question));
-                        });
+                        flattenedQuestions.push(...set);
                     } else {
-                        questionsContainer.appendChild(createQuestionDiv(set));
+                        flattenedQuestions.push(set);
                     }
-
-                    setDiv.appendChild(questionsContainer);
-
-                    const addQuestionBtn = document.createElement('button');
-                    addQuestionBtn.type = 'button';
-                    addQuestionBtn.className = 'btn btn-secondary btn-sm mt-2 add-question-to-set';
-                    addQuestionBtn.textContent = '+ Add Question to Set';
-                    setDiv.appendChild(addQuestionBtn);
-
-                    const removeSetBtn = document.createElement('button');
-                    removeSetBtn.type = 'button';
-                    removeSetBtn.className = 'btn btn-danger btn-sm ms-2 remove-set';
-                    removeSetBtn.textContent = 'Remove Set';
-                    setDiv.appendChild(removeSetBtn);
-
-                    return setDiv;
-                }
-
-                if (questionSets.length > 0) {
-                    questionSets.forEach(set => {
-                        questionSetsContainer.appendChild(createSetDiv(set));
-                    });
-                } else {
-                    questionSetsContainer.appendChild(createSetDiv([]));
-                }
-
-                function updateSetButtons() {
-                    const sets = questionSetsContainer.querySelectorAll('.question-set-group');
-                    sets.forEach(set => {
-                        const removeSetBtn = set.querySelector('.remove-set');
-                        if (sets.length > 1) {
-                            removeSetBtn.style.display = 'inline-block';
-                        } else {
-                            removeSetBtn.style.display = 'none';
-                        }
-                    });
-                }
-
-                function updateQuestionButtons(setDiv) {
-                    const questions = setDiv.querySelectorAll('.question-item');
-                    questions.forEach(question => {
-                        const removeBtn = question.querySelector('.remove-question');
-                        if (questions.length > 1) {
-                            removeBtn.style.display = 'inline-block';
-                        } else {
-                            removeBtn.style.display = 'none';
-                        }
-                    });
-                }
-
-                // Initial update
-                updateSetButtons();
-                questionSetsContainer.querySelectorAll('.question-set-group').forEach(setDiv => {
-                    updateQuestionButtons(setDiv);
                 });
+
+                // Create question sets
+                flattenedQuestions.forEach(question => {
+                    const questionSet = document.createElement('div');
+                    questionSet.className = 'question-set d-flex align-items-center mb-2';
+                    questionSet.innerHTML = `
+                        <input type="text" class="form-control question-input" placeholder="e.g. What is the library?, Where is the main hall?" value="${question}" required>
+                        <button type="button" class="btn btn-danger btn-sm ms-2 remove-question-set">×</button>
+                    `;
+                    questionSetsContainer.appendChild(questionSet);
+                });
+
+                // Add question set button
+                const addQuestionSetBtn = document.createElement('button');
+                addQuestionSetBtn.type = 'button';
+                addQuestionSetBtn.className = 'btn btn-secondary btn-sm mt-2';
+                addQuestionSetBtn.id = `add-edit-question-set-${locationId}`;
+                addQuestionSetBtn.textContent = '+ Add Question';
+                questionSetsContainer.appendChild(addQuestionSetBtn);
 
                 locationModal.innerHTML = `
                     <div class="modal-dialog modal-lg">
@@ -357,31 +287,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                // Attach event listeners for sets and questions
-                const addEditQuestionSetBtn = locationModal.querySelector(`#add-edit-question-set-${locationId}`);
-
-                if (addEditQuestionSetBtn) {
-                    addEditQuestionSetBtn.addEventListener('click', () => {
-                        questionSetsContainer.appendChild(createSetDiv([]));
-                        updateSetButtons();
-                        updateQuestionButtons(questionSetsContainer.lastElementChild);
+                // Question sets management
+                const updateQuestionSetButtons = () => {
+                    const questionSets = questionSetsContainer.querySelectorAll('.question-set');
+                    questionSets.forEach((set, index) => {
+                        const removeBtn = set.querySelector('.remove-question-set');
+                        if (questionSets.length > 1) {
+                            removeBtn.style.display = 'inline-block';
+                        } else {
+                            removeBtn.style.display = 'none';
+                        }
                     });
-                }
+                };
+
+                updateQuestionSetButtons();
 
                 questionSetsContainer.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('remove-set')) {
-                        e.target.closest('.question-set-group').remove();
-                        updateSetButtons();
-                    } else if (e.target.classList.contains('add-question-to-set')) {
-                        const setDiv = e.target.closest('.question-set-group');
-                        const questionsContainer = setDiv.querySelector('.questions-container');
-                        questionsContainer.appendChild(createQuestionDiv());
-                        updateQuestionButtons(setDiv);
-                    } else if (e.target.classList.contains('remove-question')) {
-                        const setDiv = e.target.closest('.question-set-group');
-                        e.target.closest('.question-item').remove();
-                        updateQuestionButtons(setDiv);
+                    if (e.target.classList.contains('remove-question-set')) {
+                        e.target.closest('.question-set').remove();
+                        updateQuestionSetButtons();
                     }
+                });
+
+                const addQuestionSetButton = questionSetsContainer.querySelector(`#add-edit-question-set-${locationId}`);
+                addQuestionSetButton.addEventListener('click', () => {
+                    const newSet = document.createElement('div');
+                    newSet.className = 'question-set d-flex align-items-center mb-2';
+                    newSet.innerHTML = `
+                        <input type="text" class="form-control question-input" placeholder="e.g. What is the library?, Where is the main hall?" required>
+                        <button type="button" class="btn btn-danger btn-sm ms-2 remove-question-set">×</button>
+                    `;
+                    addQuestionSetButton.before(newSet);
+                    updateQuestionSetButtons();
                 });
 
                 // Handle existing images display and removal
@@ -446,11 +383,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Handle save
                 locationModal.querySelector(`#save-edit-${locationId}`).addEventListener('click', async () => {
-                    const sets = locationModal.querySelectorAll('.question-set-group');
-                    const updatedQuestions = Array.from(sets).map(set => {
-                        const questions = set.querySelectorAll('.question-input');
-                        return Array.from(questions).map(input => input.value.trim()).filter(q => q);
-                    }).filter(set => set.length > 0);
+                    const questionInputs = questionSetsContainer.querySelectorAll('.question-input');
+                    const updatedQuestions = Array.from(questionInputs).map(input => input.value.trim()).filter(q => q);
                     const updatedUserType = locationModal.querySelector(`#edit-user-type-${locationId}`).value;
                     const updatedDesc = locationModal.querySelector(`#edit-description-${locationId}`).value.trim();
 
