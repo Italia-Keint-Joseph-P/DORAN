@@ -17,120 +17,23 @@
     <div class="col-md-12">
         <div class="futuristic-card">
             <div class="card-header">
-                <h3 class="card-title mb-0 futuristic-header">Add New Visual</h3>
+                <h3 class="card-title mb-0 futuristic-header">Visuals Management</h3>
             </div>
-            <div class="card-body">
-                <form id="add-visual-form" enctype="multipart/form-data" novalidate>
-                    <div class="mb-3">
-                        <label class="form-label" title="Question sets that trigger this visual response">Question Sets <i class="fas fa-info-circle"></i></label>
-                        <div id="visual-questions-container">
-                            <div class="question-set d-flex align-items-center mb-2">
-                                <input type="text" class="form-control question-input" placeholder="e.g. What is the art?, Where is the sculpture?" required>
-                                <button type="button" class="btn btn-danger btn-sm ms-2 remove-question-set" style="display: none;">×</button>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-secondary btn-sm mt-2" id="add-visual-question-set">+ Add Question Set</button>
-                        <div class="form-text">Each set is comma-separated questions. Multiple sets allow different combinations to trigger the same response.</div>
+            <div class="card-body text-center">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('admin_add_visuals') }}" class="btn futuristic-button w-100 mb-3">
+                            <i class="fas fa-plus-circle me-2"></i> Add New Visual
+                        </a>
                     </div>
-                    <div class="mb-3">
-                        <label for="visual-user-type" class="form-label" title="Select who can access this visual">User Type <i class="fas fa-info-circle"></i></label>
-                        <select class="form-control" id="visual-user-type" required>
-                            <option value="both">Both Users and Guests</option>
-                            <option value="user">Users Only</option>
-                            <option value="guest">Guests Only</option>
-                        </select>
-                        <div class="form-text">Choose who can see this visual response.</div>
+                    <div class="col-md-6">
+                        <a href="{{ url_for('admin_existing_visuals') }}" class="btn futuristic-button w-100 mb-3">
+                            <i class="fas fa-list me-2"></i> View Existing Visuals
+                        </a>
                     </div>
-                    <div class="mb-3">
-                        <label for="visual-response" class="form-label" title="Description or response for this visual">Response / Description <i class="fas fa-info-circle"></i></label>
-                        <textarea class="form-control" id="visual-response" rows="4" required placeholder="Enter description here..."></textarea>
-                    </div>
-<div class="mb-3">
-    <label for="visual-media" class="form-label" title="Upload images or videos representing this visual">Media (Images/Videos) <i class="fas fa-info-circle"></i></label>
-    <input type="file" class="form-control" id="visual-media" accept="image/*,video/*" multiple required>
-    <div id="visual-media-dropzone" class="border border-secondary rounded p-3 mt-2 text-center d-flex align-items-center" style="cursor: pointer;">
-        <span class="mx-auto">Drag and drop images/videos here or click to select files</span>
-    </div>
-    <div id="visual-media-preview" class="d-flex flex-wrap gap-2 mt-2"></div>
-</div>
-                    <button type="submit" class="futuristic-button w-100 shadow-sm">
-                        <i class="fas fa-plus-circle me-1"></i> Add Visual
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div class="card border-0 shadow-lg rounded-4 mt-4">
-            <div class="card-header bg-primary text-white">
-                <h3 class="card-title mb-0 futuristic-header">Existing Visuals</h3>
-            </div>
-        <div class="card-body" style="max-height: 800px; overflow-y: auto;">
-                <!-- Search -->
-                <div class="mb-3">
-                    <input type="text" id="visual-search" class="form-control" placeholder="Search visuals by questions or description..." style="max-width: 400px;">
                 </div>
-                {% if visuals %}
-                <div class="d-flex flex-wrap gap-4 justify-content-start" id="visuals-container">
-                    {% for visual in visuals %}
-                    <div class="visual-card futuristic-card p-3" data-user-type="{{ visual.user_type }}" data-questions='{{ visual.questions | tojson }}' data-visual='{{ visual | tojson }}'>
-                        <div class="visual-card-content">
-                            {% for question_set in visual.questions %}
-                            <p><strong>Questions:</strong> {{ question_set | join('<br>') | safe }}</p>
-                            {% endfor %}
-                            <p><strong>Description:</strong> {{ visual.description }}</p>
-{% if visual.urls %}
-    <div class="visual-media d-flex flex-wrap gap-2 mb-3" data-visual-id="{{ visual.id }}">
-        {% set display_urls = visual.urls[:3] %}
-        {% for media_url in display_urls %}
-            {% if media_url.endswith(('.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm')) %}
-                <video controls muted class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=media_url) }}" data-type="video">
-                    <source src="{{ url_for('static', filename=media_url) }}" type="video/{{ media_url.split('.')[-1] }}">
-                    Your browser does not support the video tag.
-                </video>
-            {% else %}
-                <img src="{{ url_for('static', filename=media_url) }}" alt="Visual Media" class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=media_url) }}" data-type="img">
-            {% endif %}
-        {% endfor %}
-        {% if visual.urls|length > 3 %}
-            <div class="more-images-overlay" style="width: 100px; height: 100px; background: rgba(0,0,0,0.7); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; cursor: pointer;" onclick="showAllImages('{{ visual.id }}')">
-                +{{ visual.urls|length - 3 }}
-            </div>
-        {% endif %}
-    </div>
-{% elif visual.url %}
-    <div class="visual-media d-flex flex-wrap gap-2 mb-3" data-visual-id="{{ visual.id }}">
-        {% if visual.url.endswith(('.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm')) %}
-            <video controls muted class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=visual.url) }}" data-type="video">
-                <source src="{{ url_for('static', filename=visual.url) }}" type="video/{{ visual.url.split('.')[-1] }}">
-                Your browser does not support the video tag.
-            </video>
-        {% else %}
-            <img src="{{ url_for('static', filename=visual.url) }}" alt="Visual Media" class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=visual.url) }}" data-type="img">
-        {% endif %}
-    </div>
-{% endif %}
-                        </div>
-                        <div class="visual-card-buttons">
-                            <button class="btn btn-sm btn-primary edit-visual" data-id="{{ visual.id }}">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger delete-visual" data-id="{{ visual.id }}">
-                                <i class="fas fa-trash-alt"></i> Delete
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <p>No visuals found.</p>
-                {% endif %}
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
-<script src="{{ url_for('static', filename='js/admin_visuals.js') }}"></script>
 {% endblock %}

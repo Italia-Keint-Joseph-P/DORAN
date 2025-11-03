@@ -1,0 +1,136 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+#search-type option {
+  background-color: #1e1e2f;
+  color: #fff;
+}
+
+#visual-search::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.search-container select:focus,
+.search-container input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.search-container {
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.search-container:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+</style>
+
+<div class="admin-dashboard">
+  <div class="row">
+    <div class="col-md-12 mb-4 d-flex justify-content-between align-items-center">
+      <h2 class="futuristic-header">Admin Dashboard - Existing Visuals</h2>
+      <button class="futuristic-button" onclick="location.href='/admin/visuals'" title="Back to Visuals">
+        <i class="fas fa-arrow-left me-1"></i> Back to Visuals
+      </button>
+    </div>
+  </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-lg rounded-4 mt-4">
+            <div class="card-header bg-primary text-white text-center py-4">
+              <h3 class="card-title futuristic-header mb-4">Existing Visuals</h3>
+
+              <!-- Search bar positioned below the Existing Visuals text in header -->
+              <div class="d-flex justify-content-center">
+                <div class="search-container d-flex align-items-center shadow-sm rounded-pill px-3 py-2"
+                     style="background-color: rgba(255,255,255,0.12);
+                            width: 100%;
+                            max-width: 650px;
+                            border: 1px solid rgba(255,255,255,0.3);">
+                  <select id="search-type" class="form-select me-2 border-0 bg-transparent text-white"
+                          style="width: 160px; font-size: 0.95rem;">
+                    <option value="both">Both</option>
+                    <option value="questions">Questions</option>
+                    <option value="description">Description</option>
+                  </select>
+
+                  <input type="text" id="visual-search" class="form-control border-0 bg-transparent text-white"
+                         placeholder="Search visuals..." style="font-size: 0.95rem;">
+
+                  <button class="btn border-0 text-white" type="button" style="background: transparent;">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+        <div class="card-body" style="max-height: 800px; overflow-y: auto;">
+                {% if visuals %}
+                <div class="d-flex flex-wrap gap-4 justify-content-start" id="visuals-container">
+                    {% for visual in visuals %}
+                    <div class="visual-card futuristic-card p-3" data-user-type="{{ visual.user_type }}" data-questions='{{ visual.questions | tojson }}' data-visual='{{ visual | tojson }}'>
+                        <div class="visual-card-content">
+                            {% for question_set in visual.questions %}
+                            <p><strong>Questions:</strong> {{ question_set | join('<br>') | safe }}</p>
+                            {% endfor %}
+                            <p><strong>Description:</strong> {{ visual.description }}</p>
+{% if visual.urls %}
+    <div class="visual-media d-flex flex-wrap gap-2 mb-3" data-visual-id="{{ visual.id }}">
+        {% set display_urls = visual.urls[:3] %}
+        {% for media_url in display_urls %}
+            {% if media_url.endswith(('.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm')) %}
+                <video controls muted class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=media_url) }}" data-type="video">
+                    <source src="{{ url_for('static', filename=media_url) }}" type="video/{{ media_url.split('.')[-1] }}">
+                    Your browser does not support the video tag.
+                </video>
+            {% else %}
+                <img src="{{ url_for('static', filename=media_url) }}" alt="Visual Media" class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=media_url) }}" data-type="img">
+            {% endif %}
+        {% endfor %}
+        {% if visual.urls|length > 3 %}
+            <div class="more-images-overlay" style="width: 100px; height: 100px; background: rgba(0,0,0,0.7); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; cursor: pointer;" onclick="showAllImages('{{ visual.id }}')">
+                +{{ visual.urls|length - 3 }}
+            </div>
+        {% endif %}
+    </div>
+{% elif visual.url %}
+    <div class="visual-media d-flex flex-wrap gap-2 mb-3" data-visual-id="{{ visual.id }}">
+        {% if visual.url.endswith(('.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm')) %}
+            <video controls muted class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=visual.url) }}" data-type="video">
+                <source src="{{ url_for('static', filename=visual.url) }}" type="video/{{ visual.url.split('.')[-1] }}">
+                Your browser does not support the video tag.
+            </video>
+        {% else %}
+            <img src="{{ url_for('static', filename=visual.url) }}" alt="Visual Media" class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=visual.url) }}" data-type="img">
+        {% endif %}
+    </div>
+{% endif %}
+                        </div>
+                        <div class="visual-card-buttons">
+                            <button class="btn btn-sm btn-primary edit-visual" data-id="{{ visual.id }}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-visual" data-id="{{ visual.id }}">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No visuals found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin_visuals.js') }}"></script>
+{% endblock %}

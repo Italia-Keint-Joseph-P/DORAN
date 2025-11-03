@@ -7,12 +7,28 @@
         ],
         "url": "uploads/locations/2a50c2935e0b42e88562e6ef92af9772_Enrollment_Req.jpg",
         "user_type": "both",
-        "questions": [
-            [
-            "What is enrollment requirements?"
+                "What is enrollment requirements?"
             ],
             [
-            "Can you show me requirements for enrollment?"
+                "Can you show me requirements for enrollment?"
+>>>>>>> 5a71180 (Add search functionality for visuals and locations, update admin pages)
+            ]
+        ]
+=======
+        "questions": [
+            [
+                "What is enrollment requirements?"
+            ],
+            [
+                "Can you show me requirements for enrollment?"
+            ]
+        ]
+=======
+                "What is enrollment requirements?"
+            ],
+            [
+                "Can you show me requirements for enrollment?"
+>>>>>>> 5a71180 (Add search functionality for visuals and locations, update admin pages)
             ]
         ]
     },
@@ -46,6 +62,7 @@
         "user_type": "both",
         "questions": [
             [
+<<<<<<< HEAD
             "Who are the ICT faculty members?"
             ],
             [
@@ -56,6 +73,18 @@
             ],
             [
             "Tell me about SOICT faculty members."
+=======
+                "Who are the ICT faculty members?"
+            ],
+            [
+                "Tell me about ICT faculty members."
+            ],
+            [
+                "Who are the SOICT faculty members?"
+            ],
+            [
+                "Tell me about SOICT faculty members."
+>>>>>>> 5a71180 (Add search functionality for visuals and locations, update admin pages)
             ]
         ]
     },

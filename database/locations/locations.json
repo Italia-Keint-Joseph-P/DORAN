@@ -11,10 +11,18 @@
         "user_type": "both",
         "questions": [
             [
-                "Where is the E3 room?",
-                "How do I get to E3 room?",
-                "What is the location of E3 room?",
-                "Can you show me E3 room?",
+                "Where is the E3 room?"
+            ],
+            [
+                "How do I get to E3 room?"
+            ],
+            [
+                "What is the location of E3 room?"
+            ],
+            [
+                "Can you show me E3 room?"
+            ],
+            [
                 "Where can I find E3 room?"
             ]
         ]
@@ -31,11 +39,21 @@
         "url": "uploads/locations/745d0233a11e440ba159bba8b379b524_IMG_0002.JPG",
         "user_type": "both",
         "questions": [
-            "Where is the J10 room?",
-            "How do I get to J10 room?",
-            "What is the location of J10 room?",
-            "Can you show me J10 room?",
-            "Where can I find J10 room?"
+            [
+                "Where is the J10 room?"
+            ],
+            [
+                "How do I get to J10 room?"
+            ],
+            [
+                "What is the location of J10 room?"
+            ],
+            [
+                "Can you show me J10 room?"
+            ],
+            [
+                "Where can I find J10 room?"
+            ]
         ]
     },
     {
@@ -50,11 +68,21 @@
         "url": "uploads/locations/3c848bc7ca6e43f5858e091e21f8f96d_IMG_0005.JPG",
         "user_type": "both",
         "questions": [
-            "Where is the J11 room?",
-            "How do I get to J11 room?",
-            "What is the location of J11 room?",
-            "Can you show me J11 room?",
-            "Where can I find J11 room?"
+            [
+                "Where is the J11 room?"
+            ],
+            [
+                "How do I get to J11 room?"
+            ],
+            [
+                "What is the location of J11 room?"
+            ],
+            [
+                "Can you show me J11 room?"
+            ],
+            [
+                "Where can I find J11 room?"
+            ]
         ]
     },
     {
@@ -736,7 +764,6 @@
             "Can you show me Amphitheatre room?",
             "Where can I find Amphi room?",
             "Where can I find Amphitheater?"
-
         ]
     },
     {

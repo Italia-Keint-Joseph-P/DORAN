@@ -637,6 +637,30 @@ def admin_locations():
     """
     Render the admin locations page.
     """
+    if not is_admin(current_user):
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('chat'))
+
+    return render_template('admin_locations.html')
+
+@app.route('/admin/add_locations')
+@login_required
+def admin_add_locations():
+    """
+    Render the admin add locations page.
+    """
+    if not is_admin(current_user):
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('chat'))
+
+    return render_template('admin_add_locations.html')
+
+@app.route('/admin/existing_locations')
+@login_required
+def admin_existing_locations():
+    """
+    Render the admin existing locations page.
+    """
     import json
     import os
 
@@ -653,13 +677,37 @@ def admin_locations():
         locations = []
         app.logger.error(f"Failed to load locations.json: {e}")
 
-    return render_template('admin_locations.html', locations=locations)
+    return render_template('admin_existing_locations.html', locations=locations)
 
 @app.route('/admin/visuals')
 @login_required
 def admin_visuals():
     """
     Render the admin visuals page.
+    """
+    if not is_admin(current_user):
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('chat'))
+
+    return render_template('admin_visuals.html')
+
+@app.route('/admin/add_visuals')
+@login_required
+def admin_add_visuals():
+    """
+    Render the admin add visuals page.
+    """
+    if not is_admin(current_user):
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('chat'))
+
+    return render_template('admin_add_visuals.html')
+
+@app.route('/admin/existing_visuals')
+@login_required
+def admin_existing_visuals():
+    """
+    Render the admin existing visuals page.
     """
     import json
     import os
@@ -677,7 +725,7 @@ def admin_visuals():
         visuals = []
         app.logger.error(f"Failed to load visuals.json: {e}")
 
-    return render_template('admin_visuals.html', visuals=visuals)
+    return render_template('admin_existing_visuals.html', visuals=visuals)
 
 @app.route('/add_location', methods=['POST'])
 @login_required

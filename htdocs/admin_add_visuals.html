@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-dashboard">
+  <div class="row">
+    <div class="col-md-12 mb-4 d-flex justify-content-between align-items-center">
+      <h2 class="futuristic-header">Admin Dashboard - Add Visual</h2>
+      <button class="futuristic-button" onclick="location.href='/admin/visuals'" title="Back to Visuals">
+        <i class="fas fa-arrow-left me-1"></i> Back to Visuals
+      </button>
+    </div>
+  </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="futuristic-card">
+            <div class="card-header">
+                <h3 class="card-title mb-0 futuristic-header">Add New Visual</h3>
+            </div>
+            <div class="card-body">
+                <form id="add-visual-form" enctype="multipart/form-data" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" title="Question sets that trigger this visual response">Question Sets <i class="fas fa-info-circle"></i></label>
+                        <div id="visual-questions-container">
+                            <div class="question-set d-flex align-items-center mb-2">
+                                <input type="text" class="form-control question-input" placeholder="e.g. What is the art?, Where is the sculpture?" required>
+                                <button type="button" class="btn btn-danger btn-sm ms-2 remove-question-set" style="display: none;">×</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm mt-2" id="add-visual-question-set">+ Add Question Set</button>
+                        <div class="form-text">Each set is comma-separated questions. Multiple sets allow different combinations to trigger the same response.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="visual-user-type" class="form-label" title="Select who can access this visual">User Type <i class="fas fa-info-circle"></i></label>
+                        <select class="form-control" id="visual-user-type" required>
+                            <option value="both">Both Users and Guests</option>
+                            <option value="user">Users Only</option>
+                            <option value="guest">Guests Only</option>
+                        </select>
+                        <div class="form-text">Choose who can see this visual response.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="visual-response" class="form-label" title="Description or response for this visual">Response / Description <i class="fas fa-info-circle"></i></label>
+                        <textarea class="form-control" id="visual-response" rows="4" required placeholder="Enter description here..."></textarea>
+                    </div>
+<div class="mb-3">
+    <label for="visual-media" class="form-label" title="Upload images or videos representing this visual">Media (Images/Videos) <i class="fas fa-info-circle"></i></label>
+    <input type="file" class="form-control" id="visual-media" accept="image/*,video/*" multiple required>
+    <div id="visual-media-dropzone" class="border border-secondary rounded p-3 mt-2 text-center d-flex align-items-center" style="cursor: pointer;">
+        <span class="mx-auto">Drag and drop images/videos here or click to select files</span>
+    </div>
+    <div id="visual-media-preview" class="d-flex flex-wrap gap-2 mt-2"></div>
+</div>
+                    <button type="submit" class="futuristic-button w-100 shadow-sm">
+                        <i class="fas fa-plus-circle me-1"></i> Add Visual
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin_visuals.js') }}"></script>
+{% endblock %}

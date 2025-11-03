@@ -445,21 +445,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== SEARCH LOCATIONS =====
     const locationSearchInput = document.getElementById('location-search');
+    const searchTypeSelect = document.getElementById('search-type');
     const locationsContainer = document.getElementById('locations-container');
     let searchTimeout;
 
-    if (locationSearchInput && locationsContainer) {
+    if (locationSearchInput && searchTypeSelect && locationsContainer) {
         function applyLocationSearch() {
             const searchValue = locationSearchInput.value.toLowerCase().trim();
+            const searchType = searchTypeSelect.value;
             const cards = locationsContainer.querySelectorAll('.futuristic-card');
 
             cards.forEach(card => {
-                const keywordsText = card.querySelector('p strong')?.parentElement?.textContent.toLowerCase() || '';
-                const descriptionText = card.querySelectorAll('p')[1]?.textContent.toLowerCase() || '';
+                const keywordsText = Array.from(card.querySelectorAll('p')).filter(p => p.textContent.trim().startsWith('Questions:')).map(p => p.textContent.replace('Questions:', '').toLowerCase().trim()).join(' ') || '';
+                const descriptionText = Array.from(card.querySelectorAll('p')).find(p => p.textContent.trim().startsWith('Description:'))?.textContent.replace('Description:', '').toLowerCase().trim() || '';
 
-                const searchMatch = !searchValue ||
-                    keywordsText.includes(searchValue) ||
-                    descriptionText.includes(searchValue);
+                let searchMatch = true;
+                if (searchValue) {
+                    if (searchType === 'questions') {
+                        searchMatch = keywordsText.includes(searchValue);
+                    } else if (searchType === 'description') {
+                        searchMatch = descriptionText.includes(searchValue);
+                    } else { // both
+                        searchMatch = keywordsText.includes(searchValue) || descriptionText.includes(searchValue);
+                    }
+                }
 
                 card.style.display = searchMatch ? '' : 'none';
             });
@@ -469,6 +478,8 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(applyLocationSearch, 300); // Debounce for 300ms
         });
+
+        searchTypeSelect.addEventListener('change', applyLocationSearch);
     }
 });
 

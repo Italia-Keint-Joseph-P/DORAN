@@ -801,21 +801,30 @@ function updateNavigationButtons() {
 
 // ===== SEARCH VISUALS =====
 const visualSearchInput = document.getElementById('visual-search');
+const searchTypeSelect = document.getElementById('search-type');
 const visualsContainer = document.getElementById('visuals-container');
 let visualSearchTimeout;
 
-if (visualSearchInput && visualsContainer) {
+if (visualSearchInput && searchTypeSelect && visualsContainer) {
     function applyVisualSearch() {
         const searchValue = visualSearchInput.value.toLowerCase().trim();
+        const searchType = searchTypeSelect.value;
         const cards = visualsContainer.querySelectorAll('.futuristic-card');
 
         cards.forEach(card => {
-            const keywordsText = card.querySelector('p strong')?.parentElement?.textContent.toLowerCase() || '';
-            const descriptionText = card.querySelectorAll('p')[1]?.textContent.toLowerCase() || '';
+            const keywordsText = Array.from(card.querySelectorAll('p')).filter(p => p.textContent.trim().startsWith('Questions:')).map(p => p.textContent.replace('Questions:', '').toLowerCase().trim()).join(' ') || '';
+            const descriptionText = Array.from(card.querySelectorAll('p')).find(p => p.textContent.trim().startsWith('Description:'))?.textContent.replace('Description:', '').toLowerCase().trim() || '';
 
-            const searchMatch = !searchValue ||
-                keywordsText.includes(searchValue) ||
-                descriptionText.includes(searchValue);
+            let searchMatch = true;
+            if (searchValue) {
+                if (searchType === 'questions') {
+                    searchMatch = keywordsText.includes(searchValue);
+                } else if (searchType === 'description') {
+                    searchMatch = descriptionText.includes(searchValue);
+                } else { // both
+                    searchMatch = keywordsText.includes(searchValue) || descriptionText.includes(searchValue);
+                }
+            }
 
             card.style.display = searchMatch ? '' : 'none';
         });
@@ -825,6 +834,8 @@ if (visualSearchInput && visualsContainer) {
         clearTimeout(visualSearchTimeout);
         visualSearchTimeout = setTimeout(applyVisualSearch, 300); // Debounce for 300ms
     });
+
+    searchTypeSelect.addEventListener('change', applyVisualSearch);
 }
 
 // Fix questions display in visual cards

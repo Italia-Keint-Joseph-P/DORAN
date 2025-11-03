@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<div class="admin-dashboard">
+  <div class="row">
+    <div class="col-md-12 mb-4 d-flex justify-content-between align-items-center">
+      <h2 class="futuristic-header">Admin Dashboard - Add Location</h2>
+      <button class="futuristic-button" onclick="location.href='/admin/locations'" title="Back to Locations">
+        <i class="fas fa-arrow-left me-1"></i> Back to Locations
+      </button>
+    </div>
+  </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="futuristic-card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0 futuristic-header">Add New Location</h3>
+            </div>
+            <div class="card-body">
+                <form id="add-location-form" enctype="multipart/form-data" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" title="Question sets that trigger this location response">Question Sets <i class="fas fa-info-circle"></i></label>
+                        <div id="location-questions-container">
+                            <div class="question-set d-flex align-items-center mb-2">
+                                <input type="text" class="form-control question-input" placeholder="e.g. What is the library?, Where is the main hall?" required>
+                                <button type="button" class="btn btn-danger btn-sm ms-2 remove-question-set" style="display: none;">×</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm mt-2" id="add-location-question-set">+ Add Question Set</button>
+                        <div class="form-text">Each set is comma-separated questions. Multiple sets allow different combinations to trigger the same response.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location-user-type" class="form-label" title="Select who can access this location">User Type <i class="fas fa-info-circle"></i></label>
+                        <select class="form-control" id="location-user-type" required>
+                            <option value="both">Both Users and Guests</option>
+                            <option value="user">Users Only</option>
+                            <option value="guest">Guests Only</option>
+                        </select>
+                        <div class="form-text">Choose who can see this location response.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location-response" class="form-label" title="Description or response for this location">Response / Description <i class="fas fa-info-circle"></i></label>
+                        <textarea class="form-control" id="location-response" rows="4" required placeholder="Enter description here..."></textarea>
+                    </div>
+<div class="mb-3">
+    <label for="location-image" class="form-label" title="Upload images representing this location">Images <i class="fas fa-info-circle"></i></label>
+    <input type="file" class="form-control" id="location-image" accept="image/*" multiple required>
+    <div id="location-image-dropzone" class="border border-secondary rounded p-3 mt-2 text-center" style="cursor: pointer;">
+        Drag and drop images here or click to select files
+    </div>
+    <div id="location-image-preview" class="d-flex flex-wrap gap-2 mt-2"></div>
+</div>
+                    <button type="submit" class="futuristic-button w-100 shadow-sm">
+                        <i class="fas fa-plus-circle me-1"></i> Add Location
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin_locations.js') }}"></script>
+{% endblock %}

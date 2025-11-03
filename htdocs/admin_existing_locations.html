@@ -1,0 +1,126 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+#search-type option {
+  background-color: #1e1e2f;
+  color: #fff;
+}
+
+#location-search::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.search-container select:focus,
+.search-container input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.search-container {
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.search-container:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+</style>
+
+<div class="admin-dashboard">
+  <div class="row">
+    <div class="col-md-12 mb-4 d-flex justify-content-between align-items-center">
+      <h2 class="futuristic-header">Admin Dashboard - Existing Locations</h2>
+      <button class="futuristic-button" onclick="location.href='/admin/locations'" title="Back to Locations">
+        <i class="fas fa-arrow-left me-1"></i> Back to Locations
+      </button>
+    </div>
+  </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-lg rounded-4 mt-4">
+            <div class="card-header bg-primary text-white text-center py-4">
+              <h3 class="card-title futuristic-header mb-4">Existing Locations</h3>
+
+              <!-- Search bar positioned below the Existing Locations text in header -->
+              <div class="d-flex justify-content-center">
+                <div class="search-container d-flex align-items-center shadow-sm rounded-pill px-3 py-2"
+                     style="background-color: rgba(255,255,255,0.12);
+                            width: 100%;
+                            max-width: 650px;
+                            border: 1px solid rgba(255,255,255,0.3);">
+                  <select id="search-type" class="form-select me-2 border-0 bg-transparent text-white"
+                          style="width: 160px; font-size: 0.95rem;">
+                    <option value="both">Both</option>
+                    <option value="questions">Questions</option>
+                    <option value="description">Description</option>
+                  </select>
+
+                  <input type="text" id="location-search" class="form-control border-0 bg-transparent text-white"
+                         placeholder="Search locations..." style="font-size: 0.95rem;">
+
+                  <button class="btn border-0 text-white" type="button" style="background: transparent;">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+        <div class="card-body" style="max-height: 800px; overflow-y: auto;">
+                {% if locations %}
+                <div class="d-flex flex-wrap gap-4 justify-content-start" id="locations-container">
+                    {% for location in locations %}
+                    <div class="location-card futuristic-card p-3" data-user-type="{{ location.user_type }}" data-questions='{{ location.questions | tojson }}' data-location='{{ location | tojson }}'>
+                        <div class="location-card-content">
+                            {% for question_set in location.questions %}
+                            {% if question_set is iterable and question_set is not string %}
+                            <p><strong>Questions:</strong> {{ question_set | join(', ') }}</p>
+                            {% else %}
+                            <p><strong>Questions:</strong> {{ question_set | replace("'", "") }}</p>
+                            {% endif %}
+                            {% endfor %}
+                            <p><strong>Description:</strong> {{ location.description }}</p>
+{% if location.urls %}
+    <div class="location-images d-flex flex-wrap gap-2 mb-3" data-location-id="{{ location.id }}">
+        {% set display_urls = location.urls[:3] %}
+        {% for img_url in display_urls %}
+            <img src="{{ url_for('static', filename=img_url) }}" alt="Location Image" class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=img_url) }}" data-type="img">
+        {% endfor %}
+        {% if location.urls|length > 3 %}
+            <div class="more-images-overlay" style="width: 100px; height: 100px; background: rgba(0,0,0,0.7); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; cursor: pointer;" onclick="showAllImages('{{ location.id }}')">
+                +{{ location.urls|length - 3 }}
+            </div>
+        {% endif %}
+    </div>
+{% elif location.url %}
+    <div class="location-images d-flex flex-wrap gap-2 mb-3" data-location-id="{{ location.id }}">
+        <img src="{{ url_for('static', filename=location.url) }}" alt="Location Image" class="img-fluid rounded media-item" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" data-src="{{ url_for('static', filename=location.url) }}" data-type="img">
+    </div>
+{% endif %}
+                        </div>
+                        <div class="location-card-buttons">
+                            <button class="btn btn-sm btn-primary edit-location" data-id="{{ location.id }}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-location" data-id="{{ location.id }}">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No locations found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin_locations.js') }}"></script>
+{% endblock %}
