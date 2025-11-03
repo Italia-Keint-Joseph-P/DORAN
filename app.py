@@ -969,6 +969,9 @@ def add_visual():
     except Exception as e:
         return jsonify({'status': 'error', 'message': f'Failed to save visual: {str(e)}'})
 
+    # Update visuals in memory
+    chatbot.reload_visuals()
+
     return jsonify({'status': 'success'})
 
 @app.route('/edit_visual/<visual_id>', methods=['POST'])
@@ -1103,6 +1106,10 @@ def delete_visual():
             json.dump(new_visuals, f, indent=4)
     except Exception as e:
         return jsonify({'status': 'error', 'message': f'Failed to save visuals: {e}'})
+
+    # Update chatbot rules in memory
+    chatbot.rules = chatbot.get_rules()
+    chatbot.guest_rules = chatbot.get_guest_rules()
 
     return jsonify({'status': 'success'})
 
@@ -1659,6 +1666,9 @@ def delete_login_log(log_id):
         db.session.commit()
         print(f"DEBUG: Successfully deleted login log: ID {log_id}")
         app.logger.info(f"Successfully deleted login log: ID {log_id}")
+        # Update chatbot rules in memory
+        chatbot.rules = chatbot.get_rules()
+        chatbot.guest_rules = chatbot.get_guest_rules()
         return jsonify({'status': 'success'})
     except Exception as e:
         db.session.rollback()

@@ -172,10 +172,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         currentQuestions = [];
                     }
                 }
-                // Handle case where questions might be stored as array of individual characters
-                if (Array.isArray(currentQuestions) && currentQuestions.every(q => typeof q === 'string' && q.length === 1)) {
-                    currentQuestions = [currentQuestions.join('')];
-                }
+                // Flatten nested arrays to simple list of questions
+                let flattenedQuestions = [];
+                currentQuestions.forEach(set => {
+                    if (Array.isArray(set)) {
+                        flattenedQuestions.push(...set);
+                    } else {
+                        flattenedQuestions.push(set);
+                    }
+                });
                 const descP = Array.from(card.querySelectorAll('p')).find(p => p.textContent.trim().startsWith('Description:'));
                 const currentDesc = descP ? descP.textContent.replace('Description:', '').trim() : '';
                 const currentUserType = card.dataset.userType || 'both';
@@ -204,108 +209,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
 
                 // Create question sets container
-                const questionSetsContainer = document.createElement('div');
+                const visualQuestionsContainer = document.createElement('div');
+                visualQuestionsContainer.id = `edit-visual-questions-container-${visualId}`;
+                visualQuestionsContainer.className = 'mb-3';
 
-                // Normalize questions: if flat array, wrap in array; if nested, use as is
-                let questionSets = [];
-                if (currentQuestions.length > 0) {
-                    if (Array.isArray(currentQuestions[0])) {
-                        questionSets = currentQuestions;
-                    } else {
-                        questionSets = [currentQuestions];
-                    }
-                }
-
-                function createQuestionDiv(questionValue = '') {
-                    const questionDiv = document.createElement('div');
-                    questionDiv.className = 'question-item d-flex align-items-center mr-2';
-
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'form-control question-input';
-                    input.placeholder = 'e.g. Who is this person?';
-                    input.value = questionValue;
-                    input.required = false;
-                    questionDiv.appendChild(input);
-
-                    const removeBtn = document.createElement('button');
-                    removeBtn.type = 'button';
-                    removeBtn.className = 'btn btn-danger btn-sm ms-2 remove-question';
-                    removeBtn.textContent = '×';
-                    questionDiv.appendChild(removeBtn);
-
-                    return questionDiv;
-                }
-
-                function createSetDiv(set) {
-                    const setDiv = document.createElement('div');
-                    setDiv.className = 'question-set-group mb-3 border p-3 rounded';
-
-                    const questionsContainer = document.createElement('div');
-                    questionsContainer.className = 'questions-container d-flex flex-wrap';
-
-                    if (Array.isArray(set)) {
-                        set.forEach(question => {
-                            questionsContainer.appendChild(createQuestionDiv(question));
-                        });
-                    } else {
-                        questionsContainer.appendChild(createQuestionDiv(set));
-                    }
-
-                    setDiv.appendChild(questionsContainer);
-
-                    const addQuestionBtn = document.createElement('button');
-                    addQuestionBtn.type = 'button';
-                    addQuestionBtn.className = 'btn btn-secondary btn-sm mt-2 add-question-to-set';
-                    addQuestionBtn.textContent = '+ Add Question to Set';
-                    setDiv.appendChild(addQuestionBtn);
-
-                    const removeSetBtn = document.createElement('button');
-                    removeSetBtn.type = 'button';
-                    removeSetBtn.className = 'btn btn-danger btn-sm ms-2 remove-set';
-                    removeSetBtn.textContent = 'Remove Set';
-                    setDiv.appendChild(removeSetBtn);
-
-                    return setDiv;
-                }
-
-                if (questionSets.length > 0) {
-                    questionSets.forEach(set => {
-                        questionSetsContainer.appendChild(createSetDiv(set));
-                    });
-                } else {
-                    questionSetsContainer.appendChild(createSetDiv([]));
-                }
-
-                function updateSetButtons() {
-                    const sets = questionSetsContainer.querySelectorAll('.question-set-group');
-                    sets.forEach(set => {
-                        const removeSetBtn = set.querySelector('.remove-set');
-                        if (sets.length > 1) {
-                            removeSetBtn.style.display = 'inline-block';
-                        } else {
-                            removeSetBtn.style.display = 'none';
-                        }
-                    });
-                }
-
-                function updateQuestionButtons(setDiv) {
-                    const questions = setDiv.querySelectorAll('.question-item');
-                    questions.forEach(question => {
-                        const removeBtn = question.querySelector('.remove-question');
-                        if (questions.length > 1) {
-                            removeBtn.style.display = 'inline-block';
-                        } else {
-                            removeBtn.style.display = 'none';
-                        }
-                    });
-                }
-
-                // Initial update
-                updateSetButtons();
-                questionSetsContainer.querySelectorAll('.question-set-group').forEach(setDiv => {
-                    updateQuestionButtons(setDiv);
+                // Create question sets
+                flattenedQuestions.forEach(question => {
+                    const questionSet = document.createElement('div');
+                    questionSet.className = 'question-set d-flex align-items-center mb-2';
+                    questionSet.innerHTML = `
+                        <input type="text" class="form-control question-input" placeholder="e.g. What is the art?, Where is the sculpture?" value="${question}" required>
+                        <button type="button" class="btn btn-danger btn-sm ms-2 remove-question-set">×</button>
+                    `;
+                    visualQuestionsContainer.appendChild(questionSet);
                 });
+
+                // Add question set button
+                const addQuestionSetBtn = document.createElement('button');
+                addQuestionSetBtn.type = 'button';
+                addQuestionSetBtn.className = 'btn btn-secondary btn-sm mt-2';
+                addQuestionSetBtn.id = `add-edit-question-set-${visualId}`;
+                addQuestionSetBtn.textContent = '+ Add Question';
+                visualQuestionsContainer.appendChild(addQuestionSetBtn);
 
                 visualModal.innerHTML = `
                     <div class="modal-dialog modal-lg">
@@ -317,10 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="modal-body" style="overflow-y: auto; max-height: 70vh;">
                                 <form id="edit-visual-form-${visualId}">
                                     <div class="mb-3">
-                                        <label class="form-label" title="Question sets that trigger this visual response">Question Sets <i class="fas fa-info-circle"></i></label>
-                                        <div id="edit-visual-questions-container-${visualId}"></div>
-                                        <button type="button" class="btn btn-secondary btn-sm mt-2" id="add-edit-question-set-${visualId}">+ Add Question Set</button>
-                                        <div class="form-text">Each set is comma-separated questions. Multiple sets allow different combinations to trigger the same response.</div>
+                                        <label class="form-label">Questions</label>
+                                        <div class="form-text">Each question is comma-separated. Multiple questions trigger the same response.</div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">User Type</label>
@@ -355,11 +278,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
 
-                document.body.appendChild(visualModal);
-
-                // Insert the question sets container into the modal
-                const questionsContainerPlaceholder = visualModal.querySelector(`#edit-visual-questions-container-${visualId}`);
-                questionsContainerPlaceholder.appendChild(questionSetsContainer);
+                // Insert the questions container
+                const form = visualModal.querySelector(`#edit-visual-form-${visualId}`);
+                const label = form.querySelector('.form-label');
+                label.insertAdjacentElement('afterend', visualQuestionsContainer);
 
                 // Allow closing modal by clicking outside
                 visualModal.addEventListener('click', (e) => {
@@ -368,31 +290,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                // Attach event listeners for sets and questions
-                const addEditQuestionSetBtn = visualModal.querySelector(`#add-edit-question-set-${visualId}`);
-
-                if (addEditQuestionSetBtn) {
-                    addEditQuestionSetBtn.addEventListener('click', () => {
-                        questionSetsContainer.appendChild(createSetDiv([]));
-                        updateSetButtons();
-                        updateQuestionButtons(questionSetsContainer.lastElementChild);
+                // Question sets management
+                const updateQuestionSetButtons = () => {
+                    const questionSets = visualQuestionsContainer.querySelectorAll('.question-set');
+                    questionSets.forEach((set, index) => {
+                        const removeBtn = set.querySelector('.remove-question-set');
+                        if (questionSets.length > 1) {
+                            removeBtn.style.display = 'inline-block';
+                        } else {
+                            removeBtn.style.display = 'none';
+                        }
                     });
-                }
+                };
 
-                questionSetsContainer.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('remove-set')) {
-                        e.target.closest('.question-set-group').remove();
-                        updateSetButtons();
-                    } else if (e.target.classList.contains('add-question-to-set')) {
-                        const setDiv = e.target.closest('.question-set-group');
-                        const questionsContainer = setDiv.querySelector('.questions-container');
-                        questionsContainer.appendChild(createQuestionDiv());
-                        updateQuestionButtons(setDiv);
-                    } else if (e.target.classList.contains('remove-question')) {
-                        const setDiv = e.target.closest('.question-set-group');
-                        e.target.closest('.question-item').remove();
-                        updateQuestionButtons(setDiv);
+                updateQuestionSetButtons();
+
+                visualQuestionsContainer.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('remove-question-set')) {
+                        e.target.closest('.question-set').remove();
+                        updateQuestionSetButtons();
                     }
+                });
+
+                const addQuestionSetButton = visualQuestionsContainer.querySelector(`#add-edit-question-set-${visualId}`);
+                addQuestionSetButton.addEventListener('click', () => {
+                    const newSet = document.createElement('div');
+                    newSet.className = 'question-set d-flex align-items-center mb-2';
+                    newSet.innerHTML = `
+                        <input type="text" class="form-control question-input" placeholder="e.g. What is the art?, Where is the sculpture?" required>
+                        <button type="button" class="btn btn-danger btn-sm ms-2 remove-question-set">×</button>
+                    `;
+                    addQuestionSetButton.before(newSet);
+                    updateQuestionSetButtons();
                 });
 
                 // Handle existing images display and removal
@@ -462,8 +391,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Handle save
                 visualModal.querySelector(`#save-edit-${visualId}`).addEventListener('click', async () => {
-                    const questionInputs = visualModal.querySelectorAll('.question-input');
-                    const updatedQuestions = Array.from(questionInputs).map(input => input.value.trim().split(',').map(k => k.trim()).filter(k => k));
+                    const questionInputs = visualQuestionsContainer.querySelectorAll('.question-input');
+                    const questions = Array.from(questionInputs).flatMap(input => input.value.trim().split(',').map(k => [k.trim()]).filter(k => k[0]));
                     const updatedUserType = visualModal.querySelector(`#edit-user-type-${visualId}`).value;
                     const updatedDesc = visualModal.querySelector(`#edit-description-${visualId}`).value.trim();
 
@@ -473,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     const formData = new FormData();
-                    formData.append('questions', JSON.stringify(updatedQuestions));
+                    formData.append('questions', JSON.stringify(questions));
                     formData.append('user_type', updatedUserType);
                     formData.append('description', updatedDesc);
                     formData.append('removedImages', JSON.stringify(Array.from(removedImages)));
@@ -497,6 +426,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         alert('Error updating visual.');
                     }
                 });
+
+                document.body.appendChild(visualModal);
             });
         });
     }
