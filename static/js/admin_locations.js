@@ -218,13 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     questionSetsContainer.appendChild(questionSet);
                 });
 
-                // Add question set button
-                const addQuestionSetBtn = document.createElement('button');
-                addQuestionSetBtn.type = 'button';
-                addQuestionSetBtn.className = 'btn btn-secondary btn-sm mt-2';
-                addQuestionSetBtn.id = `add-edit-question-set-${locationId}`;
-                addQuestionSetBtn.textContent = '+ Add Question';
-                questionSetsContainer.appendChild(addQuestionSetBtn);
+
 
                 locationModal.innerHTML = `
                     <div class="modal-dialog modal-lg">
@@ -238,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="mb-3">
                                         <label class="form-label" title="Question sets that trigger this location response">Question Sets <i class="fas fa-info-circle"></i></label>
                                         <div id="edit-location-questions-container-${locationId}"></div>
-                                        <button type="button" class="btn btn-secondary btn-sm mt-2" id="add-edit-question-set-${locationId}">+ Add Question Set</button>
                                         <div class="form-text">Each set is comma-separated questions. Multiple sets allow different combinations to trigger the same response.</div>
                                     </div>
                                     <div class="mb-3">
@@ -309,17 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                const addQuestionSetButton = questionSetsContainer.querySelector(`#add-edit-question-set-${locationId}`);
-                addQuestionSetButton.addEventListener('click', () => {
-                    const newSet = document.createElement('div');
-                    newSet.className = 'question-set d-flex align-items-center mb-2';
-                    newSet.innerHTML = `
-                        <input type="text" class="form-control question-input" placeholder="e.g. What is the library?, Where is the main hall?" required>
-                        <button type="button" class="btn btn-danger btn-sm ms-2 remove-question-set">×</button>
-                    `;
-                    addQuestionSetButton.before(newSet);
-                    updateQuestionSetButtons();
-                });
+
 
                 // Handle existing images display and removal
                 const existingImagesContainer = locationModal.querySelector(`#existing-images-${locationId}`);
