@@ -8,8 +8,12 @@
         "url": "uploads/locations/2a50c2935e0b42e88562e6ef92af9772_Enrollment_Req.jpg",
         "user_type": "both",
         "questions": [
-            "What is enrollment requirements?",
+            [
+            "What is enrollment requirements?"
+            ],
+            [
             "Can you show me requirements for enrollment?"
+            ]
         ]
     },
     {
@@ -41,10 +45,18 @@
         "url": "uploads/locations/d70983fb01b34336813074f442dfe37c_All_Teacher.jpg",
         "user_type": "both",
         "questions": [
-            "Who are the ICT faculty members?",
-            "Tell me about ICT faculty members.",
-            "Who are the SOICT faculty members?",
+            [
+            "Who are the ICT faculty members?"
+            ],
+            [
+            "Tell me about ICT faculty members."
+            ],
+            [
+            "Who are the SOICT faculty members?"
+            ],
+            [
             "Tell me about SOICT faculty members."
+            ]
         ]
     },
     {
@@ -56,11 +68,20 @@
         "url": "uploads/locations/2897615a85c04155b14b7f30fc821619_Associate_prof_1.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Jeany Rose P. Ignacio?",
-            "Can you show me the picture of jeany rose ignacio?",
-            "Tell me about jeany rose ignacio.",
-            "Who is the adviser of ICT council?",
+            [
+            "Who is Jeany Rose P. Ignacio?"],
+            [
+            "Can you show me the picture of jeany rose ignacio?"
+            ],
+            [
+            "Tell me about jeany rose ignacio."
+            ],
+            [
+            "Who is the adviser of ICT council?"
+            ],
+            [
             "Who is the adviser of BSIS 3-B and BSIS 3-A"
+            ]
         ]
     },
     {
