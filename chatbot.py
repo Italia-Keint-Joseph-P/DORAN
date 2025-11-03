@@ -47,7 +47,9 @@ class Chatbot:
         self.location_rules = self.get_location_rules()
 
         # Load visual-based rules from visuals.json
+        visuals_path = os.path.join("database", "visuals", "visuals.json")
         self.visual_rules = self.get_visual_rules()
+        self.visual_rules_mtime = os.path.getmtime(visuals_path)
 
         # Email keywords for triggering email search
         self.email_keywords = ["email", "contact", "mail", "reach", "address", "send", "message"]
@@ -519,6 +521,15 @@ class Chatbot:
                 self.consecutive_fallbacks = 0
                 return self.append_image_to_response(email_response)
 
+        # Check if visuals.json has been modified and reload if necessary
+        visuals_path = os.path.join("database", "visuals", "visuals.json")
+        try:
+            current_mtime = os.path.getmtime(visuals_path)
+            if current_mtime > self.visual_rules_mtime:
+                self.reload_visual_rules()
+        except Exception as e:
+            logging.error(f"Error checking visuals.json modification time: {e}")
+
         # Collect all potential matches with their scores
         candidates = []  # List of (rule, score, match_type, original_score)
 
@@ -902,7 +913,9 @@ class Chatbot:
         """
         Reload visual rules from database/visuals/visuals.json into memory.
         """
+        visuals_path = os.path.join("database", "visuals", "visuals.json")
         self.visual_rules = self.get_visual_rules()
+        self.visual_rules_mtime = os.path.getmtime(visuals_path)
 
     def create_category_files(self, category):
         """
