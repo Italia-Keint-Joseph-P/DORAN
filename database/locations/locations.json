@@ -96,11 +96,21 @@
         "url": "uploads/locations/93b2d8c322b1487a840c1c9113c59aca_IMG_0008.JPG",
         "user_type": "both",
         "questions": [
-            "Where is the J12 room?",
-            "How do I get to J12 room?",
-            "What is the location of J12 room?",
-            "Can you show me J12 room?",
-            "Where can I find J12 room?"
+            [
+                "Where is the J12 room?"
+            ],
+            [
+                "How do I get to J12 room?"
+            ],
+            [
+                "What is the location of J12 room?"
+            ],
+            [
+                "Can you show me J12 room?"
+            ],
+            [
+                "Where can I find J12 room?"
+            ]
         ]
     },
     {
@@ -114,11 +124,21 @@
         "url": "uploads/locations/c6f093682c174036b91557a29062ce2f_IMG_0014.JPG",
         "user_type": "both",
         "questions": [
-            "Where is the J13 room?",
-            "How do I get to J13 room?",
-            "What is the location of J13 room?",
-            "Can you show me J13 room?",
-            "Where can I find J13 room?"
+            [
+                "Where is the J13 room?"
+            ],
+            [
+                "How do I get to J13 room?"
+            ],
+            [
+                "What is the location of J13 room?"
+            ],
+            [
+                "Can you show me J13 room?"
+            ],
+            [
+                "Where can I find J13 room?"
+            ]
         ]
     },
     {
@@ -132,11 +152,21 @@
         "url": "uploads/locations/9c9335516d4143db81d1063cb9e6a20f_IMG_0022.JPG",
         "user_type": "both",
         "questions": [
-            "Where is the J9 room?",
-            "How do I get to J9 room?",
-            "What is the location of J9 room?",
-            "Can you show me J9 room?",
-            "Where can I find J9 room?"
+            [
+                "Where is the J9 room?"
+            ],
+            [
+                "How do I get to J9 room?"
+            ],
+            [
+                "What is the location of J9 room?"
+            ],
+            [
+                "Can you show me J9 room?"
+            ],
+            [
+                "Where can I find J9 room?"
+            ]
         ]
     },
     {
@@ -150,10 +180,18 @@
         "url": "uploads/locations/1948e1a9d00e4ebf86e0412680cd87f2_IMG_0011.JPG",
         "user_type": "both",
         "questions": [
-            "Where is the ICT council office?",
-            "How do I find ICT council office?",
-            "What is the location of ICT council office?",
-            "Where can I locate ICT council office?"
+            [
+                "Where is the ICT council office?"
+            ],
+            [
+                "How do I find ICT council office?"
+            ],
+            [
+                "What is the location of ICT council office?"
+            ],
+            [
+                "Where can I locate ICT council office?"
+            ]
         ]
     },
     {
@@ -168,11 +206,21 @@
         "url": "uploads/locations/a1e6fb906baf4683bb0904dad887c219_e4.....jpeg",
         "user_type": "both",
         "questions": [
-            "Where is the E4 room?",
-            "How do I get to E4 room?",
-            "What is the location of E4 room?",
-            "Can you show me E4 room?",
-            "Where can I find E4 room?"
+            [
+                "Where is the E4 room?"
+            ],
+            [
+                "How do I get to E4 room?"
+            ],
+            [
+                "What is the location of E4 room?"
+            ],
+            [
+                "Can you show me E4 room?"
+            ],
+            [
+                "Where can I find E4 room?"
+            ]
         ]
     },
     {
@@ -186,11 +234,21 @@
         "url": "uploads/locations/61c6d63799ed4cf8bb27fd8f8b20eb4d_ict_lab.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the J17 room?",
-            "How do I get to J17 room?",
-            "What is the location of J17 room?",
-            "Can you show me J17 room?",
-            "Where can I find J17 room?"
+            [
+                "Where is the J17 room?"
+            ],
+            [
+                "How do I get to J17 room?"
+            ],
+            [
+                "What is the location of J17 room?"
+            ],
+            [
+                "Can you show me J17 room?"
+            ],
+            [
+                "Where can I find J17 room?"
+            ]
         ]
     },
     {
@@ -204,11 +262,21 @@
         "url": "uploads/locations/c9876f203cf64673b8d67acb4187b1bf_ictlab.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the J18 room?",
-            "How do I get to J18 room?",
-            "What is the location of J18 room?",
-            "Can you show me J18 room?",
-            "Where can I find J18 room?"
+            [
+                "Where is the J18 room?"
+            ],
+            [
+                "How do I get to J18 room?"
+            ],
+            [
+                "What is the location of J18 room?"
+            ],
+            [
+                "Can you show me J18 room?"
+            ],
+            [
+                "Where can I find J18 room?"
+            ]
         ]
     },
     {
@@ -220,9 +288,15 @@
         "url": "uploads/locations/30ed78665b0946189ec07cd6f939a7ff_CLAC.jpeg",
         "user_type": "both",
         "questions": [
-            "Where is the SOICT CLAC building?",
-            "How do I get to SOICT CLAC building?",
-            "What is the location of SOICT CLAC building?"
+            [
+                "Where is the SOICT CLAC building?"
+            ],
+            [
+                "How do I get to SOICT CLAC building?"
+            ],
+            [
+                "What is the location of SOICT CLAC building?"
+            ]
         ]
     },
     {
@@ -237,8 +311,12 @@
         "user_type": "both",
         "questions": [
             [
-                "Where is room E7?",
-                "Where is ICT director office?",
+                "Where is room E7?"
+            ],
+            [
+                "Where is ICT director office?"
+            ],
+            [
                 "Where is SOICT Director office?"
             ]
         ]
@@ -254,11 +332,21 @@
         "url": "uploads/locations/0ec5e149d83e4dea8b6ebb430c7b2cc7_e6.jpeg",
         "user_type": "both",
         "questions": [
-            "Where is the E6 room?",
-            "How do I get to E6 room?",
-            "What is the location of E6 room?",
-            "Can you show me E6 room?",
-            "Where can I find E6 room?"
+            [
+                "Where is the E6 room?"
+            ],
+            [
+                "How do I get to E6 room?"
+            ],
+            [
+                "What is the location of E6 room?"
+            ],
+            [
+                "Can you show me E6 room?"
+            ],
+            [
+                "Where can I find E6 room?"
+            ]
         ]
     },
     {
@@ -270,11 +358,21 @@
         "url": "uploads/locations/1749c187dbcb40dfbf84f7774b7adac3_e5.jpeg",
         "user_type": "both",
         "questions": [
-            "Where is the E5 room?",
-            "How do I get to E5 room?",
-            "What is the location of E5 room?",
-            "Can you show me E5 room?",
-            "Where can I find E5 room?"
+            [
+                "Where is the E5 room?"
+            ],
+            [
+                "How do I get to E5 room?"
+            ],
+            [
+                "What is the location of E5 room?"
+            ],
+            [
+                "Can you show me E5 room?"
+            ],
+            [
+                "Where can I find E5 room?"
+            ]
         ]
     },
     {
@@ -286,11 +384,21 @@
         "url": "uploads/locations/1a8e66632e03466f8133f8c3b57ffa66_e8.jpeg",
         "user_type": "both",
         "questions": [
-            "Where is the E8 room?",
-            "How do I get to E8 room?",
-            "What is the location of E8 room?",
-            "Can you show me E8 room?",
-            "Where can I find E8 room?"
+            [
+                "Where is the E8 room?"
+            ],
+            [
+                "How do I get to E8 room?"
+            ],
+            [
+                "What is the location of E8 room?"
+            ],
+            [
+                "Can you show me E8 room?"
+            ],
+            [
+                "Where can I find E8 room?"
+            ]
         ]
     },
     {
@@ -302,11 +410,21 @@
         "url": "uploads/locations/ba0195c695a8423cadbd3e19cb93a8ea_e9.jpeg",
         "user_type": "both",
         "questions": [
-            "Where is the E9 room?",
-            "How do I get to E9 room?",
-            "What is the location of E9 room?",
-            "Can you show me E9 room?",
-            "Where can I find E9 room?"
+            [
+                "Where is the E9 room?"
+            ],
+            [
+                "How do I get to E9 room?"
+            ],
+            [
+                "What is the location of E9 room?"
+            ],
+            [
+                "Can you show me E9 room?"
+            ],
+            [
+                "Where can I find E9 room?"
+            ]
         ]
     },
     {
@@ -319,9 +437,15 @@
         "url": "uploads/locations/f3db389a2fe44d6c87945ad4b44b266e_IMG_20251010_133331_161.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the Education building?",
-            "How do I get to Education building?",
-            "What is the location of Education building?"
+            [
+                "Where is the Education building?"
+            ],
+            [
+                "How do I get to Education building?"
+            ],
+            [
+                "What is the location of Education building?"
+            ]
         ]
     },
     {
@@ -335,10 +459,18 @@
         "url": "uploads/locations/440f411cd20644558471584d9104f3c1_IMG_20251010_133352_613.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the education Directors office?",
-            "How do I find education Directors office?",
-            "What is the location of education Directors office?",
-            "Where can I locate education Directors office?"
+            [
+                "Where is the education Directors office?"
+            ],
+            [
+                "How do I find education Directors office?"
+            ],
+            [
+                "What is the location of education Directors office?"
+            ],
+            [
+                "Where can I locate education Directors office?"
+            ]
         ]
     },
     {
@@ -351,11 +483,21 @@
         "url": "uploads/locations/574a55a26edd4108b4b221e29c00ce64_IMG_20251010_133426_902.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the education faculty room?",
-            "How do I get to education faculty room?",
-            "What is the location of education faculty room?",
-            "Can you show me education faculty room?",
-            "Where can I find education faculty room?"
+            [
+                "Where is the education faculty room?"
+            ],
+            [
+                "How do I get to education faculty room?"
+            ],
+            [
+                "What is the location of education faculty room?"
+            ],
+            [
+                "Can you show me education faculty room?"
+            ],
+            [
+                "Where can I find education faculty room?"
+            ]
         ]
     },
     {
@@ -367,11 +509,21 @@
         "url": "uploads/locations/da6c13768e6b405d983250ca674b2074_IMG_20251010_133456_906.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C4 room?",
-            "How do I get to C4 room?",
-            "What is the location of C4 room?",
-            "Can you show me C4 room?",
-            "Where can I find C4 room?"
+            [
+                "Where is the C4 room?"
+            ],
+            [
+                "How do I get to C4 room?"
+            ],
+            [
+                "What is the location of C4 room?"
+            ],
+            [
+                "Can you show me C4 room?"
+            ],
+            [
+                "Where can I find C4 room?"
+            ]
         ]
     },
     {
@@ -384,11 +536,21 @@
         "url": "uploads/locations/bcaa1269f17e4b2caf72ce966d31d7bd_IMG_20251010_133509_622.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C5 room?",
-            "How do I get to C5 room?",
-            "What is the location of C5 room?",
-            "Can you show me C5 room?",
-            "Where can I find C5 room?"
+            [
+                "Where is the C5 room?"
+            ],
+            [
+                "How do I get to C5 room?"
+            ],
+            [
+                "What is the location of C5 room?"
+            ],
+            [
+                "Can you show me C5 room?"
+            ],
+            [
+                "Where can I find C5 room?"
+            ]
         ]
     },
     {
@@ -401,11 +563,21 @@
         "url": "uploads/locations/c899b58b68574b46bb7c29534fbb7967_IMG_20251010_133524_288.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C6 room?",
-            "How do I get to C6 room?",
-            "What is the location of C6 room?",
-            "Can you show me C6 room?",
-            "Where can I find C6 room?"
+            [
+                "Where is the C6 room?"
+            ],
+            [
+                "How do I get to C6 room?"
+            ],
+            [
+                "What is the location of C6 room?"
+            ],
+            [
+                "Can you show me C6 room?"
+            ],
+            [
+                "Where can I find C6 room?"
+            ]
         ]
     },
     {
@@ -417,11 +589,21 @@
         "url": "uploads/locations/163e02d6b1d84fa981ddb76fc39e5da6_IMG_20251010_133535_616.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C7 room?",
-            "How do I get to C7 room?",
-            "What is the location of C7 room?",
-            "Can you show me C7 room?",
-            "Where can I find C7 room?"
+            [
+                "Where is the C7 room?"
+            ],
+            [
+                "How do I get to C7 room?"
+            ],
+            [
+                "What is the location of C7 room?"
+            ],
+            [
+                "Can you show me C7 room?"
+            ],
+            [
+                "Where can I find C7 room?"
+            ]
         ]
     },
     {
@@ -433,11 +615,21 @@
         "url": "uploads/locations/b723295f9a364febae57b275953f68dd_IMG_20251010_133603_791.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C20 room?",
-            "How do I get to C20 room?",
-            "What is the location of C20 room?",
-            "Can you show me C20 room?",
-            "Where can I find C20 room?"
+            [
+                "Where is the C20 room?"
+            ],
+            [
+                "How do I get to C20 room?"
+            ],
+            [
+                "What is the location of C20 room?"
+            ],
+            [
+                "Can you show me C20 room?"
+            ],
+            [
+                "Where can I find C20 room?"
+            ]
         ]
     },
     {
@@ -449,11 +641,21 @@
         "url": "uploads/locations/7cab304b836d44c7abe1f88a8a69455e_IMG_20251010_133617_383.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C21 room?",
-            "How do I get to C21 room?",
-            "What is the location of C21 room?",
-            "Can you show me C21 room?",
-            "Where can I find C21 room?"
+            [
+                "Where is the C21 room?"
+            ],
+            [
+                "How do I get to C21 room?"
+            ],
+            [
+                "What is the location of C21 room?"
+            ],
+            [
+                "Can you show me C21 room?"
+            ],
+            [
+                "Where can I find C21 room?"
+            ]
         ]
     },
     {
@@ -465,11 +667,21 @@
         "url": "uploads/locations/f28ee819d6a546e08556d853df132e0b_IMG_20251010_133631_084.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C22 room?",
-            "How do I get to C22 room?",
-            "What is the location of C22 room?",
-            "Can you show me C22 room?",
-            "Where can I find C22 room?"
+            [
+                "Where is the C22 room?"
+            ],
+            [
+                "How do I get to C22 room?"
+            ],
+            [
+                "What is the location of C22 room?"
+            ],
+            [
+                "Can you show me C22 room?"
+            ],
+            [
+                "Where can I find C22 room?"
+            ]
         ]
     },
     {
@@ -481,11 +693,21 @@
         "url": "uploads/locations/6a84632854254d3799efb0639fddca89_IMG_20251010_133644_736.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C23 room?",
-            "How do I get to C23 room?",
-            "What is the location of C23 room?",
-            "Can you show me C23 room?",
-            "Where can I find C23 room?"
+            [
+                "Where is the C23 room?"
+            ],
+            [
+                "How do I get to C23 room?"
+            ],
+            [
+                "What is the location of C23 room?"
+            ],
+            [
+                "Can you show me C23 room?"
+            ],
+            [
+                "Where can I find C23 room?"
+            ]
         ]
     },
     {
@@ -497,11 +719,21 @@
         "url": "uploads/locations/a7aeb51778944e579fc59af453246536_IMG_20251010_133654_301.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C24 room?",
-            "How do I get to C24 room?",
-            "What is the location of C24 room?",
-            "Can you show me C24 room?",
-            "Where can I find C24 room?"
+            [
+                "Where is the C24 room?"
+            ],
+            [
+                "How do I get to C24 room?"
+            ],
+            [
+                "What is the location of C24 room?"
+            ],
+            [
+                "Can you show me C24 room?"
+            ],
+            [
+                "Where can I find C24 room?"
+            ]
         ]
     },
     {
@@ -518,11 +750,21 @@
         "url": "uploads/locations/688e5a9445a74478b2eac204fbad95d9_IMG_20251010_134230_657.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C34 room?",
-            "How do I get to C34 room?",
-            "What is the location of C34 room?",
-            "Can you show me C34 room?",
-            "Where can I find C34 room?"
+            [
+                "Where is the C34 room?"
+            ],
+            [
+                "How do I get to C34 room?"
+            ],
+            [
+                "What is the location of C34 room?"
+            ],
+            [
+                "Can you show me C34 room?"
+            ],
+            [
+                "Where can I find C34 room?"
+            ]
         ]
     },
     {
@@ -535,11 +777,21 @@
         "url": "uploads/locations/6f07c6ff703d41b19788ab3edc22d6a5_IMG_20251010_134411_161.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C33 room?",
-            "How do I get to C33 room?",
-            "What is the location of C33 room?",
-            "Can you show me C33 room?",
-            "Where can I find C33 room?"
+            [
+                "Where is the C33 room?"
+            ],
+            [
+                "How do I get to C33 room?"
+            ],
+            [
+                "What is the location of C33 room?"
+            ],
+            [
+                "Can you show me C33 room?"
+            ],
+            [
+                "Where can I find C33 room?"
+            ]
         ]
     },
     {
@@ -553,11 +805,21 @@
         "url": "uploads/locations/cb15b70de2e64cb19e4ed1549d273fcb_IMG_20251010_134430_948.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C32 room?",
-            "How do I get to C32 room?",
-            "What is the location of C32 room?",
-            "Can you show me C32 room?",
-            "Where can I find C32 room?"
+            [
+                "Where is the C32 room?"
+            ],
+            [
+                "How do I get to C32 room?"
+            ],
+            [
+                "What is the location of C32 room?"
+            ],
+            [
+                "Can you show me C32 room?"
+            ],
+            [
+                "Where can I find C32 room?"
+            ]
         ]
     },
     {
@@ -570,11 +832,21 @@
         "url": "uploads/locations/9e8a00047e434b49aba668aaba096856_IMG_20251010_134450_361.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C31 room?",
-            "How do I get to C31 room?",
-            "What is the location of C31 room?",
-            "Can you show me C31 room?",
-            "Where can I find C31 room?"
+            [
+                "Where is the C31 room?"
+            ],
+            [
+                "How do I get to C31 room?"
+            ],
+            [
+                "What is the location of C31 room?"
+            ],
+            [
+                "Can you show me C31 room?"
+            ],
+            [
+                "Where can I find C31 room?"
+            ]
         ]
     },
     {
@@ -587,11 +859,21 @@
         "url": "uploads/locations/c9a8e514ec6b4889842a212fc732b787_IMG_20251010_134502_884.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C30 room?",
-            "How do I get to C30 room?",
-            "What is the location of C30 room?",
-            "Can you show me C30 room?",
-            "Where can I find C30 room?"
+            [
+                "Where is the C30 room?"
+            ],
+            [
+                "How do I get to C30 room?"
+            ],
+            [
+                "What is the location of C30 room?"
+            ],
+            [
+                "Can you show me C30 room?"
+            ],
+            [
+                "Where can I find C30 room?"
+            ]
         ]
     },
     {
@@ -604,11 +886,21 @@
         "url": "uploads/locations/cf48d72535284675ae0694e6e086447d_IMG_20251010_134520_819.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C29 room?",
-            "How do I get to C29 room?",
-            "What is the location of C29 room?",
-            "Can you show me C29 room?",
-            "Where can I find C29 room?"
+            [
+                "Where is the C29 room?"
+            ],
+            [
+                "How do I get to C29 room?"
+            ],
+            [
+                "What is the location of C29 room?"
+            ],
+            [
+                "Can you show me C29 room?"
+            ],
+            [
+                "Where can I find C29 room?"
+            ]
         ]
     },
     {
@@ -624,11 +916,21 @@
         "url": "uploads/locations/ae9a8779b67e4bf8a9eb5346c69a0caa_IMG_20251010_134529_224.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C28 room?",
-            "How do I get to C28 room?",
-            "What is the location of C28 room?",
-            "Can you show me C28 room?",
-            "Where can I find C28 room?"
+            [
+                "Where is the C28 room?"
+            ],
+            [
+                "How do I get to C28 room?"
+            ],
+            [
+                "What is the location of C28 room?"
+            ],
+            [
+                "Can you show me C28 room?"
+            ],
+            [
+                "Where can I find C28 room?"
+            ]
         ]
     },
     {
@@ -644,11 +946,21 @@
         "url": "uploads/locations/e5cb4f9a9f1d48bbb28f5940e2c8f3aa_IMG_20251010_133701_488.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C11 room?",
-            "How do I get to C11 room?",
-            "What is the location of C11 room?",
-            "Can you show me C11 room?",
-            "Where can I find C11 room?"
+            [
+                "Where is the C11 room?"
+            ],
+            [
+                "How do I get to C11 room?"
+            ],
+            [
+                "What is the location of C11 room?"
+            ],
+            [
+                "Can you show me C11 room?"
+            ],
+            [
+                "Where can I find C11 room?"
+            ]
         ]
     },
     {
@@ -661,11 +973,21 @@
         "url": "uploads/locations/af408f9bccc44f0fa8b30996825b09b0_IMG_20251010_133716_991.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C12 room?",
-            "How do I get to C12 room?",
-            "What is the location of C12 room?",
-            "Can you show me C12 room?",
-            "Where can I find C12 room?"
+            [
+                "Where is the C12 room?"
+            ],
+            [
+                "How do I get to C12 room?"
+            ],
+            [
+                "What is the location of C12 room?"
+            ],
+            [
+                "Can you show me C12 room?"
+            ],
+            [
+                "Where can I find C12 room?"
+            ]
         ]
     },
     {
@@ -678,11 +1000,21 @@
         "url": "uploads/locations/bdc2fb3bd1604d7e856acbe1ed4761c3_IMG_20251010_133727_239.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C13 room?",
-            "How do I get to C13 room?",
-            "What is the location of C13 room?",
-            "Can you show me C13 room?",
-            "Where can I find C13 room?"
+            [
+                "Where is the C13 room?"
+            ],
+            [
+                "How do I get to C13 room?"
+            ],
+            [
+                "What is the location of C13 room?"
+            ],
+            [
+                "Can you show me C13 room?"
+            ],
+            [
+                "Where can I find C13 room?"
+            ]
         ]
     },
     {
@@ -695,11 +1027,21 @@
         "url": "uploads/locations/6f4f3565d32848099cf7df6e5503d1c6_IMG_20251010_133825_561.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C15 room?",
-            "How do I get to C15 room?",
-            "What is the location of C15 room?",
-            "Can you show me C15 room?",
-            "Where can I find C15 room?"
+            [
+                "Where is the C15 room?"
+            ],
+            [
+                "How do I get to C15 room?"
+            ],
+            [
+                "What is the location of C15 room?"
+            ],
+            [
+                "Can you show me C15 room?"
+            ],
+            [
+                "Where can I find C15 room?"
+            ]
         ]
     },
     {
@@ -712,11 +1054,21 @@
         "url": "uploads/locations/b525fc8103c546a0b5bb846dc0c79466_IMG_20251010_133736_906.jpg",
         "user_type": "both",
         "questions": [
-            "Where is the C14 room?",
-            "How do I get to C14 room?",
-            "What is the location of C14 room?",
-            "Can you show me C14 room?",
-            "Where can I find C14 room?"
+            [
+                "Where is the C14 room?"
+            ],
+            [
+                "How do I get to C14 room?"
+            ],
+            [
+                "What is the location of C14 room?"
+            ],
+            [
+                "Can you show me C14 room?"
+            ],
+            [
+                "Where can I find C14 room?"
+            ]
         ]
     },
     {
@@ -736,11 +1088,21 @@
         ],
         "url": "uploads/locations/cc852f1d1e864afd949ef884fdfef139_Laboratory_room4.jpg",
         "questions": [
-            "Where is the Education laboratory room?",
-            "How do I get to Education laboratory room?",
-            "What is the location of Education laboratory room?",
-            "Can you show me Education laboratory room?",
-            "Where can I find Education laboratory room?"
+            [
+                "Where is the Education laboratory room?"
+            ],
+            [
+                "How do I get to Education laboratory room?"
+            ],
+            [
+                "What is the location of Education laboratory room?"
+            ],
+            [
+                "Can you show me Education laboratory room?"
+            ],
+            [
+                "Where can I find Education laboratory room?"
+            ]
         ]
     },
     {
@@ -757,13 +1119,27 @@
         ],
         "url": "uploads/locations/a62b0a9815f14562bf2a4a1b55b8cddf_wvsu_pc_amphitheatre_2.jpg",
         "questions": [
-            "Where is the Amphitheatre room?",
-            "Where is the Amphitheater room?",
-            "How do I get to Amphitheatre room?",
-            "What is the location of Amphitheatre room?",
-            "Can you show me Amphitheatre room?",
-            "Where can I find Amphi room?",
-            "Where can I find Amphitheater?"
+            [
+                "Where is the Amphitheatre room?"
+            ],
+            [
+                "Where is the Amphitheater room?"
+            ],
+            [
+                "How do I get to Amphitheatre room?"
+            ],
+            [
+                "What is the location of Amphitheatre room?"
+            ],
+            [
+                "Can you show me Amphitheatre room?"
+            ],
+            [
+                "Where can I find Amphi room?"
+            ],
+            [
+                "Where can I find Amphitheater?"
+            ]
         ]
     },
     {
@@ -779,11 +1155,21 @@
         ],
         "url": "uploads/locations/e449736dafcb48899b7f44d6a0f827d2_ED_CR_girls.jpg",
         "questions": [
-            "Where is the Girls CR?",
-            "How do I get to Girls Bathroom?",
-            "What is the location of Women CR?",
-            "Can you show me Women bathroom?",
-            "Where can I find womens bathroom?"
+            [
+                "Where is the Girls CR?"
+            ],
+            [
+                "How do I get to Girls Bathroom?"
+            ],
+            [
+                "What is the location of Women CR?"
+            ],
+            [
+                "Can you show me Women bathroom?"
+            ],
+            [
+                "Where can I find womens bathroom?"
+            ]
         ]
     },
     {
@@ -797,11 +1183,21 @@
         ],
         "url": "uploads/locations/dcd9b03751064b8e867d14040c4fe739_IMG_20251010_134534_435.jpg",
         "questions": [
-            "Where is the Boys bathroom?",
-            "How do I get to Boys CR?",
-            "What is the location of Men bathroom?",
-            "Can you show me Men CR?",
-            "Where can I find Mens room?"
+            [
+                "Where is the Boys bathroom?"
+            ],
+            [
+                "How do I get to Boys CR?"
+            ],
+            [
+                "What is the location of Men bathroom?"
+            ],
+            [
+                "Can you show me Men CR?"
+            ],
+            [
+                "Where can I find Mens room?"
+            ]
         ]
     },
     {
@@ -816,11 +1212,21 @@
         ],
         "url": "uploads/locations/c6e433745afd41d1b762f396bc5f9536_Library.jpg",
         "questions": [
-            "Where is the Library?",
-            "How do I get to Library?",
-            "What is the location of Library?",
-            "Can you show me Library?",
-            "Where can I find Library?"
+            [
+                "Where is the Library?"
+            ],
+            [
+                "How do I get to Library?"
+            ],
+            [
+                "What is the location of Library?"
+            ],
+            [
+                "Can you show me Library?"
+            ],
+            [
+                "Where can I find Library?"
+            ]
         ]
     },
     {
@@ -833,11 +1239,21 @@
         ],
         "url": "uploads/locations/c2760d5aea4745d1af43728e46aa35f4_IMG_20251010_132451_702.jpg",
         "questions": [
-            "Where is the ?Education Entrance",
-            "How do I get to Education Entrance?",
-            "What is the location of Education Entrance?",
-            "Can you show me Education Entrance?",
-            "Where can I find Education Entrance?"
+            [
+                "Where is the Education Entrance?"
+            ],
+            [
+                "How do I get to Education Entrance?"
+            ],
+            [
+                "What is the location of Education Entrance?"
+            ],
+            [
+                "Can you show me Education Entrance?"
+            ],
+            [
+                "Where can I find Education Entrance?"
+            ]
         ]
     },
     {
@@ -849,11 +1265,21 @@
         ],
         "url": "uploads/locations/f5e82e2aaea94699a4440675c7ad2670_j1.jpg",
         "questions": [
-            "Where is the J1 room?",
-            "How do I get to J1 room?",
-            "What is the location of J1 room?",
-            "Can you show me J1 room?",
-            "Where can I find J1 room?"
+            [
+                "Where is the J1 room?"
+            ],
+            [
+                "How do I get to J1 room?"
+            ],
+            [
+                "What is the location of J1 room?"
+            ],
+            [
+                "Can you show me J1 room?"
+            ],
+            [
+                "Where can I find J1 room?"
+            ]
         ]
     },
     {
@@ -865,11 +1291,21 @@
         ],
         "url": "uploads/locations/518191f874774ffab28c8e17a598fe54_J2.jpg",
         "questions": [
-            "Where is the J2 room?",
-            "How do I get to J2 room?",
-            "What is the location of J2 room?",
-            "Can you show me J2 room?",
-            "Where can I find J2 room?"
+            [
+                "Where is the J2 room?"
+            ],
+            [
+                "How do I get to J2 room?"
+            ],
+            [
+                "What is the location of J2 room?"
+            ],
+            [
+                "Can you show me J2 room?"
+            ],
+            [
+                "Where can I find J2 room?"
+            ]
         ]
     },
     {
@@ -881,11 +1317,21 @@
         ],
         "url": "uploads/locations/8eb662f761994c8ab3d803ede84db0e8_j3.jpg",
         "questions": [
-            "Where is the J3 room?",
-            "How do I get to J3 room?",
-            "What is the location of J3 room?",
-            "Can you show me J3 room?",
-            "Where can I find J3 room?"
+            [
+                "Where is the J3 room?"
+            ],
+            [
+                "How do I get to J3 room?"
+            ],
+            [
+                "What is the location of J3 room?"
+            ],
+            [
+                "Can you show me J3 room?"
+            ],
+            [
+                "Where can I find J3 room?"
+            ]
         ]
     },
     {
@@ -897,11 +1343,21 @@
         ],
         "url": "uploads/locations/edfc42ef8c4c4902b9242d1e9f96b50b_j4.jpg",
         "questions": [
-            "Where is the J4 room?",
-            "How do I get to J4 room?",
-            "What is the location of J4 room?",
-            "Can you show me J4 room?",
-            "Where can I find J4 room?"
+            [
+                "Where is the J4 room?"
+            ],
+            [
+                "How do I get to J4 room?"
+            ],
+            [
+                "What is the location of J4 room?"
+            ],
+            [
+                "Can you show me J4 room?"
+            ],
+            [
+                "Where can I find J4 room?"
+            ]
         ]
     },
     {
@@ -915,10 +1371,18 @@
         ],
         "url": "uploads/locations/5b15726246d34f0aaa83e5454274c648_CLAC_and_laboratory_room.jpg",
         "questions": [
-            "Where is the Resto De Parayan?",
-            "How do I get to Food Preparation and Services room?",
-            "What is the location of  room?",
-            "Where can I find SOBM CLAC?"
+            [
+                "Where is the Resto De Parayan?"
+            ],
+            [
+                "How do I get to Food Preparation and Services room?"
+            ],
+            [
+                "What is the location of  room?"
+            ],
+            [
+                "Where can I find SOBM CLAC?"
+            ]
         ]
     },
     {
@@ -932,11 +1396,21 @@
         ],
         "url": "uploads/locations/716721c626714864ad47d55af2c942aa_CLAC_and_laboratory_room.jpg",
         "questions": [
-            "Where is the HM Laboratory?",
-            "How do I get to HM Laboratory room?",
-            "What is the location of BSHM Laboratory room?",
-            "Can you show me BSHM Laboratory room?",
-            "Where can I find HM Laboratory room?"
+            [
+                "Where is the HM Laboratory?"
+            ],
+            [
+                "How do I get to HM Laboratory room?"
+            ],
+            [
+                "What is the location of BSHM Laboratory room?"
+            ],
+            [
+                "Can you show me BSHM Laboratory room?"
+            ],
+            [
+                "Where can I find HM Laboratory room?"
+            ]
         ]
     },
     {
@@ -949,11 +1423,21 @@
         ],
         "url": "uploads/locations/7fa78e06668649a180020fb10dda95b7_hm_dept..jpg",
         "questions": [
-            "Where is the HM Directors Offce room?",
-            "How do I get to Director's Offce of Hospitality Management room?",
-            "What is the location of HM Directors Offce room?",
-            "Can you show me HM Directors Offce room?",
-            "Where can I find HM Directors Offce room?"
+            [
+                "Where is the HM Directors Offce room?"
+            ],
+            [
+                "How do I get to Director's Offce of Hospitality Management room?"
+            ],
+            [
+                "What is the location of HM Directors Offce room?"
+            ],
+            [
+                "Can you show me HM Directors Offce room?"
+            ],
+            [
+                "Where can I find HM Directors Offce room?"
+            ]
         ]
     },
     {
@@ -966,10 +1450,18 @@
         ],
         "url": "uploads/locations/7234303d16134df294e6397ae0e71fe3_parayan_villa.jpg",
         "questions": [
-            "Where is the Parayan VIlla room?",
-            "What is the location of HM Houskeeping room?",
-            "Can you show me Parayan VIlla room?",
-            "Where can I find HM CLAC room?"
+            [
+                "Where is the Parayan VIlla room?"
+            ],
+            [
+                "What is the location of HM Houskeeping room?"
+            ],
+            [
+                "Can you show me Parayan VIlla room?"
+            ],
+            [
+                "Where can I find HM CLAC room?"
+            ]
         ]
     },
     {
@@ -982,10 +1474,18 @@
         ],
         "url": "uploads/locations/66437a9b857e48d59b92e92671097336_hm_bench.jpg",
         "questions": [
-            "Where is the Bench?",
-            "How do I find Resting Place?",
-            "What is the location of Place to Rest?",
-            "Where can I locate Bench?"
+            [
+                "Where is the Bench?"
+            ],
+            [
+                "How do I find Resting Place?"
+            ],
+            [
+                "What is the location of Place to Rest?"
+            ],
+            [
+                "Where can I locate Bench?"
+            ]
         ]
     }
 ]

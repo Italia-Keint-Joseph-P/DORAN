@@ -7,28 +7,12 @@
         ],
         "url": "uploads/locations/2a50c2935e0b42e88562e6ef92af9772_Enrollment_Req.jpg",
         "user_type": "both",
-                "What is enrollment requirements?"
-            ],
-            [
-                "Can you show me requirements for enrollment?"
->>>>>>> 5a71180 (Add search functionality for visuals and locations, update admin pages)
-            ]
-        ]
-=======
         "questions": [
             [
                 "What is enrollment requirements?"
             ],
             [
                 "Can you show me requirements for enrollment?"
-            ]
-        ]
-=======
-                "What is enrollment requirements?"
-            ],
-            [
-                "Can you show me requirements for enrollment?"
->>>>>>> 5a71180 (Add search functionality for visuals and locations, update admin pages)
             ]
         ]
     },
@@ -62,18 +46,6 @@
         "user_type": "both",
         "questions": [
             [
-<<<<<<< HEAD
-            "Who are the ICT faculty members?"
-            ],
-            [
-            "Tell me about ICT faculty members."
-            ],
-            [
-            "Who are the SOICT faculty members?"
-            ],
-            [
-            "Tell me about SOICT faculty members."
-=======
                 "Who are the ICT faculty members?"
             ],
             [
@@ -84,7 +56,6 @@
             ],
             [
                 "Tell me about SOICT faculty members."
->>>>>>> 5a71180 (Add search functionality for visuals and locations, update admin pages)
             ]
         ]
     },
@@ -98,18 +69,19 @@
         "user_type": "both",
         "questions": [
             [
-            "Who is Jeany Rose P. Ignacio?"],
-            [
-            "Can you show me the picture of jeany rose ignacio?"
+                "Who is Jeany Rose P. Ignacio?"
             ],
             [
-            "Tell me about jeany rose ignacio."
+                "Can you show me the picture of jeany rose ignacio?"
             ],
             [
-            "Who is the adviser of ICT council?"
+                "Tell me about jeany rose ignacio."
             ],
             [
-            "Who is the adviser of BSIS 3-B and BSIS 3-A"
+                "Who is the adviser of ICT council?"
+            ],
+            [
+                "Who is the adviser of BSIS 3-B and BSIS 3-A"
             ]
         ]
     },
@@ -145,10 +117,18 @@
         "url": "uploads/locations/b2427464fd8640f4b316b0c9cb7e439a_Associate_prof_4.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Genefere V. Va-ay?",
-            "who is the bsis 2-Adviser ?",
-            "Tell me about Genefere V. Va-a?.",
-            "who serves as the BSIS Extension Coordinator?."
+            [
+                "Who is Genefere V. Va-ay?"
+            ],
+            [
+                "who is the bsis 2-Adviser ?"
+            ],
+            [
+                "Tell me about Genefere V. Va-a?."
+            ],
+            [
+                "who serves as the BSIS Extension Coordinator?."
+            ]
         ]
     },
     {
@@ -160,9 +140,15 @@
         "url": "uploads/locations/d3cc42310bbd485dbc74fe5874300321_Associate_prof_5.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Ma. Elena Grace A. Parcon ?",
-            "Tell me about Ma. Elena Grace A. Parcon.",
-            "Who is the BS Information Technology 4-A Adviser?"
+            [
+                "Who is Ma. Elena Grace A. Parcon ?"
+            ],
+            [
+                "Tell me about Ma. Elena Grace A. Parcon."
+            ],
+            [
+                "Who is the BS Information Technology 4-A Adviser?"
+            ]
         ]
     },
     {
@@ -174,10 +160,18 @@
         "url": "uploads/locations/8ad5873e6c714904b3ab2b36ffc6557f_Associate_prof_five.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Marilyn P. Moncal?",
-            "Tell me about Marilyn P. Moncal.",
-            "Who is the BS Information Technology 1-A Adviser?",
-            "Who is the Coordinator of the Planning and Development Office.?"
+            [
+                "Who is Marilyn P. Moncal?"
+            ],
+            [
+                "Tell me about Marilyn P. Moncal."
+            ],
+            [
+                "Who is the BS Information Technology 1-A Adviser?"
+            ],
+            [
+                "Who is the Coordinator of the Planning and Development Office.?"
+            ]
         ]
     },
     {
@@ -189,10 +183,18 @@
         "url": "uploads/locations/5d9f9bf1ae7a4618878017d31bb2f234_Associate_prof_II.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Janet A. Francisco?",
-            "Tell me about Janet A. Francisco",
-            "Who is the BS Information Technology 2-B Adviser?",
-            "Who is the Research Coordinator of the BSIS or Bs Information systems.?"
+            [
+                "Who is Janet A. Francisco?"
+            ],
+            [
+                "Tell me about Janet A. Francisco"
+            ],
+            [
+                "Who is the BS Information Technology 2-B Adviser?"
+            ],
+            [
+                "Who is the Research Coordinator of the BSIS or Bs Information systems.?"
+            ]
         ]
     },
     {
@@ -224,10 +226,18 @@
         "url": "uploads/locations/326fb623a3f14174a82b9a02ff90ad1f_Associate_prof_one.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Bernadette T. Silvederio?",
-            "Tell me about Bernadette T. Silvederio",
-            "Who is the BS InfoTech 3-B Adviser?",
-            "Who is the Extension Coordinator for BS InfoTech?"
+            [
+                "Who is Bernadette T. Silvederio?"
+            ],
+            [
+                "Tell me about Bernadette T. Silvederio"
+            ],
+            [
+                "Who is the BS InfoTech 3-B Adviser?"
+            ],
+            [
+                "Who is the Extension Coordinator for BS InfoTech?"
+            ]
         ]
     },
     {
@@ -239,13 +249,27 @@
         "url": "uploads/locations/b2c972be1a4e449a8971cca9dda31ce9_Associate_prof_V.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Rita L. Jaudian?",
-            "Can you show me Rita L. Jaudian?",
-            "Tell me about Rita L. Jaudian.",
-            "Who is BS InfoTech 2-A and BS InfoTech 2-C Adviser?",
-            "Who is BS InfoTech 2-A  Adviser?",
-            "Who is BS InfoTech 2-C Adviser?",
-            "Who is the Program Head for BS InfoTech.?"
+            [
+                "Who is Rita L. Jaudian?"
+            ],
+            [
+                "Can you show me Rita L. Jaudian?"
+            ],
+            [
+                "Tell me about Rita L. Jaudian."
+            ],
+            [
+                "Who is BS InfoTech 2-A and BS InfoTech 2-C Adviser?"
+            ],
+            [
+                "Who is BS InfoTech 2-A  Adviser?"
+            ],
+            [
+                "Who is BS InfoTech 2-C Adviser?"
+            ],
+            [
+                "Who is the Program Head for BS InfoTech.?"
+            ]
         ]
     },
     {
@@ -257,15 +281,33 @@
         "url": "uploads/locations/bd84cc3aa5534af787187831b1edec88_Instructor_three.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Claudine Mae L. Leysa?",
-            "Who is BS InfoTech 4-B and InfoTech 4-C Adviser?",
-            "Who is BS InfoTech 4-B?",
-            "Who is BS InfoTech 4-C Adviser?",
-            "Who is BS ICTzen Adviser?",
-            "Who is the Coordinator of PALO?",
-            "Who is the Coordinator of Public Affairs and Linkages Office?",
-            "Tell me about Claudine Mae L. Leysa.?",
-            "Who is the Research Coordinator for BS InfoTech?"
+            [
+                "Who is Claudine Mae L. Leysa?"
+            ],
+            [
+                "Who is BS InfoTech 4-B and InfoTech 4-C Adviser?"
+            ],
+            [
+                "Who is BS InfoTech 4-B?"
+            ],
+            [
+                "Who is BS InfoTech 4-C Adviser?"
+            ],
+            [
+                "Who is BS ICTzen Adviser?"
+            ],
+            [
+                "Who is the Coordinator of PALO?"
+            ],
+            [
+                "Who is the Coordinator of Public Affairs and Linkages Office?"
+            ],
+            [
+                "Tell me about Claudine Mae L. Leysa.?"
+            ],
+            [
+                "Who is the Research Coordinator for BS InfoTech?"
+            ]
         ]
     },
     {
@@ -277,13 +319,27 @@
         "url": "uploads/locations/1ca5f1370cd7433b947af5b62ab281b6_Job_order.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Rhenly L. Fango?",
-            "Who is Job Order of Ict?",
-            "Who is JO of Ict?",
-            "What is Rhenly L. Fango's position?",
-            "Tell me about Rhenly L. Fango.",
-            "Who is the Administrative Aide III?",
-            "Can you show me the picture of Rhenly L. Fango?"
+            [
+                "Who is Rhenly L. Fango?"
+            ],
+            [
+                "Who is Job Order of Ict?"
+            ],
+            [
+                "Who is JO of Ict?"
+            ],
+            [
+                "What is Rhenly L. Fango's position?"
+            ],
+            [
+                "Tell me about Rhenly L. Fango."
+            ],
+            [
+                "Who is the Administrative Aide III?"
+            ],
+            [
+                "Can you show me the picture of Rhenly L. Fango?"
+            ]
         ]
     },
     {
@@ -295,11 +351,21 @@
         "url": "uploads/locations/820603a5478e4d26a17b8d4e66464666_Part_time_1.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Mark Daniel C. Ramos?",
-            "What is Mark Daniel C. Ramos's role?",
-            "Who is the BS InfoTech 2-C Co-Adviser?",
-            "Tell me about Mark Daniel C. Ramos.",
-            "Can you show me the picture of Mark Daniel C. Ramos?"
+            [
+                "Who is Mark Daniel C. Ramos?"
+            ],
+            [
+                "What is Mark Daniel C. Ramos's role?"
+            ],
+            [
+                "Who is the BS InfoTech 2-C Co-Adviser?"
+            ],
+            [
+                "Tell me about Mark Daniel C. Ramos."
+            ],
+            [
+                "Can you show me the picture of Mark Daniel C. Ramos?"
+            ]
         ]
     },
     {
@@ -311,10 +377,18 @@
         "url": "uploads/locations/657a99a7446d478483b137909ed2940d_Part_time_2.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Ms. kimberly B. Dosado.",
-            "BSIS 3-B  Co-Adviser?",
-            "Can you show me Ms. kimberly B. Dosado.?",
-            "Tell me about Ms. kimberly B. Dosado. "
+            [
+                "Who is Kimberly B. Dosado."
+            ],
+            [
+                "Who is the BSIS 3-B  Co-Adviser?"
+            ],
+            [
+                "Can you show me Ms. Kimberly B. Dosado.?"
+            ],
+            [
+                "Tell me about Ms. Kimberly B. Dosado."
+            ]
         ]
     },
     {
@@ -326,10 +400,18 @@
         "url": "uploads/locations/247c7e1bfc874ecabd4d96c8972e00a6_Part_time_3.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Mr. Christian P. Pineda.?",
-            "who is the BS InfoTech 4-C Co-Adviser?",
-            "Can you show me Mr. Christian P. Pineda.?",
-            "Tell me about Mr. Christian P. Pineda. "
+            [
+                "Who is Mr. Christian P. Pineda.?"
+            ],
+            [
+                "who is the BS InfoTech 4-C Co-Adviser?"
+            ],
+            [
+                "Can you show me Mr. Christian P. Pineda.?"
+            ],
+            [
+                "Tell me about Mr. Christian P. Pineda."
+            ]
         ]
     },
     {
@@ -341,10 +423,18 @@
         "url": "uploads/locations/87c0d683c1ae457c8e89357fb17b789e_Part_time_4.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Ms. San Cai P. Pastera.?",
-            "BS InfoTech 3-A Co-Adviser.?",
-            "Can you show me Ms. San Cai P. Pastera. ?",
-            "Tell me about Ms. San Cai P. Pastera."
+            [
+                "Who is Ms. San Cai P. Pastera.?"
+            ],
+            [
+                "BS InfoTech 3-A Co-Adviser.?"
+            ],
+            [
+                "Can you show me Ms. San Cai P. Pastera. ?"
+            ],
+            [
+                "Tell me about Ms. San Cai P. Pastera."
+            ]
         ]
     },
     {
@@ -356,10 +446,18 @@
         "url": "uploads/locations/8e78229de47f486881c8fd402bc51a1e_Part_time_5.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Ms. Clea Jane D. Camare.?",
-            "Can you show me Ms. Clea Jane D. Camare. ?",
-            "who is the BSIS 2-A Co-Adviser?",
-            "Tell me about Ms. Clea Jane D. Camare."
+            [
+                "Who is Ms. Clea Jane D. Camare.?"
+            ],
+            [
+                "Can you show me Ms. Clea Jane D. Camare. ?"
+            ],
+            [
+                "who is the BSIS 2-A Co-Adviser?"
+            ],
+            [
+                "Tell me about Ms. Clea Jane D. Camare."
+            ]
         ]
     },
     {
@@ -371,11 +469,21 @@
         "url": "uploads/locations/8234b53f6bb24d7a8823f94426fbcf35_Part_time_6.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Ms. Nicole Jane M. Suarez.?",
-            "who is  BS InfoTech 1-A Co-Adviser",
-            "Can you show me Ms. Nicole Jane M. Suarez.?",
-            "Tell me about Ms. Nicole Jane M. Suarez.",
-            "What is Ms. Nicole Jane M. Suarez role?"
+            [
+                "Who is Ms. Nicole Jane M. Suarez.?"
+            ],
+            [
+                "who is  BS InfoTech 1-A Co-Adviser"
+            ],
+            [
+                "Can you show me Ms. Nicole Jane M. Suarez.?"
+            ],
+            [
+                "Tell me about Ms. Nicole Jane M. Suarez."
+            ],
+            [
+                "What is Ms. Nicole Jane M. Suarez role?"
+            ]
         ]
     },
     {
@@ -387,10 +495,18 @@
         "url": "uploads/locations/022cb7523a3a476289929e9c820407f6_Part_time.jpg",
         "user_type": "both",
         "questions": [
-            "Who is Mr. Alvin T. Villaruel.?",
-            "Can you show me Mr. Alvin T. Villaruel.?",
-            "who is BS InfoTech 1-B Co-Adviser?",
-            "Tell me about Mr. Alvin T. Villaruel."
+            [
+                "Who is Mr. Alvin T. Villaruel.?"
+            ],
+            [
+                "Can you show me Mr. Alvin T. Villaruel.?"
+            ],
+            [
+                "who is BS InfoTech 1-B Co-Adviser?"
+            ],
+            [
+                "Tell me about Mr. Alvin T. Villaruel."
+            ]
         ]
     },
     {
@@ -476,10 +592,18 @@
         ],
         "url": "uploads/locations/5462ddcd69a140a39b25cf095fc8baf6_Chairperson.jpg",
         "questions": [
-            "Who is the Ictzen Officers For A. Y. 2025-2026?",
-            "Can you show me the Ictzen Officers For A. Y. 2025-2026?",
-            "What is the Set Of Ictzen Officers For A. Y. 2025-2026's role?",
-            "Who is the  Ictzen Officers For A. Y. 2025-2026?"
+            [
+                "Who is the Ictzen Officers For A. Y. 2025-2026?"
+            ],
+            [
+                "Can you show me the Ictzen Officers For A. Y. 2025-2026?"
+            ],
+            [
+                "What is the Set Of Ictzen Officers For A. Y. 2025-2026's role?"
+            ],
+            [
+                "Who is the  Ictzen Officers For A. Y. 2025-2026?"
+            ]
         ]
     },
     {
@@ -491,11 +615,21 @@
         ],
         "url": "uploads/locations/76a4e0be61d840afad0b4176c3c8d81d_Chairperson.jpg",
         "questions": [
-            "Who is the Ictzen'S Editor In Chief Or Chairman",
-            "Can you show me the Ictzen'S Editor-In-Chief  Chairperson?",
-            "Tell me about the Ictzen'S Editor-In-Chief  Chairperson.",
-            "Who is the Ictzen'S Editor-In-Chief?",
-            "Who is the Ictzen chairman"
+            [
+                "Who is the Ictzen'S Editor In Chief Or Chairman"
+            ],
+            [
+                "Can you show me the Ictzen'S Editor-In-Chief  Chairperson?"
+            ],
+            [
+                "Tell me about the Ictzen'S Editor-In-Chief  Chairperson."
+            ],
+            [
+                "Who is the Ictzen'S Editor-In-Chief?"
+            ],
+            [
+                "Who is the Ictzen chairman"
+            ]
         ]
     },
     {
@@ -561,11 +695,21 @@
         ],
         "url": "uploads/locations/451dc0289fd445e281da561fb55101eb_Treasurer.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen staff?"
+            ],
+            [
+                "Can you show me the ICTzen staff?"
+            ],
+            [
+                "Tell me about the ICTzen staff."
+            ],
+            [
+                "What is the ICTzen staff's role?"
+            ],
+            [
+                "Where can I find information about the ICTzen staff?"
+            ]
         ]
     },
     {
@@ -577,11 +721,21 @@
         ],
         "url": "uploads/locations/e82533e54a2742028cab06d9fb7d9e7f_Asst_Treasurer.jpg",
         "questions": [
-            "Who is the Ictzen'S Asst.Treasurer And Sr.Photographer?",
-            "Can you show me the Ictzen'S Asst.Treasurer And Sr.Photographer?",
-            "Tell me about the Ictzen'S Asst.Treasurer And Sr.Photographer.",
-            "What is the Ictzen'S Asst.Treasurer And Sr.Photographer's role?",
-            "Where can I find information about the Ictzen'S Asst.Treasurer And Sr.Photographer?"
+            [
+                "Who is the Ictzen'S Asst.Treasurer And Sr.Photographer?"
+            ],
+            [
+                "Can you show me the Ictzen'S Asst.Treasurer And Sr.Photographer?"
+            ],
+            [
+                "Tell me about the Ictzen'S Asst.Treasurer And Sr.Photographer."
+            ],
+            [
+                "What is the Ictzen'S Asst.Treasurer And Sr.Photographer's role?"
+            ],
+            [
+                "Where can I find information about the Ictzen'S Asst.Treasurer And Sr.Photographer?"
+            ]
         ]
     },
     {
@@ -593,11 +747,21 @@
         ],
         "url": "uploads/locations/0d8e7308bc08427997ecec798e102580_Bus_Manager.jpg",
         "questions": [
-            "Who is the Ictzen'S Business Manager Also News And Literary Editor?",
-            "Can you show me the Ictzen'S Business Manager Also News And Literary Editor?",
-            "Tell me about the Ictzen'S Business Manager Also News And Literary Editor.",
-            "What is the Ictzen'S Business Manager Also News And Literary Editor's role?",
-            "Where can I find information about the Ictzen'S Business Manager Also News And Literary Editor?"
+            [
+                "Who is the Ictzen'S Business Manager Also News And Literary Editor?"
+            ],
+            [
+                "Can you show me the Ictzen'S Business Manager Also News And Literary Editor?"
+            ],
+            [
+                "Tell me about the Ictzen'S Business Manager Also News And Literary Editor."
+            ],
+            [
+                "What is the Ictzen'S Business Manager Also News And Literary Editor's role?"
+            ],
+            [
+                "Where can I find information about the Ictzen'S Business Manager Also News And Literary Editor?"
+            ]
         ]
     },
     {
@@ -609,11 +773,21 @@
         ],
         "url": "uploads/locations/cda48eb5890148abaa4ba48d0906c123_Asst_Bus_Manager.jpg",
         "questions": [
-            "Who is the Ictzen'S Asst. Business Manager And Also Videographer?",
-            "Can you show me the Ictzen'S Asst. Business Manager And Also Videographer?",
-            "Tell me about the Ictzen'S Asst. Business Manager And Also Videographer.",
-            "What is the Ictzen'S Asst. Business Manager And Also Videographer's role?",
-            "Where can I find information about the Ictzen'S Asst. Business Manager And Also Videographer?"
+            [
+                "Who is the Ictzen'S Asst. Business Manager And Also Videographer?"
+            ],
+            [
+                "Can you show me the Ictzen'S Asst. Business Manager And Also Videographer?"
+            ],
+            [
+                "Tell me about the Ictzen'S Asst. Business Manager And Also Videographer."
+            ],
+            [
+                "What is the Ictzen'S Asst. Business Manager And Also Videographer's role?"
+            ],
+            [
+                "Where can I find information about the Ictzen'S Asst. Business Manager And Also Videographer?"
+            ]
         ]
     },
     {
@@ -625,11 +799,21 @@
         ],
         "url": "uploads/locations/0dc34f3021e9446ca0787ac1726d3166_Muse.jpg",
         "questions": [
-            "Who is the Ictzen'S Muse?",
-            "Can you show me the Ictzen'S Muse?",
-            "Tell me about the Ictzen'S Muse.",
-            "What is the Ictzen'S Muse's role?",
-            "Where can I find information about the Ictzen'S Muse?"
+            [
+                "Who is the Ictzen'S Muse?"
+            ],
+            [
+                "Can you show me the Ictzen'S Muse?"
+            ],
+            [
+                "Tell me about the Ictzen'S Muse."
+            ],
+            [
+                "What is the Ictzen'S Muse's role?"
+            ],
+            [
+                "Where can I find information about the Ictzen'S Muse?"
+            ]
         ]
     },
     {
@@ -641,11 +825,21 @@
         ],
         "url": "uploads/locations/f5f643f04372490cb0db1f7472282ec0_Escort.jpg",
         "questions": [
-            "Who is the Ictzen'S Escort?",
-            "Can you show me the Ictzen'S Escort?",
-            "Tell me about the Ictzen'S Escort.",
-            "What is the Ictzen'S Escort's role?",
-            "Where can I find information about the Ictzen'S Escort?"
+            [
+                "Who is the Ictzen'S Escort?"
+            ],
+            [
+                "Can you show me the Ictzen'S Escort?"
+            ],
+            [
+                "Tell me about the Ictzen'S Escort."
+            ],
+            [
+                "What is the Ictzen'S Escort's role?"
+            ],
+            [
+                "Where can I find information about the Ictzen'S Escort?"
+            ]
         ]
     },
     {
@@ -659,11 +853,21 @@
         ],
         "url": "uploads/locations/307cd2584ddd4d4d83a019f3df1856eb_PIO.jpg",
         "questions": [
-            "Who is the Ictzen'S P.I.O?",
-            "Can you show me the Ictzen'S P.I.O?",
-            "Tell me about the Ictzen'S P.I.O.",
-            "What is the Ictzen'S P.I.O's role?",
-            "Where can I find information about the Ictzen'S P.I.O?"
+            [
+                "Who is the Ictzen P.I.O?"
+            ],
+            [
+                "Who is the Ictzen PIO?"
+            ],
+            [
+                "Tell me about the Ictzen P.I.O."
+            ],
+            [
+                "What is the Ictzen PIO role?"
+            ],
+            [
+                "Where can I find information about the Ictzen P.I.O?"
+            ]
         ]
     },
     {
@@ -676,11 +880,21 @@
         ],
         "url": "uploads/locations/5fc4f2fcda6d4ebba1c12bdf8478e98f_janet.jpg",
         "questions": [
-            "Who is ICT research coordinators are Janet A. Francisco?",
-            "Can you show me ICT research coordinators are Janet A. Francisco?",
-            "Tell me about ICT research coordinators are Janet A. Francisco.",
-            "What is ICT research coordinators are Janet A. Francisco's role?",
-            "Where can I find information about ICT research coordinators are Janet A. Francisco?"
+            [
+                "Who is ICT research coordinators?"
+            ],
+            [
+                "Who is SOICT research coordinators?"
+            ],
+            [
+                "Tell me about ICT research coordinators"
+            ],
+            [
+                "What is ICT research coordinators?"
+            ],
+            [
+                "Where can I find information about ICT research coordinators?"
+            ]
         ]
     },
     {
@@ -693,11 +907,21 @@
         ],
         "url": "uploads/locations/468cb00e06c0457dabd1d943774f149b_rita.jpg",
         "questions": [
-            "Who is ICT Program Head are Rita L. Jaudian?",
-            "Can you show me ICT Program Head are Rita L. Jaudian?",
-            "Tell me about ICT Program Head are Rita L. Jaudian.",
-            "What is ICT Program Head are Rita L. Jaudian's role?",
-            "Where can I find information about ICT Program Head are Rita L. Jaudian?"
+            [
+                "Who is ICT Program Head?"
+            ],
+            [
+                "Who is SOICT Program Head?"
+            ],
+            [
+                "Tell me about ICT Program Head."
+            ],
+            [
+                "What is ICT Program Head?"
+            ],
+            [
+                "Where can I find information about ICT Program Head?"
+            ]
         ]
     },
     {
@@ -710,11 +934,21 @@
         ],
         "url": "uploads/locations/20e21fd9ce634b639999b2086ac22782_meg.jpg",
         "questions": [
-            "Who are the ICT Student Council members?",
-            "Can you show me the ICT Student Council?",
-            "Tell me about the ICT Student Council.",
-            "What are the details on the ICT Student Council?",
-            "Where can I find information about the ICT Student Council?"
+            [
+                "Who are the ICT Student Council members?"
+            ],
+            [
+                "Can you show me the ICT Student Council?"
+            ],
+            [
+                "Tell me about the ICT Student Council."
+            ],
+            [
+                "What are the details on the ICT Student Council?"
+            ],
+            [
+                "Where can I find information about the ICT Student Council?"
+            ]
         ]
     },
     {
@@ -727,11 +961,18 @@
         ],
         "url": "uploads/locations/9e9e91a9eb3d407a95246e1bfd4a0f52_bernadette.jpg",
         "questions": [
-            "What is this?",
-            "Can you show me this?",
-            "Tell me about this.",
-            "What are the details on this?",
-            "Where can I find information about this?"
+            [
+                "Who are the extension Coordinator for BS Info Tech?"
+            ],
+            [
+                "Who are the extension Coordinator for BSIS?"
+            ],
+            [
+                "Who are the extension Coordinator for BS Information Technology?"
+            ],
+            [
+                "Who are the extension Coordinator for BS Information Systems?"
+            ]
         ]
     },
     {
@@ -747,11 +988,15 @@
         ],
         "url": "uploads/locations/0a0473e5d2f945d6a9a4a26a0a98a82a_dessa.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Videographers?"
+            ],
+            [
+                "Can you show me the ICTzen Videographers?"
+            ],
+            [
+                "Tell me about the ICTzen Videographers."
+            ]
         ]
     },
     {
@@ -763,11 +1008,12 @@
         ],
         "url": "uploads/locations/cd75121f2fe742a79513d343d15e7e72_dessa.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Lead videographer?"
+            ],
+            [
+                "Can you show me the ICTzen Lead videographer?"
+            ]
         ]
     },
     {
@@ -782,11 +1028,12 @@
         ],
         "url": "uploads/locations/cad460f00e94491fbcea5a6beed76c16_dessa.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen senior videographers?"
+            ],
+            [
+                "Can you show me the ICTzen senior videographers ?"
+            ]
         ]
     },
     {
@@ -798,11 +1045,9 @@
         ],
         "url": "uploads/locations/d8d8f3aef8904136a462353c1578c924_frenz.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Junior Videographer?"
+            ]
         ]
     },
     {
@@ -815,11 +1060,9 @@
         ],
         "url": "uploads/locations/34d1d2a0b98e43b881c4e9fab61fa206_gilbert.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Drone Pilot?"
+            ]
         ]
     },
     {
@@ -838,11 +1081,15 @@
         ],
         "url": "uploads/locations/1f698425648246a8b2a19006f328132d_denzel.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Photographers?"
+            ],
+            [
+                "Can you show me the ICTzen Photographers?"
+            ],
+            [
+                "Tell me about the ICTzen Photographers."
+            ]
         ]
     },
     {
@@ -854,11 +1101,15 @@
         ],
         "url": "uploads/locations/ddf2ca55e6814185998c736758d170cb_denzel.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Lead Photographer?"
+            ],
+            [
+                "Can you show me the ICTzen Lead Photographer?"
+            ],
+            [
+                "Tell me about the ICTzen Lead Photographer."
+            ]
         ]
     },
     {
@@ -871,11 +1122,15 @@
         ],
         "url": "uploads/locations/0842db38abeb458983714b06ee88d0d4_althea.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Junior Photographers?"
+            ],
+            [
+                "Can you show me the ICTzen Junior Photographers?"
+            ],
+            [
+                "Tell me about the ICTzen Junior Photographers."
+            ]
         ]
     },
     {
@@ -891,11 +1146,15 @@
         ],
         "url": "uploads/locations/0c9fdd6029734168bbeaf16d93dd68d2_denzel.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen senior photographers?"
+            ],
+            [
+                "Can you show me the ICTzen senior photographers?"
+            ],
+            [
+                "Tell me about the ICTzen senior photographers."
+            ]
         ]
     },
     {
@@ -913,11 +1172,15 @@
         ],
         "url": "uploads/locations/c5f1da8804ac43ccafce35133fb292be_kim.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Photo Editors?"
+            ],
+            [
+                "Can you show me the ICTzen Photo Editors?"
+            ],
+            [
+                "Tell me about the ICTzen Photo Editors."
+            ]
         ]
     },
     {
@@ -929,11 +1192,15 @@
         ],
         "url": "uploads/locations/f7318f4511cc45f78de94614837b036a_kim.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Lead Photo Editor?"
+            ],
+            [
+                "Can you show me the ICTzen Lead Photo Editor?"
+            ],
+            [
+                "Tell me about the ICTzen Lead Photo Editor."
+            ]
         ]
     },
     {
@@ -947,11 +1214,15 @@
         ],
         "url": "uploads/locations/04acb62d27064d0389220cacd80636cc_blessa.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Junior Photo Editor?"
+            ],
+            [
+                "Can you show me the ICTzen Junior Photo Editor?"
+            ],
+            [
+                "Tell me about the ICTzen Junior Photo Editor."
+            ]
         ]
     },
     {
@@ -966,11 +1237,15 @@
         ],
         "url": "uploads/locations/30b1cd882d4e42efac32af9c0d65fe16_kim.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Senior Photo Editors?"
+            ],
+            [
+                "Can you show me the ICTzen Senior Photo Editors?"
+            ],
+            [
+                "Tell me about the ICTzen Senior Photo Editors."
+            ]
         ]
     },
     {
@@ -985,11 +1260,15 @@
         ],
         "url": "uploads/locations/a4564a3ba21e41249dad6cf550a0d0cd_gilbert.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen video editors?"
+            ],
+            [
+                "Can you show me the ICTzen video editors?"
+            ],
+            [
+                "Tell me about the ICTzen video editors."
+            ]
         ]
     },
     {
@@ -1001,11 +1280,15 @@
         ],
         "url": "uploads/locations/9f3f40b4e1514111a032d3fb6a0d42c2_gilbert.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Lead Video Editor?"
+            ],
+            [
+                "Can you show me the ICTzen Lead Video Editor?"
+            ],
+            [
+                "Tell me about the ICTzen Lead Video Editor."
+            ]
         ]
     },
     {
@@ -1019,11 +1302,15 @@
         ],
         "url": "uploads/locations/52dd235d32e04fb2a09c09f03b01a18f_gilbert.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Senior video editors?"
+            ],
+            [
+                "Can you show me the ICTzen Senior video editors?"
+            ],
+            [
+                "Tell me about the ICTzen Senior video editors."
+            ]
         ]
     },
     {
@@ -1035,11 +1322,15 @@
         ],
         "url": "uploads/locations/654e441fd10042938f2a387058ebe8b6_frenz.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Junior video editor?"
+            ],
+            [
+                "Can you show me the ICTzen Junior video editor?"
+            ],
+            [
+                "Tell me about the ICTzen Junior video editor."
+            ]
         ]
     },
     {
@@ -1055,11 +1346,15 @@
         ],
         "url": "uploads/locations/068e4b7622c04029b3c01210fc865c4c_zhai.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen News and Literary editors?"
+            ],
+            [
+                "Can you show me the ICTzen News and Literary editors?"
+            ],
+            [
+                "Tell me about the ICTzen News and Literary editors."
+            ]
         ]
     },
     {
@@ -1071,11 +1366,15 @@
         ],
         "url": "uploads/locations/4bc4de8fc0fa42f3ae4231475c13ab7d_michelle.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Cartoonist?"
+            ],
+            [
+                "Can you show me the ICTzen Cartoonist?"
+            ],
+            [
+                "Tell me about the ICTzen Cartoonist."
+            ]
         ]
     },
     {
@@ -1089,11 +1388,15 @@
         ],
         "url": "uploads/locations/74f54399a2aa4b229ad111141638138a_dhan.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Lay out artist?"
+            ],
+            [
+                "Can you show me the ICTzen Lay out artist?"
+            ],
+            [
+                "Tell me about the ICTzen Lay out artist."
+            ]
         ]
     },
     {
@@ -1105,11 +1408,15 @@
         ],
         "url": "uploads/locations/0509c1cee64d4e65af7c0aea457f5209_flor.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Lead layout artist?"
+            ],
+            [
+                "Can you show me the ICTzen Lead layout artist?"
+            ],
+            [
+                "Tell me about the ICTzen Lead layout artist."
+            ]
         ]
     },
     {
@@ -1121,11 +1428,15 @@
         ],
         "url": "uploads/locations/2aca2c8ee1f14cbd9f89b5d83bb7f40a_farlyn.jpg",
         "questions": [
-            "Who is the ICTzen staff?",
-            "Can you show me the ICTzen staff?",
-            "Tell me about the ICTzen staff.",
-            "What is the ICTzen staff's role?",
-            "Where can I find information about the ICTzen staff?"
+            [
+                "Who is the ICTzen Contributor?"
+            ],
+            [
+                "Can you show me the ICTzen Contributor?"
+            ],
+            [
+                "Tell me about the ICTzen Contributor."
+            ]
         ]
     },
     {
