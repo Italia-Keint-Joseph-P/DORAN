@@ -2,6 +2,7 @@
 
 ## Completed
 - [x] Analyze bottlenecks: TF-IDF fitting per query and spell correction in preprocessing.
+- [x] Add missing JSON editor routes (/admin/load_json, /admin/save_json, /admin/upload_json) to app.py for admin JSON editing functionality.
 
 ## In Progress
 - [ ] Disable spell correction in preprocess_text (nlp_utils.py).
@@ -11,3 +12,4 @@
 
 ## Pending
 - [ ] If time not under 5s, explore further optimizations like caching preprocessed texts.
+- [ ] Set up Railway persistent volume for JSON file persistence on Railway (read-only file system workaround).
