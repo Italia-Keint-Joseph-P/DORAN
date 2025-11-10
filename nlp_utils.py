@@ -45,10 +45,12 @@ def preprocess_text(text):
     # Remove punctuation but keep numbers and hyphens
     text = re.sub(r'[^\w\s-]', '', text)
     text = re.sub(r'\s+', ' ', text).strip()
-    # Spell correction
+    # Spell correction disabled for performance
+    # tokens = text.split()
+    # corrected_tokens = [spell.correction(word) if spell.correction(word) else word for word in tokens]
+    # text = ' '.join(corrected_tokens)
     tokens = text.split()
-    corrected_tokens = [spell.correction(word) if spell.correction(word) else word for word in tokens]
-    text = ' '.join(corrected_tokens)
+    corrected_tokens = tokens  # No correction
     # Synonym expansion disabled for performance - can re-enable if needed
     # expanded_tokens = []
     # for word in corrected_tokens:
@@ -63,22 +65,25 @@ def preprocess_text(text):
     tokens = [lemmatizer.lemmatize(word) for word in corrected_tokens if word not in stop_words and len(word) > 1]
     return ' '.join(tokens)
 
-def semantic_similarity(query, corpus, threshold=0.3):
+def semantic_similarity(query, corpus, threshold=0.3, precomputed_matrix=None, precomputed_corpus=None):
     """
     Compute TF-IDF cosine similarity between query and corpus sentences.
+    If precomputed_matrix and precomputed_corpus are provided and match corpus, use them to avoid refitting.
     Returns the most similar sentence and similarity score if above threshold.
     """
     if not corpus:
         return None, 0.0
 
-    # Preprocess all texts
-    processed_texts = [preprocess_text(query)] + [preprocess_text(sent) for sent in corpus]
-
-    # Fit TF-IDF vectorizer on all texts
-    tfidf_matrix = vectorizer.fit_transform(processed_texts)
-
-    # Compute cosine similarity between query (first row) and corpus
-    cosine_similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
+    if precomputed_matrix is not None and precomputed_corpus == corpus:
+        # Use precomputed matrix
+        processed_query = preprocess_text(query)
+        query_vector = vectorizer.transform([processed_query])
+        cosine_similarities = cosine_similarity(query_vector, precomputed_matrix).flatten()
+    else:
+        # Fit new vectorizer
+        processed_texts = [preprocess_text(query)] + [preprocess_text(sent) for sent in corpus]
+        tfidf_matrix = vectorizer.fit_transform(processed_texts)
+        cosine_similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
 
     # Find best match
     best_idx = np.argmax(cosine_similarities)

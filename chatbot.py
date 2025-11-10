@@ -70,6 +70,45 @@ class Chatbot:
         # Initialize context tracking for conversation history
         self.conversation_history = {}
 
+        # Precompute TF-IDF for performance
+        self.precompute_tfidf()
+
+        # Cache email directory for faster lookups
+        self.cached_emails = self.cache_emails()
+
+    def precompute_tfidf(self):
+        """
+        Precompute TF-IDF vectors for all rules to improve performance.
+        """
+        from nlp_utils import preprocess_text, vectorizer
+        all_questions = []
+        for rule in self.rules + self.guest_rules + self.location_rules + self.visual_rules:
+            questions = rule.get('questions', []) or rule.get('question', '')
+            if isinstance(questions, str):
+                questions = [questions]
+            flattened_questions = []
+            for q in questions:
+                if isinstance(q, str):
+                    flattened_questions.append(q)
+                elif isinstance(q, list):
+                    flattened_questions.extend(q)
+            all_questions.extend(flattened_questions)
+        # Preprocess all questions
+        processed_questions = [preprocess_text(q) for q in all_questions]
+        # Fit vectorizer on all processed questions
+        self.tfidf_matrix = vectorizer.fit_transform(processed_questions)
+        self.tfidf_corpus = all_questions
+
+    def cache_emails(self):
+        """
+        Cache the email directory for faster lookups.
+        """
+        try:
+            return email_directory.get_all_emails()
+        except Exception as e:
+            logging.error(f"Error caching emails: {e}")
+            return []
+
     def recompute_embeddings(self):
         """
         No longer needed with NLTK-based similarity.
@@ -567,7 +606,7 @@ class Chatbot:
         else:
             rules_to_use = self.rules + self.guest_rules + self.location_rules + self.visual_rules
 
-        # TF-IDF cosine similarity for all rules (limit corpus size for performance)
+        # TF-IDF cosine similarity for all rules using precomputed matrix
         for r in rules_to_use[:100]:  # Limit to first 100 rules to avoid memory issues
             rule_user_type = r.get('user_type', 'both')
             if user_role == 'guest' and rule_user_type == 'user':
@@ -584,7 +623,7 @@ class Chatbot:
                 elif isinstance(q, list):
                     flattened_questions.extend(q)
             if flattened_questions:
-                _, tfidf_score = semantic_similarity(user_input, flattened_questions, threshold=0.0)
+                _, tfidf_score = semantic_similarity(user_input, flattened_questions, threshold=0.0, precomputed_matrix=self.tfidf_matrix, precomputed_corpus=self.tfidf_corpus)
                 if tfidf_score >= base_threshold:
                     # Boost for intent match
                     if r.get('category') == intent or (intent == 'location' and r.get('category') in ['locations', 'visuals']):
