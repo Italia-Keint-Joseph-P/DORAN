@@ -1,7 +1,6 @@
 # TODO: Optimize Chatbot Response Time
 
 ## Completed
-- [x] Analyze bottlenecks: TF-IDF fitting per query and spell correction in preprocessing.
 - [x] Add missing JSON editor routes (/admin/load_json, /admin/save_json, /admin/upload_json) to app.py for admin JSON editing functionality.
 
 ## In Progress
@@ -13,3 +12,9 @@
 ## Pending
 - [ ] If time not under 5s, explore further optimizations like caching preprocessed texts.
 - [ ] Set up Railway persistent volume for JSON file persistence on Railway (read-only file system workaround).
+
+## Remove JSON Editor
+- [x] Remove JSON editor routes from app.py (/admin/json_editor, /admin/load_json, /admin/save_json, /admin/upload_json)
+- [x] Remove JSON Editor card from admin_dashboard.html
+- [x] Delete htdocs/admin_json_editor.html
+- [ ] Update TODO.md to remove JSON editor task
