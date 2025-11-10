@@ -61,6 +61,53 @@ with app.app_context():
         app.logger.error(f"Error creating database tables: {str(e)}")
     user_manager = UserManager(db)
 
+# Auto-upload JSON files to Railway volume on startup
+def auto_upload_json_files():
+    """
+    Automatically copy JSON files from local database directory to Railway volume (/app/database)
+    if the volume is mounted and writable.
+    """
+    import shutil
+
+    volume_path = '/app/database'
+    local_db_path = os.path.join(app.root_path, 'database')
+
+    # Check if volume is mounted and writable
+    if os.path.exists(volume_path) and os.access(volume_path, os.W_OK):
+        app.logger.info("Railway volume detected at /app/database, copying JSON files...")
+
+        # Ensure volume subdirectories exist
+        for subdir in ['user_database', 'guest_database', 'visuals', 'locations', 'feedback']:
+            vol_subdir = os.path.join(volume_path, subdir)
+            os.makedirs(vol_subdir, exist_ok=True)
+
+        # Copy all JSON files from local database to volume
+        for root, dirs, files in os.walk(local_db_path):
+            for file in files:
+                if file.endswith('.json'):
+                    local_file = os.path.join(root, file)
+                    # Get relative path from database directory
+                    rel_path = os.path.relpath(local_file, local_db_path)
+                    volume_file = os.path.join(volume_path, rel_path)
+
+                    try:
+                        # Ensure destination directory exists
+                        os.makedirs(os.path.dirname(volume_file), exist_ok=True)
+                        # Copy file
+                        shutil.copy2(local_file, volume_file)
+                        app.logger.info(f"Copied {rel_path} to volume")
+                    except Exception as e:
+                        app.logger.error(f"Failed to copy {rel_path}: {str(e)}")
+
+        # Update chatbot to use volume paths if available
+        if os.path.exists(volume_path):
+            app.logger.info("JSON files uploaded to Railway volume successfully")
+    else:
+        app.logger.info("Railway volume not detected or not writable, using local files")
+
+# Run auto-upload before initializing chatbot
+auto_upload_json_files()
+
 chatbot = Chatbot()  # Rules are now loaded from soict.py automatically
 
 @login_manager.user_loader
