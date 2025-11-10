@@ -567,8 +567,8 @@ class Chatbot:
         else:
             rules_to_use = self.rules + self.guest_rules + self.location_rules + self.visual_rules
 
-        # TF-IDF cosine similarity for all rules
-        for r in rules_to_use:
+        # TF-IDF cosine similarity for all rules (limit corpus size for performance)
+        for r in rules_to_use[:100]:  # Limit to first 100 rules to avoid memory issues
             rule_user_type = r.get('user_type', 'both')
             if user_role == 'guest' and rule_user_type == 'user':
                 continue

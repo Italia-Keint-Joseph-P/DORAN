@@ -49,18 +49,18 @@ def preprocess_text(text):
     tokens = text.split()
     corrected_tokens = [spell.correction(word) if spell.correction(word) else word for word in tokens]
     text = ' '.join(corrected_tokens)
-    # Synonym expansion (add synonyms for key words)
-    expanded_tokens = []
-    for word in corrected_tokens:
-        expanded_tokens.append(word)
-        synsets = wordnet.synsets(word)
-        if synsets:
-            synonyms = set()
-            for syn in synsets[0].lemmas()[:2]:  # Limit to 2 synonyms per word
-                synonyms.add(syn.name().lower())
-            expanded_tokens.extend(list(synonyms))
+    # Synonym expansion disabled for performance - can re-enable if needed
+    # expanded_tokens = []
+    # for word in corrected_tokens:
+    #     expanded_tokens.append(word)
+    #     synsets = wordnet.synsets(word)
+    #     if synsets:
+    #         synonyms = set()
+    #         for syn in synsets[0].lemmas()[:1]:  # Limit to 1 synonym per word
+    #             synonyms.add(syn.name().lower())
+    #         expanded_tokens.extend(list(synonyms))
     # Lemmatize, remove stop words
-    tokens = [lemmatizer.lemmatize(word) for word in expanded_tokens if word not in stop_words and len(word) > 1]
+    tokens = [lemmatizer.lemmatize(word) for word in corrected_tokens if word not in stop_words and len(word) > 1]
     return ' '.join(tokens)
 
 def semantic_similarity(query, corpus, threshold=0.3):
