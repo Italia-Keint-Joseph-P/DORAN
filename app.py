@@ -1915,6 +1915,18 @@ def admin_upload_json():
         app.logger.error(f"Error uploading JSON: {str(e)}")
         return jsonify({'status': 'error', 'message': f'Failed to upload JSON: {str(e)}'})
 
+@app.route('/admin/json_editor')
+@login_required
+def admin_json_editor():
+    """
+    Render the admin JSON editor page.
+    """
+    if not is_admin(current_user):
+        flash('Unauthorized access', 'danger')
+        return redirect(url_for('chat'))
+
+    return render_template('admin_json_editor.html')
+
 
 
 if __name__ == '__main__':
