@@ -9,3 +9,6 @@ gunicorn==21.2.0
 nltk
 google-generativeai
 pandas>=2.2.0
+scikit-learn
+fuzzywuzzy
+pyspellchecker

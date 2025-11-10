@@ -15,7 +15,7 @@ import database.user_database.rule_utils as rule_utils
 import json
 import os
 
-from nlp_utils import semantic_similarity, preprocess_text
+from nlp_utils import semantic_similarity, preprocess_text, fuzzy_match, classify_intent
 
 class Chatbot:
     def __init__(self):
@@ -67,6 +67,9 @@ class Chatbot:
             "Apologies, I couldn't find an answer. Could you ask something else?"
         ]
 
+        # Initialize context tracking for conversation history
+        self.conversation_history = {}
+
     def recompute_embeddings(self):
         """
         No longer needed with NLTK-based similarity.
@@ -100,6 +103,13 @@ class Chatbot:
             all_emails = email_directory.get_all_emails()
         except Exception as e:
             logging.error(f"Error fetching emails: {e}")
+            return None
+
+        # Special case for registrar email
+        if "registrar" in tokens:
+            for entry in all_emails:
+                if 'registrar' in entry['school'].lower():
+                    return entry['email']
             return None
 
         # Find matching schools/positions
@@ -493,21 +503,37 @@ class Chatbot:
         except Exception:
             return []
 
-    def get_response(self, user_input, user_role=None):
+    def update_context(self, session_id, user_input, response):
+        """
+        Update conversation history for context awareness.
+        """
+        if session_id not in self.conversation_history:
+            self.conversation_history[session_id] = []
+        self.conversation_history[session_id].append({'query': user_input, 'response': response})
+        # Keep only last 10 exchanges to avoid memory bloat
+        if len(self.conversation_history[session_id]) > 10:
+            self.conversation_history[session_id] = self.conversation_history[session_id][-10:]
+
+    def get_response(self, user_input, user_role=None, session_id=None):
         """
         Generate a response by collecting all matches above threshold and selecting the best overall match.
-        Improved keyword matching with fuzzy partial matches, integrated fuzzy matching earlier,
-        and adjusted thresholds for better accuracy.
+        Improved with TF-IDF cosine similarity, fuzzy matching, intent classification, context awareness,
+        and dynamic thresholds for better accuracy.
 
         Args:
             user_input (str): The input message from the user.
             user_role (str): The role of the user ('guest' or other).
+            session_id (str): Unique session ID for context tracking.
 
         Returns:
             str: The chatbot's response from rules, info.json, or fallback message.
         """
         if not user_input.strip():
             return "Please type a message to chat with DORAN."
+
+        # Classify intent for dynamic thresholds
+        intent = classify_intent(user_input)
+        base_threshold = {'location': 0.25, 'contact': 0.3, 'faq': 0.35, 'info': 0.3, 'unknown': 0.4}[intent]
 
         # Preprocess user input
         processed_input = preprocess_text(user_input)
@@ -519,6 +545,8 @@ class Chatbot:
             email_response = self.search_emails(user_input)
             if email_response:
                 self.consecutive_fallbacks = 0
+                if session_id:
+                    self.update_context(session_id, user_input, email_response)
                 return self.append_image_to_response(email_response)
 
         # Check if visuals.json has been modified and reload if necessary
@@ -531,7 +559,7 @@ class Chatbot:
             logging.error(f"Error checking visuals.json modification time: {e}")
 
         # Collect all potential matches with their scores
-        candidates = []  # List of (rule, score, match_type, original_score)
+        candidates = []  # List of (rule, combined_score, match_type)
 
         # Determine rules to use based on user role
         if user_role == 'guest':
@@ -539,7 +567,7 @@ class Chatbot:
         else:
             rules_to_use = self.rules + self.guest_rules + self.location_rules + self.visual_rules
 
-        # Jaccard similarity for all rules
+        # TF-IDF cosine similarity for all rules
         for r in rules_to_use:
             rule_user_type = r.get('user_type', 'both')
             if user_role == 'guest' and rule_user_type == 'user':
@@ -555,54 +583,78 @@ class Chatbot:
                     flattened_questions.append(q)
                 elif isinstance(q, list):
                     flattened_questions.extend(q)
-            for q in flattened_questions:
-                _, similarity = semantic_similarity(user_input, [q], threshold=0.0)
-                threshold = 0.2  # Lowered threshold for better accuracy across all categories
-                if similarity >= threshold:
-                    # Boost similarity for location/visual queries containing 'where' to prioritize location matches
-                    if r.get('category') in ['locations', 'visuals'] and 'where' in processed_input:
-                        similarity += 0.1
-                    candidates.append((r, similarity, 'jaccard', similarity))
+            if flattened_questions:
+                _, tfidf_score = semantic_similarity(user_input, flattened_questions, threshold=0.0)
+                if tfidf_score >= base_threshold:
+                    # Boost for intent match
+                    if r.get('category') == intent or (intent == 'location' and r.get('category') in ['locations', 'visuals']):
+                        tfidf_score += 0.1
+                    candidates.append((r, tfidf_score, 'tfidf'))
 
-        # FAQs Jaccard similarity
+        # Fuzzy matching as fallback for typos
+        if not candidates:
+            for r in rules_to_use:
+                questions = r.get('questions', []) or r.get('question', '')
+                if isinstance(questions, str):
+                    questions = [questions]
+                flattened_questions = []
+                for q in questions:
+                    if isinstance(q, str):
+                        flattened_questions.append(q)
+                    elif isinstance(q, list):
+                        flattened_questions.extend(q)
+                if flattened_questions:
+                    _, fuzzy_score = fuzzy_match(user_input, flattened_questions, threshold=70)
+                    if fuzzy_score >= 0.7:  # Normalized threshold
+                        candidates.append((r, fuzzy_score, 'fuzzy'))
+
+        # FAQs TF-IDF similarity
         faq_questions = [item['question'] for item in self.faqs]
         faq_answers = [item['answer'] for item in self.faqs]
-        best_faq_question, faq_similarity_score = semantic_similarity(user_input, faq_questions, threshold=0.2)  # Lowered threshold
-        if best_faq_question:
-            index = faq_questions.index(best_faq_question)
-            faq_rule = {'response': faq_answers[index], 'category': 'faqs'}
-            candidates.append((faq_rule, faq_similarity_score, 'faq', faq_similarity_score))
+        if faq_questions:
+            best_faq, faq_similarity_score = semantic_similarity(user_input, faq_questions, threshold=base_threshold)
+            if best_faq:
+                index = faq_questions.index(best_faq)
+                faq_rule = {'response': faq_answers[index], 'category': 'faqs'}
+                candidates.append((faq_rule, faq_similarity_score, 'faq'))
 
-        # Additional Jaccard search for location questions to ensure all are analyzed
-        if not candidates or max(candidates, key=lambda x: x[1])[1] < 0.5:  # If no strong match, search deeper
-            for rule in rules_to_use:
-                if rule.get('category') in ['locations', 'visuals']:
-                    questions = rule.get('questions', []) or rule.get('question', '')
+        # Context-aware matching (check previous queries in session)
+        if session_id and session_id in self.conversation_history:
+            prev_queries = [entry['query'] for entry in self.conversation_history[session_id][-3:]]  # Last 3
+            for prev_q in prev_queries:
+                # Boost matches related to previous topics
+                for r in rules_to_use:
+                    questions = r.get('questions', []) or r.get('question', '')
+                    if isinstance(questions, str):
+                        questions = [questions]
                     flattened_questions = []
                     for q in questions:
                         if isinstance(q, str):
                             flattened_questions.append(q)
                         elif isinstance(q, list):
                             flattened_questions.extend(q)
-                    for q in flattened_questions:
-                        _, similarity = semantic_similarity(user_input, [q], threshold=0.0)
-                        if similarity >= 0.1:  # Very low threshold to catch more matches
-                            candidates.append((rule, similarity, 'deep_jaccard', similarity))
+                    if flattened_questions:
+                        _, context_score = semantic_similarity(prev_q, flattened_questions, threshold=0.0)
+                        if context_score >= 0.5:  # High threshold for context
+                            candidates.append((r, context_score * 0.8, 'context'))  # Slight boost
 
         # Select the best match across all candidates
         if candidates:
             best_candidate = max(candidates, key=lambda x: x[1])
-            best_rule, best_score, match_type, original_score = best_candidate
-            logging.info(f"Best match: {match_type} with hybrid score {best_score:.3f} (original {original_score:.3f}) for rule category {best_rule.get('category', 'unknown')}")
+            best_rule, best_score, match_type = best_candidate
+            logging.info(f"Best match: {match_type} with score {best_score:.3f} for rule category {best_rule.get('category', 'unknown')}")
             self.consecutive_fallbacks = 0
-            return self.append_image_to_response(best_rule['response'])
-
-
+            response = best_rule['response']
+            if session_id:
+                self.update_context(session_id, user_input, response)
+            return self.append_image_to_response(response)
 
         # Fallback responses
         self.consecutive_fallbacks += 1
         fallback = self.fallback_responses[self.fallback_index]
         self.fallback_index = (self.fallback_index + 1) % len(self.fallback_responses)
+        if session_id:
+            self.update_context(session_id, user_input, fallback)
         return self.append_image_to_response(fallback)
 
     def append_image_to_response(self, response_text, rule_keywords=None):
