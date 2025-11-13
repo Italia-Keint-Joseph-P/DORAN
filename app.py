@@ -35,6 +35,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or mysql_
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True  # Log SQL statements for debugging
 
+# Connection pool settings to handle connection drops
+app.config['SQLALCHEMY_POOL_SIZE'] = 10
+app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
+app.config['SQLALCHEMY_POOL_TIMEOUT'] = 30
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 3600  # Recycle connections every hour
+app.config['SQLALCHEMY_POOL_PRE_PING'] = True  # Check connection before use
+
 # File upload configuration
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads', 'locations')
 app.config['VISUALS_UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads', 'visuals')
