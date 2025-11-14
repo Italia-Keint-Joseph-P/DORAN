@@ -16,15 +16,30 @@ class UserManager:
         """
         self.db = db
         admin_email = "admin@wvsu.edu.ph"
-        admin = self.get_admin_by_email(admin_email)
-        if not admin:
-            admin = AdminModel(email=admin_email)
-            admin.set_password("admin123")
-            self.db.session.add(admin)
-            self.db.session.commit()
-            logging.debug(f"Created default admin user with email: {admin_email}")
-        else:
-            logging.debug(f"Admin user already exists with email: {admin_email}")
+        # Retry admin creation/check up to 3 times
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                admin = self.get_admin_by_email(admin_email)
+                if not admin:
+                    admin = AdminModel(email=admin_email)
+                    admin.set_password("admin123")
+                    self.db.session.add(admin)
+                    self.db.session.commit()
+                    logging.debug(f"Created default admin user with email: {admin_email}")
+                else:
+                    logging.debug(f"Admin user already exists with email: {admin_email}")
+                break  # Success, exit retry loop
+            except Exception as e:
+                logging.warning(f"Database connection attempt {attempt + 1} failed: {str(e)}")
+                if attempt < max_retries - 1:
+                    import time
+                    time.sleep(2)  # Wait 2 seconds before retry
+                    continue
+                else:
+                    logging.error(f"Failed to initialize admin user after {max_retries} attempts: {str(e)}")
+                    # Don't raise exception, allow app to continue
+                    break
 
     def get_admin_by_email(self, email):
         """

@@ -242,12 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const buttonContentDiv = document.createElement('div');
       buttonContentDiv.classList.add('message-content');
 
-      const emailButtons = [
-        { school: 'SOICT', email: 'soict@example.com' },
-        { school: 'SOED',  email: 'soed@example.com'  },
-        { school: 'SOIT',  email: 'soit@example.com'  },
-        { school: 'SOBM',  email: 'sobm@example.com'  }
-      ];
+      const emailButtons = window.emailList.slice(0, 4); // Show first 4 real emails
 
       emailButtons.forEach(eBtn => {
         const btn = document.createElement('button');

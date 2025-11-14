@@ -360,11 +360,6 @@
             "id": "b80ddfb5-942c-4889-9df5-08aade463aea"
         },
         {
-            "question": "test",
-            "answer": "test",
-            "id": "f64e978a-669e-4ac9-b201-41c9e990c567"
-        },
-        {
             "question": "Who are the SOBM Directors?",
             "answer": "The past school directors of SOBM WVSU-Pototan Campus include Mrs. Lolita Pendon and Mrs. Luz P. Padalezo (no specific timeline), Dr. Ruby P. Cervantes (2019–2022), \r\nDr. Vilma E. Litan (2022–2023), and Dr. Felix B. Aldabon (June–October 2023).\r\nCurrently, Dr. Ruby P. Cervantes serves as the School Director of the School of Business and Management (SOBM).",
             "id": "2dd0689d-3273-4fe4-861e-dd534cfc2233"
@@ -383,16 +378,6 @@
             "question": "who is the current sobm director?",
             "answer": "Dr. Ruby P. Cervantes is currently the School Director of the School of Business and Management (SOBM).",
             "id": "9793964b-0b1e-4be3-bf3e-72967bc07e3b"
-        },
-        {
-            "question": "who are the soit directors?",
-            "answer": "The past and present SOIT Directors include Dr. Manuel S. Libutaque (2000), Mr. Eugene P. Tañedo (2019), Dr. Virginia B. Parrenas (2019–2020), and Dr. Pablo L. Lauro, who currently serves as the SOIT Director from 2020 to the present.",
-            "id": "dbfa49ea-47ce-4b3f-bdf1-49857be1579d"
-        },
-        {
-            "question": "who is the current soit director?",
-            "answer": "Dr. Pablo L. Lauro, who currently serves as the SOIT Director from 2020 to the present.",
-            "id": "6de04542-ee2f-42dc-aacb-9683babaaa18"
         }
     ],
     "Registrar": [

@@ -30,9 +30,43 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 mysql_url = os.environ.get('MYSQL_URL')
 if mysql_url and mysql_url.startswith('mysql://'):
     mysql_url = mysql_url.replace('mysql://', 'mysql+pymysql://', 1)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or mysql_url or 'mysql+pymysql://root:smxcYzdpwUJTAiRdJWQFPJNbfsbVTAGC@trolley.proxy.rlwy.net:10349/railway'
+
+# Database URLs - separate databases for different data types
+# User data database (doran) - users, feedback, guests, chat history, etc.
+local_user_db_url = 'mysql+pymysql://root:@localhost/doran'
+railway_user_db_url = 'mysql+pymysql://root:smxcYzdpwUJTAiRdJWQFPJNbfsbVTAGC@trolley.proxy.rlwy.net:10349/doran_db'
+
+# Chatbot data database (chatbot_db) - rules, categories, locations, visuals, etc.
+local_chatbot_db_url = 'mysql+pymysql://root:@localhost/chatbot_db'
+railway_chatbot_db_url = 'mysql+pymysql://root:smxcYzdpwUJTAiRdJWQFPJNbfsbVTAGC@trolley.proxy.rlwy.net:10349/chatbot_db'
+
+# Try local databases first, fallback to Railway
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or mysql_url or local_user_db_url
+app.config['CHATBOT_DATABASE_URI'] = os.environ.get('CHATBOT_DATABASE_URL') or local_chatbot_db_url
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True  # Log SQL statements for debugging
+app.config['SQLALCHEMY_ECHO'] = False  # Disable SQL echo for cleaner logs
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,  # Check connection before using
+    'pool_recycle': 300,    # Recycle connections after 5 minutes
+    'pool_size': 1,         # Very small pool size for reliability
+    'max_overflow': 2,      # Minimal overflow connections
+    'pool_timeout': 10,     # Shorter timeout
+    'connect_args': {
+        'connect_timeout': 5,  # Shorter connect timeout
+        'read_timeout': 10,    # Shorter read timeout
+        'write_timeout': 10,   # Shorter write timeout
+    }
+}
+
+# Configure binds for multiple databases
+app.config['SQLALCHEMY_BINDS'] = {
+    'chatbot_db': app.config['CHATBOT_DATABASE_URI']
+}
+
+# Create separate engine for chatbot database
+from sqlalchemy import create_engine
+chatbot_engine = create_engine(app.config['CHATBOT_DATABASE_URI'], **app.config['SQLALCHEMY_ENGINE_OPTIONS'])
 
 # File upload configuration
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads', 'locations')
@@ -54,11 +88,26 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 with app.app_context():
-    try:
-        db.create_all()
-        app.logger.info("Database tables created successfully")
-    except Exception as e:
-        app.logger.error(f"Error creating database tables: {str(e)}")
+    # Retry database table creation up to 5 times with exponential backoff
+    max_retries = 5
+    for attempt in range(max_retries):
+        try:
+            db.create_all()
+            app.logger.info("Database tables created successfully")
+            break  # Success, exit retry loop
+        except Exception as e:
+            app.logger.warning(f"Database table creation attempt {attempt + 1} failed: {str(e)}")
+            if attempt < max_retries - 1:
+                import time
+                delay = 2 ** attempt  # Exponential backoff: 1, 2, 4, 8 seconds
+                app.logger.info(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+                continue
+            else:
+                app.logger.error(f"Failed to create database tables after {max_retries} attempts: {str(e)}")
+                # Don't raise exception, allow app to continue
+
+    # Initialize user manager with retry logic
     user_manager = UserManager(db)
 
 # Auto-upload JSON files to Railway volume on startup
@@ -108,22 +157,27 @@ def auto_upload_json_files():
 # Run auto-upload before initializing chatbot
 auto_upload_json_files()
 
-chatbot = Chatbot()  # Rules are now loaded from soict.py automatically
+# Initialize chatbot within app context
+with app.app_context():
+    chatbot = Chatbot()  # Rules are now loaded from MySQL automatically
 
 @login_manager.user_loader
 def load_user(user_id):
     """
     Load user by ID for Flask-Login.
     """
-    user_type = session.get('user_type')
-    if user_type == 'admin':
-        admin = Admin.query.get(int(user_id))
-        if admin:
-            return admin
-    elif user_type == 'user':
-        user = user_manager.get_user_by_id(user_id)
-        if user:
-            return user
+    try:
+        user_type = session.get('user_type')
+        if user_type == 'admin':
+            admin = Admin.query.get(int(user_id))
+            if admin:
+                return admin
+        elif user_type == 'user':
+            user = user_manager.get_user_by_id(user_id)
+            if user:
+                return user
+    except Exception as e:
+        app.logger.error(f"Database error in load_user: {str(e)}")
     return None
 
 def is_admin(user):
@@ -137,6 +191,22 @@ def is_admin(user):
     if hasattr(user, 'role') and user.role == 'admin':
         return True
     return False
+
+def retry_db_operation(operation, max_retries=3, delay=1):
+    """
+    Retry a database operation with exponential backoff.
+    """
+    import time
+    for attempt in range(max_retries):
+        try:
+            return operation()
+        except Exception as e:
+            if attempt < max_retries - 1:
+                app.logger.warning(f"Database operation failed (attempt {attempt + 1}): {str(e)}")
+                time.sleep(delay * (2 ** attempt))
+            else:
+                app.logger.error(f"Database operation failed after {max_retries} attempts: {str(e)}")
+                raise
 
 @app.route('/favicon.ico')
 def favicon():
@@ -226,17 +296,24 @@ def admin_login():
             flash('Please enter both email and password', 'danger')
             return render_template('admin_login.html')
 
-        admin = AdminModel.query.filter_by(email=email).first()
+        try:
+            def get_admin():
+                return AdminModel.query.filter_by(email=email).first()
 
-        if admin and admin.check_password(password.strip()):
-            login_user(admin, remember=True)
-            session['user_id'] = admin.id
-            session['user_type'] = 'admin'
-            session['logged_in'] = True
-            flash('Login successful!', 'success')
-            return redirect(url_for('admin_dashboard'))
+            admin = retry_db_operation(get_admin)
 
-        flash('Invalid username or password')
+            if admin and admin.check_password(password.strip()):
+                login_user(admin, remember=True)
+                session['user_id'] = admin.id
+                session['user_type'] = 'admin'
+                session['logged_in'] = True
+                flash('Login successful!', 'success')
+                return redirect(url_for('admin_dashboard'))
+
+            flash('Invalid username or password')
+        except Exception as e:
+            app.logger.error(f"Database error during admin login: {str(e)}")
+            flash('Database connection error. Please try again later.', 'danger')
     return render_template('admin_login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -556,22 +633,27 @@ def admin_faqs():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('chat'))
 
-    import os
-    faqs_path = os.path.join(app.root_path, 'database', 'faqs.json')
+    from chatbot_models import Faq
+    from sqlalchemy.orm import sessionmaker
     try:
-        with open(faqs_path, 'r', encoding='utf-8') as f:
-            faqs_list = json.load(f)
+        # Use direct session with chatbot_engine to ensure correct database connection
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
+        faqs_list = session.query(Faq).order_by(Faq.created_at.desc()).all()
+        session.close()
+        # Convert to list format expected by template
+        faqs_data = [{"id": faq.id, "question": faq.question, "answer": faq.answer} for faq in faqs_list]
     except Exception as e:
-        faqs_list = []
-        app.logger.error(f"Failed to load faqs.json: {e}")
+        faqs_data = []
+        app.logger.error(f"Failed to load FAQs from MySQL: {e}")
 
-    return render_template('admin_faqs.html', info_list=faqs_list)
+    return render_template('admin_faqs.html', info_list=faqs_data)
 
 @app.route('/add_info', methods=['POST'])
 @login_required
 def add_info():
     """
-    Add a new FAQ entry to faqs.json.
+    Add a new FAQ entry to MySQL Faq table.
     """
     if not is_admin(current_user):
         return jsonify({'status': 'error', 'message': 'Unauthorized access'})
@@ -583,23 +665,20 @@ def add_info():
     if not question or not answer:
         return jsonify({'status': 'error', 'message': 'Question and answer are required'})
 
-    import os
-    faqs_path = os.path.join(app.root_path, 'database', 'faqs.json')
+    from chatbot_models import Faq
+    from sqlalchemy.orm import sessionmaker
     try:
-        with open(faqs_path, 'r', encoding='utf-8') as f:
-            faqs_list = json.load(f)
-    except Exception:
-        faqs_list = []
-
-    faqs_list.append({'question': question, 'answer': answer})
-
-    try:
-        with open(faqs_path, 'w', encoding='utf-8') as f:
-            json.dump(faqs_list, f, indent=4)
+        # Use direct session with chatbot_engine to ensure correct database connection
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
+        new_faq = Faq(question=question, answer=answer)
+        session.add(new_faq)
+        session.commit()
+        session.close()
         # Reload FAQs in chatbot memory
         chatbot.reload_faqs()
     except Exception as e:
-        return jsonify({'status': 'error', 'message': f'Failed to save FAQs: {str(e)}'})
+        return jsonify({'status': 'error', 'message': f'Failed to save FAQ: {str(e)}'})
 
     return jsonify({'status': 'success'})
 
@@ -607,7 +686,7 @@ def add_info():
 @login_required
 def edit_info():
     """
-    Edit an existing FAQ entry in faqs.json.
+    Edit an existing FAQ entry in MySQL Faq table.
     """
     if not is_admin(current_user):
         return jsonify({'status': 'error', 'message': 'Unauthorized access'})
@@ -620,25 +699,25 @@ def edit_info():
     if info_id is None or not question or not answer:
         return jsonify({'status': 'error', 'message': 'ID, question, and answer are required'})
 
-    import os
-    faqs_path = os.path.join(app.root_path, 'database', 'faqs.json')
+    from chatbot_models import Faq
+    from sqlalchemy.orm import sessionmaker
     try:
-        with open(faqs_path, 'r', encoding='utf-8') as f:
-            faqs_list = json.load(f)
-    except Exception:
-        faqs_list = []
+        # Use direct session with chatbot_engine to ensure correct database connection
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
+        faq = session.query(Faq).get(info_id)
+        if not faq:
+            session.close()
+            return jsonify({'status': 'error', 'message': 'FAQ not found'})
 
-    if info_id < 0 or info_id >= len(faqs_list):
-        return jsonify({'status': 'error', 'message': 'Invalid FAQ ID'})
-
-    faqs_list[info_id]['question'] = question
-    faqs_list[info_id]['answer'] = answer
-
-    try:
-        with open(faqs_path, 'w', encoding='utf-8') as f:
-            json.dump(faqs_list, f, indent=4)
+        faq.question = question
+        faq.answer = answer
+        session.commit()
+        session.close()
+        # Reload FAQs in chatbot memory
+        chatbot.reload_faqs()
     except Exception as e:
-        return jsonify({'status': 'error', 'message': f'Failed to save FAQs: {str(e)}'})
+        return jsonify({'status': 'error', 'message': f'Failed to update FAQ: {str(e)}'})
 
     return jsonify({'status': 'success'})
 
@@ -646,7 +725,7 @@ def edit_info():
 @login_required
 def delete_info():
     """
-    Delete an FAQ entry from faqs.json.
+    Delete an FAQ entry from MySQL Faq table.
     """
     if not is_admin(current_user):
         return jsonify({'status': 'error', 'message': 'Unauthorized access'})
@@ -657,24 +736,19 @@ def delete_info():
     if info_id is None:
         return jsonify({'status': 'error', 'message': 'ID is required'})
 
-    import os
-    faqs_path = os.path.join(app.root_path, 'database', 'faqs.json')
+    from chatbot_models import Faq
     try:
-        with open(faqs_path, 'r', encoding='utf-8') as f:
-            faqs_list = json.load(f)
-    except Exception:
-        faqs_list = []
+        faq = Faq.query.get(info_id)
+        if not faq:
+            return jsonify({'status': 'error', 'message': 'FAQ not found'})
 
-    if info_id < 0 or info_id >= len(faqs_list):
-        return jsonify({'status': 'error', 'message': 'Invalid FAQ ID'})
-
-    faqs_list.pop(info_id)
-
-    try:
-        with open(faqs_path, 'w', encoding='utf-8') as f:
-            json.dump(faqs_list, f, indent=4)
+        db.session.delete(faq)
+        db.session.commit()
+        # Reload FAQs in chatbot memory
+        chatbot.reload_faqs()
     except Exception as e:
-        return jsonify({'status': 'error', 'message': f'Failed to save FAQs: {str(e)}'})
+        db.session.rollback()
+        return jsonify({'status': 'error', 'message': f'Failed to delete FAQ: {str(e)}'})
 
     return jsonify({'status': 'success'})
 
@@ -756,21 +830,29 @@ def admin_existing_visuals():
     """
     Render the admin existing visuals page.
     """
-    import json
-    import os
+    from chatbot_models import Visual
 
     if not is_admin(current_user):
         flash('Unauthorized access', 'danger')
         return redirect(url_for('chat'))
 
-    # Load visuals from database/visuals/visuals.json
-    visuals_path = os.path.join(app.root_path, 'database', 'visuals', 'visuals.json')
+    # Load visuals from MySQL Visual table
     try:
-        with open(visuals_path, 'r', encoding='utf-8') as f:
-            visuals = json.load(f)
+        visuals_data = Visual.query.all()
+        visuals = []
+        for visual in visuals_data:
+            visual_dict = {
+                "id": visual.id,
+                "questions": visual.questions,
+                "description": visual.description,
+                "user_type": visual.user_type,
+                "urls": visual.urls,
+                "url": visual.url
+            }
+            visuals.append(visual_dict)
     except Exception as e:
         visuals = []
-        app.logger.error(f"Failed to load visuals.json: {e}")
+        app.logger.error(f"Failed to load visuals from MySQL: {e}")
 
     return render_template('admin_existing_visuals.html', visuals=visuals)
 
@@ -990,7 +1072,7 @@ def delete_location():
 @login_required
 def add_visual():
     """
-    Add a new visual with images/videos.
+    Add a new visual with images/videos to MySQL Visual table.
     """
     import json
     import os
@@ -1037,31 +1119,21 @@ def add_visual():
     if not media_urls:
         return jsonify({'status': 'error', 'message': 'At least one image or video is required'})
 
-    # Load existing visuals
-    visuals_path = os.path.join(app.root_path, 'database', 'visuals', 'visuals.json')
+    # Save to MySQL Visual table
+    from chatbot_models import Visual
     try:
-        with open(visuals_path, 'r', encoding='utf-8') as f:
-            visuals = json.load(f)
-    except:
-        visuals = []
-
-    # Create new visual
-    new_visual = {
-        'id': str(uuid.uuid4()),
-        'questions': questions_list,
-        'description': description,
-        'user_type': user_type,
-        'urls': media_urls,
-        'url': media_urls[0]  # Primary media
-    }
-
-    visuals.append(new_visual)
-
-    # Save updated visuals
-    try:
-        with open(visuals_path, 'w', encoding='utf-8') as f:
-            json.dump(visuals, f, indent=4)
+        new_visual = Visual(
+            id=str(uuid.uuid4()),
+            questions=questions_list,
+            description=description,
+            user_type=user_type,
+            urls=media_urls,
+            url=media_urls[0]  # Primary media
+        )
+        db.session.add(new_visual)
+        db.session.commit()
     except Exception as e:
+        db.session.rollback()
         return jsonify({'status': 'error', 'message': f'Failed to save visual: {str(e)}'})
 
     # Update visuals in memory
@@ -1073,7 +1145,7 @@ def add_visual():
 @login_required
 def edit_visual_with_id(visual_id):
     """
-    Edit an existing visual with images/videos.
+    Edit an existing visual with images/videos in MySQL Visual table.
     """
     import json
     import os
@@ -1102,35 +1174,23 @@ def edit_visual_with_id(visual_id):
             set_list = []
         questions_list.append(set_list)
 
-    # Load existing visuals
-    visuals_path = os.path.join(app.root_path, 'database', 'visuals', 'visuals.json')
-    try:
-        with open(visuals_path, 'r', encoding='utf-8') as f:
-            visuals = json.load(f)
-    except:
-        visuals = []
-
-    # Find visual to edit
-    visual_to_edit = None
-    for vis in visuals:
-        if str(vis.get('id')) == str(visual_id):
-            visual_to_edit = vis
-            break
-
+    # Find visual to edit in MySQL
+    from chatbot_models import Visual
+    visual_to_edit = Visual.query.filter_by(id=visual_id).first()
     if not visual_to_edit:
         return jsonify({'status': 'error', 'message': 'Visual not found'})
 
     # Update visual data
-    visual_to_edit['questions'] = questions_list
-    visual_to_edit['description'] = description
-    visual_to_edit['user_type'] = user_type
+    visual_to_edit.questions = questions_list
+    visual_to_edit.description = description
+    visual_to_edit.user_type = user_type
 
     # Handle image removal
-    if 'urls' in visual_to_edit:
-        visual_to_edit['urls'] = [url for url in visual_to_edit['urls'] if url not in removed_images]
+    if visual_to_edit.urls:
+        visual_to_edit.urls = [url for url in visual_to_edit.urls if url not in removed_images]
 
-    if 'url' in visual_to_edit and visual_to_edit['url'] in removed_images:
-        del visual_to_edit['url']
+    if visual_to_edit.url in removed_images:
+        visual_to_edit.url = None
 
     # Handle new media uploads
     uploaded_files = request.files.getlist('images')
@@ -1146,20 +1206,20 @@ def edit_visual_with_id(visual_id):
             new_media_urls.append(f"uploads/visuals/{unique_filename}")
 
     # Add new media to existing ones
-    if 'urls' not in visual_to_edit:
-        visual_to_edit['urls'] = []
+    if not visual_to_edit.urls:
+        visual_to_edit.urls = []
 
-    visual_to_edit['urls'].extend(new_media_urls)
+    visual_to_edit.urls.extend(new_media_urls)
 
     # Ensure primary url exists
-    if not visual_to_edit.get('url') and visual_to_edit['urls']:
-        visual_to_edit['url'] = visual_to_edit['urls'][0]
+    if not visual_to_edit.url and visual_to_edit.urls:
+        visual_to_edit.url = visual_to_edit.urls[0]
 
-    # Save updated visuals
+    # Save to MySQL
     try:
-        with open(visuals_path, 'w', encoding='utf-8') as f:
-            json.dump(visuals, f, indent=4)
+        db.session.commit()
     except Exception as e:
+        db.session.rollback()
         return jsonify({'status': 'error', 'message': f'Failed to save visual: {str(e)}'})
 
     # Update visuals in memory
@@ -1171,11 +1231,8 @@ def edit_visual_with_id(visual_id):
 @login_required
 def delete_visual():
     """
-    Delete a visual entry.
+    Delete a visual entry from MySQL Visual table.
     """
-    import json
-    import os
-
     if not is_admin(current_user):
         return jsonify({'status': 'error', 'message': 'Unauthorized access'})
 
@@ -1185,29 +1242,20 @@ def delete_visual():
     if not visual_id:
         return jsonify({'status': 'error', 'message': 'ID is required'})
 
-    visuals_path = os.path.join(app.root_path, 'database', 'visuals', 'visuals.json')
-
+    from chatbot_models import Visual
     try:
-        with open(visuals_path, 'r', encoding='utf-8') as f:
-            visuals = json.load(f)
+        visual = Visual.query.filter_by(id=visual_id).first()
+        if not visual:
+            return jsonify({'status': 'error', 'message': 'Visual not found'})
+
+        db.session.delete(visual)
+        db.session.commit()
     except Exception as e:
-        return jsonify({'status': 'error', 'message': f'Failed to load visuals: {e}'})
-
-    # Filter out the visual to delete
-    new_visuals = [vis for vis in visuals if str(vis.get('id')) != str(visual_id)]
-
-    if len(new_visuals) == len(visuals):
-        return jsonify({'status': 'error', 'message': 'Visual not found'})
-
-    try:
-        with open(visuals_path, 'w', encoding='utf-8') as f:
-            json.dump(new_visuals, f, indent=4)
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': f'Failed to save visuals: {e}'})
+        db.session.rollback()
+        return jsonify({'status': 'error', 'message': f'Failed to delete visual: {str(e)}'})
 
     # Update chatbot rules in memory
-    chatbot.rules = chatbot.get_rules()
-    chatbot.guest_rules = chatbot.get_guest_rules()
+    chatbot.reload_visual_rules()
 
     return jsonify({'status': 'success'})
 

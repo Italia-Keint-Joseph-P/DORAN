@@ -16,6 +16,8 @@ import json
 import os
 
 from nlp_utils import semantic_similarity, preprocess_text, fuzzy_match, classify_intent
+from chatbot_models import Category, Faq, Location, Visual, UserRule, GuestRule
+from extensions import db
 
 class Chatbot:
     def __init__(self):
@@ -25,38 +27,37 @@ class Chatbot:
         self.rules = self.get_rules()
         self.guest_rules = self.get_guest_rules()
 
-        # Load chatbot answer images from locations.json
-        locations_path = os.path.join("database", "locations", "locations.json")
+        # Load chatbot answer images from MySQL Location table
         try:
-            with open(locations_path, "r", encoding="utf-8") as f:
-                locations_data = json.load(f)
-                self.chatbot_images = []
-                for entry in locations_data:
-                    questions = entry.get("questions", [])
-                    image_entry = {
-                        "id": entry.get("id", ""),
-                        "questions": questions,
-                        "url": entry.get("url", ""),
-                        "description": entry.get("description", "")
-                    }
-                    self.chatbot_images.append(image_entry)
+            locations_data = Location.query.all()
+            self.chatbot_images = []
+            for entry in locations_data:
+                questions = entry.questions or []
+                image_entry = {
+                    "id": entry.id,
+                    "questions": questions,
+                    "url": entry.url,
+                    "description": entry.description
+                }
+                self.chatbot_images.append(image_entry)
         except Exception:
             self.chatbot_images = []
 
-        # Load location-based rules from locations.json
+        # Load location-based rules from MySQL Location table
         self.location_rules = self.get_location_rules()
 
-        # Load visual-based rules from visuals.json
-        visuals_path = os.path.join("database", "visuals", "visuals.json")
+        # Load visual-based rules from MySQL Visual table
         self.visual_rules = self.get_visual_rules()
-        self.visual_rules_mtime = os.path.getmtime(visuals_path)
 
         # Email keywords for triggering email search
         self.email_keywords = ["email", "contact", "mail", "reach", "address", "send", "message"]
 
-        # Load FAQs
-        with open('database/faqs.json', 'r', encoding='utf-8') as f:
-            self.faqs = json.load(f)
+        # Load FAQs from MySQL Faq table
+        try:
+            faqs_data = Faq.query.all()
+            self.faqs = [{"question": faq.question, "answer": faq.answer} for faq in faqs_data]
+        except Exception:
+            self.faqs = []
 
         # Initialize fallback tracking attributes
         self.consecutive_fallbacks = 0
@@ -171,194 +172,40 @@ class Chatbot:
         return response.strip()
 
     def get_rules(self):
-        # Load and return all user rules from the combined all_user_rules.json file
-        import json
-        import os
-        rules = []
-        user_rules_path = os.path.join("database", "user_database", "all_user_rules.json")
-        rules_updated = False
-
+        # Load and return all user rules from MySQL UserRule table
         try:
-            with open(user_rules_path, "r", encoding="utf-8") as f:
-                rules_data = json.load(f)
-                # Handle new categorized structure
-                if isinstance(rules_data, dict):
-                    # New categorized structure
-                    for category, category_rules in rules_data.items():
-                        for rule in category_rules:
-                            # Use question as the matching text, not keywords
-                            # Preserve existing ID or generate new one if missing
-                            if 'id' not in rule:
-                                rule['id'] = str(uuid4())
-                                rules_updated = True
-                            rule_id = rule.get("id")
-                            rule_obj = {
-                                "category": category,
-                                "question": rule.get("question", ""),
-                                "response": rule.get("answer", ""),
-                                "id": rule_id
-                            }
-                            rules.append(rule_obj)
-                else:
-                    # Legacy flat array structure (fallback)
-                    for rule in rules_data:
-                        # Preserve existing ID or generate new one if missing
-                        if 'id' not in rule:
-                            rule['id'] = str(uuid4())
-                            rules_updated = True
-                        rule_id = rule.get("id")
-                        rule_obj = {
-                            "category": "combined_user",
-                            "question": rule.get("question", ""),
-                            "response": rule.get("answer", ""),
-                            "id": rule_id
-                        }
-                        rules.append(rule_obj)
-
-            # Save updated rules back to file if any IDs were added
-            if rules_updated:
-                with open(user_rules_path, "w", encoding="utf-8") as f:
-                    json.dump(rules_data, f, indent=4, ensure_ascii=False)
-
-        except Exception:
-            # Fallback to original method if combined file not found
+            user_rules = UserRule.query.all()
             rules = []
-            user_db_path = os.path.join("database", "user_database")
-            try:
-                for filename in os.listdir(user_db_path):
-                    if filename.endswith("_rules.json") and filename != "locations_rules.json":
-                        category = filename.replace("_rules.json", "")
-                        filepath = os.path.join(user_db_path, filename)
-                        try:
-                            with open(filepath, "r", encoding="utf-8") as f:
-                                rules_data = json.load(f)
-                                for rule in rules_data:
-                                    rule['category'] = category
-                                    rule['question'] = rule.get('question', '')
-                                    rule['response'] = rule.get('answer', '')
-                                    if 'id' not in rule:
-                                        rule['id'] = str(uuid4())
-                                    rules.append(rule)
-                        except Exception:
-                            continue
-            except Exception:
-                category_files = {
-                    "soict": "database/user_database/soict_rules.json",
-                    "soed": "database/user_database/soed_rules.json",
-                    "sobm": "database/user_database/sobm_rules.json",
-                    "soit": "database/user_database/soit_rules.json",
-                    "faculty_staff": "database/user_database/faculty_staff_rules.json"
+            for rule in user_rules:
+                rule_obj = {
+                    "category": rule.category,
+                    "question": rule.question,  # Using question field
+                    "response": rule.answer,
+                    "id": rule.id
                 }
-                for category, filepath in category_files.items():
-                    try:
-                        with open(filepath, "r", encoding="utf-8") as f:
-                            rules_data = json.load(f)
-                            for rule in rules_data:
-                                rule['category'] = category
-                                rule['question'] = rule.get('question', '')
-                                rule['response'] = rule.get('answer', '')
-                                if 'id' not in rule:
-                                    rule['id'] = str(uuid4())
-                                rules.append(rule)
-                    except Exception:
-                        continue
-
-
-
-        return rules
+                rules.append(rule_obj)
+            return rules
+        except Exception as e:
+            logging.error(f"Error loading user rules from MySQL: {e}")
+            return []
 
     def get_guest_rules(self):
-        # Load and return all guest rules from the combined all_guest_rules.json file
-        import json
-        import os
-        rules = []
-        guest_rules_path = os.path.join("database", "guest_database", "all_guest_rules.json")
-        rules_updated = False
-
+        # Load and return all guest rules from MySQL GuestRule table
         try:
-            with open(guest_rules_path, "r", encoding="utf-8") as f:
-                rules_data = json.load(f)
-                # Handle new categorized structure
-                if isinstance(rules_data, dict):
-                    # New categorized structure
-                    for category, category_rules in rules_data.items():
-                        for rule in category_rules:
-                            # Use question as the matching text, not keywords
-                            # Preserve existing ID or generate new one if missing
-                            if 'id' not in rule:
-                                rule['id'] = str(uuid4())
-                                rules_updated = True
-                            rule_id = rule.get("id")
-                            rule_obj = {
-                                "category": category,
-                                "question": rule.get("question", ""),
-                                "response": rule.get("answer", ""),
-                                "id": rule_id
-                            }
-                            rules.append(rule_obj)
-                else:
-                    # Legacy flat array structure (fallback)
-                    for rule in rules_data:
-                        # Preserve existing ID or generate new one if missing
-                        if 'id' not in rule:
-                            rule['id'] = str(uuid4())
-                            rules_updated = True
-                        rule_id = rule.get("id")
-                        rule_obj = {
-                            "category": "combined_guest",
-                            "question": rule.get("question", ""),
-                            "response": rule.get("answer", ""),
-                            "id": rule_id
-                        }
-                        rules.append(rule_obj)
-
-            # Save updated rules back to file if any IDs were added
-            if rules_updated:
-                with open(guest_rules_path, "w", encoding="utf-8") as f:
-                    json.dump(rules_data, f, indent=4, ensure_ascii=False)
-
-        except Exception:
+            guest_rules = GuestRule.query.all()
             rules = []
-            guest_db_path = os.path.join("database", "guest_database")
-            try:
-                for filename in os.listdir(guest_db_path):
-                    if filename.endswith("_guest_rules.json"):
-                        category = filename.replace("_guest_rules.json", "")
-                        filepath = os.path.join(guest_db_path, filename)
-                        try:
-                            with open(filepath, "r", encoding="utf-8") as f:
-                                rules_data = json.load(f)
-                                for rule in rules_data:
-                                    rule['category'] = category
-                                    rule['question'] = rule.get('question', '')
-                                    rule['response'] = rule.get('answer', '')
-                                    if 'id' not in rule or not rule['id']:
-                                        rule['id'] = str(uuid4())
-                                    rules.append(rule)
-                        except Exception:
-                            continue
-            except Exception:
-                category_files = {
-                    "soict": "database/guest_database/soict_guest_rules.json",
-                    "soed": "database/guest_database/soed_guest_rules.json",
-                    "sobm": "database/guest_database/sobm_guest_rules.json",
-                    "soit": "database/guest_database/soit_guest_rules.json",
-                    "faculty_staff": "database/guest_database/faculty_staff_guest_rules.json"
+            for rule in guest_rules:
+                rule_obj = {
+                    "category": rule.category,
+                    "question": rule.question,  # Using question field
+                    "response": rule.answer,
+                    "id": rule.id
                 }
-                for category, filepath in category_files.items():
-                    try:
-                        with open(filepath, "r", encoding="utf-8") as f:
-                            rules_data = json.load(f)
-                            for rule in rules_data:
-                                rule['category'] = category
-                                rule['question'] = rule.get('question', '')
-                                rule['response'] = rule.get('answer', '')
-                                if 'id' not in rule or not rule['id']:
-                                    rule['id'] = str(uuid4())
-                                rules.append(rule)
-                    except Exception:
-                        continue
-        return rules
+                rules.append(rule_obj)
+            return rules
+        except Exception as e:
+            logging.error(f"Error loading guest rules from MySQL: {e}")
+            return []
 
     def normalize_keywords(self, keywords):
         """
@@ -437,109 +284,108 @@ class Chatbot:
 
     def get_visual_rules(self):
         """
-        Load visual-based rules from database/visuals/visuals.json
-        Converts each image entry to a rule with questions and response containing description and all image URLs.
+        Load visual-based rules from MySQL Visual table.
+        Converts each visual entry to a rule with questions and response containing description and all image URLs.
         Dynamically generates specific questions based on description if questions are generic.
         """
-        visuals_path = os.path.join("database", "visuals", "visuals.json")
         try:
-            with open(visuals_path, "r", encoding="utf-8") as f:
-                visuals_data = json.load(f)
-                visual_rules = []
-                for entry in visuals_data:
-                    questions = entry.get("questions", [])
-                    description = entry.get("description", "")
-                    # Check if questions are generic and generate specific ones based on description
-                    if questions == ["What is ?", "Can you show me ?", "Where can I find information about ?", "Tell me about .", "What are the details on ?"]:
-                        desc_lower = description.lower()
-                        if 'uniform' in desc_lower:
-                            school = desc_lower.split('uniform')[0].strip().title()
-                            questions = [
-                                f"What is the uniform for {school}?",
-                                "Can you show me the uniform?",
-                                "Tell me about the uniform.",
-                                "What are the details on the uniform?",
-                                "Where can I find information about the uniform?"
-                            ]
-                        elif 'student council' in desc_lower or 'council' in desc_lower:
-                            council_type = 'ICT Student Council' if 'ict' in desc_lower else 'Student Council'
-                            questions = [
-                                f"Who are the {council_type} members?",
-                                f"Can you show me the {council_type}?",
-                                f"Tell me about the {council_type}.",
-                                f"What are the details on the {council_type}?",
-                                f"Where can I find information about the {council_type}?"
-                            ]
-                        elif 'ictzen' in desc_lower:
-                            # Extract role
-                            if 'is the' in desc_lower:
-                                role = desc_lower.split('is the')[1].split('a.y')[0].strip().title()
-                            else:
-                                role = 'ICTzen staff'
-                            questions = [
-                                f"Who is the {role}?",
-                                f"Can you show me the {role}?",
-                                f"Tell me about the {role}.",
-                                f"What is the {role}'s role?",
-                                f"Where can I find information about the {role}?"
-                            ]
-                        elif 'research coordinator' in desc_lower or 'program head' in desc_lower or 'director' in desc_lower or 'adviser' in desc_lower or 'professor' in desc_lower or 'instructor' in desc_lower or 'lecturer' in desc_lower or 'aide' in desc_lower:
-                            # Person entry
-                            if ',' in description:
-                                name = description.split(',')[0].strip()
-                            else:
-                                name = description.split(' is ')[0].strip()
-                            questions = [
-                                f"Who is {name}?",
-                                f"Can you show me {name}?",
-                                f"Tell me about {name}.",
-                                f"What is {name}'s role?",
-                                f"Where can I find information about {name}?"
-                            ]
+            visuals_data = Visual.query.all()
+            visual_rules = []
+            for entry in visuals_data:
+                questions = entry.questions or []
+                description = entry.description or ""
+                # Check if questions are generic and generate specific ones based on description
+                if questions == ["What is ?", "Can you show me ?", "Where can I find information about ?", "Tell me about .", "What are the details on ?"]:
+                    desc_lower = description.lower()
+                    if 'uniform' in desc_lower:
+                        school = desc_lower.split('uniform')[0].strip().title()
+                        questions = [
+                            f"What is the uniform for {school}?",
+                            "Can you show me the uniform?",
+                            "Tell me about the uniform.",
+                            "What are the details on the uniform?",
+                            "Where can I find information about the uniform?"
+                        ]
+                    elif 'student council' in desc_lower or 'council' in desc_lower:
+                        council_type = 'ICT Student Council' if 'ict' in desc_lower else 'Student Council'
+                        questions = [
+                            f"Who are the {council_type} members?",
+                            f"Can you show me the {council_type}?",
+                            f"Tell me about the {council_type}.",
+                            f"What are the details on the {council_type}?",
+                            f"Where can I find information about the {council_type}?"
+                        ]
+                    elif 'ictzen' in desc_lower:
+                        # Extract role
+                        if 'is the' in desc_lower:
+                            role = desc_lower.split('is the')[1].split('a.y')[0].strip().title()
                         else:
-                            # Default
-                            questions = [
-                                "What is this?",
-                                "Can you show me this?",
-                                "Tell me about this.",
-                                "What are the details on this?",
-                                "Where can I find information about this?"
-                            ]
-                    image_urls = entry.get("urls", [])
-                    # Compose response with description and all image HTML tags
-                    images_html = ""
-                    if len(image_urls) > 2:
-                        # Show first image with overlay for additional images
-                        static_img_url = image_urls[0]
-                        if not static_img_url.startswith("/static/"):
-                            static_img_url = "/static/" + static_img_url
-                        additional_count = len(image_urls) - 1
-                        prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
-                        images_html = f"""
-                        <div class="image-gallery" data-images='{",".join(prefixed_urls)}'>
-                            <img src='{static_img_url}' alt='Visual Image' class='message-image'>
-                            <div class="image-overlay">+{additional_count} more</div>
-                        </div>
-                        """
+                            role = 'ICTzen staff'
+                        questions = [
+                            f"Who is the {role}?",
+                            f"Can you show me the {role}?",
+                            f"Tell me about the {role}.",
+                            f"What is the {role}'s role?",
+                            f"Where can I find information about the {role}?"
+                        ]
+                    elif 'research coordinator' in desc_lower or 'program head' in desc_lower or 'director' in desc_lower or 'adviser' in desc_lower or 'professor' in desc_lower or 'instructor' in desc_lower or 'lecturer' in desc_lower or 'aide' in desc_lower:
+                        # Person entry
+                        if ',' in description:
+                            name = description.split(',')[0].strip()
+                        else:
+                            name = description.split(' is ')[0].strip()
+                        questions = [
+                            f"Who is {name}?",
+                            f"Can you show me {name}?",
+                            f"Tell me about {name}.",
+                            f"What is {name}'s role?",
+                            f"Where can I find information about {name}?"
+                        ]
                     else:
-                        # Show all images if 2 or fewer
-                        for img_url in image_urls:
-                            static_img_url = img_url
-                            if not img_url.startswith("/static/"):
-                                static_img_url = "/static/" + img_url
-                            prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
-                            images_html += f"<img src='{static_img_url}' alt='Visual Image' class='message-image' data-images='{','.join(prefixed_urls)}'>"
-                    response = f"{description}<br>{images_html}"
-                    rule = {
-                        "id": entry.get("id", ""),
-                        "questions": questions,
-                        "response": response,
-                        "category": "visuals",
-                        "user_type": entry.get("user_type", "user")
-                    }
-                    visual_rules.append(rule)
-                return visual_rules
-        except Exception:
+                        # Default
+                        questions = [
+                            "What is this?",
+                            "Can you show me this?",
+                            "Tell me about this.",
+                            "What are the details on this?",
+                            "Where can I find information about this?"
+                        ]
+                image_urls = entry.urls or []
+                # Compose response with description and all image HTML tags
+                images_html = ""
+                if len(image_urls) > 2:
+                    # Show first image with overlay for additional images
+                    static_img_url = image_urls[0]
+                    if not static_img_url.startswith("/static/"):
+                        static_img_url = "/static/" + static_img_url
+                    additional_count = len(image_urls) - 1
+                    prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
+                    images_html = f"""
+                    <div class="image-gallery" data-images='{",".join(prefixed_urls)}'>
+                        <img src='{static_img_url}' alt='Visual Image' class='message-image'>
+                        <div class="image-overlay">+{additional_count} more</div>
+                    </div>
+                    """
+                else:
+                    # Show all images if 2 or fewer
+                    for img_url in image_urls:
+                        static_img_url = img_url
+                        if not img_url.startswith("/static/"):
+                            static_img_url = "/static/" + img_url
+                        prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
+                        images_html += f"<img src='{static_img_url}' alt='Visual Image' class='message-image' data-images='{','.join(prefixed_urls)}'>"
+                response = f"{description}<br>{images_html}"
+                rule = {
+                    "id": entry.id,
+                    "questions": questions,
+                    "response": response,
+                    "category": "visuals",
+                    "user_type": entry.user_type or "user"
+                }
+                visual_rules.append(rule)
+            return visual_rules
+        except Exception as e:
+            logging.error(f"Error loading visual rules from MySQL: {e}")
             return []
 
     def update_context(self, session_id, user_input, response):
@@ -588,14 +434,8 @@ class Chatbot:
                     self.update_context(session_id, user_input, email_response)
                 return self.append_image_to_response(email_response)
 
-        # Check if visuals.json has been modified and reload if necessary
-        visuals_path = os.path.join("database", "visuals", "visuals.json")
-        try:
-            current_mtime = os.path.getmtime(visuals_path)
-            if current_mtime > self.visual_rules_mtime:
-                self.reload_visual_rules()
-        except Exception as e:
-            logging.error(f"Error checking visuals.json modification time: {e}")
+        # Reload visuals if needed (no file check since it's from DB)
+        # self.reload_visual_rules()  # Not needed since visuals are loaded from DB
 
         # Collect all potential matches with their scores
         candidates = []  # List of (rule, combined_score, match_type)
@@ -728,42 +568,36 @@ class Chatbot:
         return response_text
 
     def add_rule(self, question, response, user_type='user', category='soict'):
-        from uuid import uuid4
-        if category == "locations":
-            # Add location rule directly to location_rules list
-            new_rule = {
-                "id": str(uuid4()),
-                "questions": [question],  # Store as questions instead of keywords
-                "response": response,
-                "category": category
-            }
-            self.location_rules.append(new_rule)
-            self.save_location_rules()
-            return {"location": new_rule["id"]}
-        elif category == "visuals":
-            # Add visual rule directly to visual_rules list
-            new_rule = {
-                "id": str(uuid4()),
-                "questions": [question],  # Store as questions instead of keywords
-                "response": response,
-                "category": category
-            }
-            self.visual_rules.append(new_rule)
-            self.save_visual_rules()
-            return {"visual": new_rule["id"]}
-        else:
-            # Use the centralized add_rule function from rule_utils to add and save rules
-            # This will update the "all" files correctly without creating unnecessary category files
-            added_id = rule_utils.add_rule(user_type, category, question, response)
-
-            # Reload rules to update in-memory state without double-saving
-            if user_type == 'user' or user_type == 'both':
+        try:
+            if user_type == 'user':
+                new_rule = UserRule(category=category, question=question, answer=response)
+                db.session.add(new_rule)
+                db.session.commit()
+                # Reload rules to update in-memory state
                 self.rules = self.get_rules()
-            if user_type == 'guest' or user_type == 'both':
+                return {"user": new_rule.id}
+            elif user_type == 'guest':
+                new_rule = GuestRule(category=category, question=question, answer=response)
+                db.session.add(new_rule)
+                db.session.commit()
+                # Reload rules to update in-memory state
                 self.guest_rules = self.get_guest_rules()
-            # Recompute embeddings after adding rules
-            self.recompute_embeddings()
-            return {"user": added_id} if user_type == "user" else {"guest": added_id}
+                return {"guest": new_rule.id}
+            else:
+                # For both user types
+                user_rule = UserRule(category=category, question=question, answer=response)
+                guest_rule = GuestRule(category=category, question=question, answer=response)
+                db.session.add(user_rule)
+                db.session.add(guest_rule)
+                db.session.commit()
+                # Reload rules to update in-memory state
+                self.rules = self.get_rules()
+                self.guest_rules = self.get_guest_rules()
+                return {"user": user_rule.id, "guest": guest_rule.id}
+        except Exception as e:
+            logging.error(f"Error adding rule to MySQL: {e}")
+            db.session.rollback()
+            return None
 
     def save_location_rules(self):
         """
@@ -936,62 +770,38 @@ class Chatbot:
         return deleted
 
     def edit_rule(self, rule_id, question, response, user_type='user'):
-        # Edit rule in user, guest, or location rules
-        edited = False
-
-        # Choose the appropriate rules list based on user_type
-        if user_type == 'user':
-            rules_list = self.rules
-        elif user_type == 'guest':
-            rules_list = self.guest_rules
-        else:
-            # Try user rules first, then guest rules
-            rules_list = self.rules
-
-        # Edit rules in the selected list
-        for rule in rules_list:
-            if str(rule.get("id")) == str(rule_id):
-                category = rule.get("category", "SOICT")
-                # Use rule_utils to edit the rule
-                from database.user_database import rule_utils
-                edited = rule_utils.edit_rule(rule_id, question, response, user_type=user_type, category=category)
-                # Update in-memory rule
-                rule["question"] = question
-                rule["response"] = response
-                # Recompute embeddings after editing rules
-                self.recompute_embeddings()
-                break
-
-        if not edited:
-            # Edit location rules (if not found in user/guest rules)
-            for rule in self.location_rules:
-                if str(rule.get("id")) == str(rule_id):
-                    rule["questions"] = [question]  # Store as questions instead of keywords
-                    rule["response"] = response
-                    self.save_location_rules()
-                    edited = True
-                    break
-
-        if not edited:
-            # Edit visual rules (if not found in user/guest rules)
-            for rule in self.visual_rules:
-                if str(rule.get("id")) == str(rule_id):
-                    rule["questions"] = [question]  # Store as questions instead of keywords
-                    rule["response"] = response
-                    self.save_visual_rules()
-                    edited = True
-                    break
-        return edited
+        # Edit rule in MySQL database
+        try:
+            if user_type == 'user':
+                rule = UserRule.query.filter_by(id=rule_id).first()
+                if rule:
+                    rule.question = question
+                    rule.answer = response
+                    db.session.commit()
+                    self.rules = self.get_rules()
+                    return True
+            elif user_type == 'guest':
+                rule = GuestRule.query.filter_by(id=rule_id).first()
+                if rule:
+                    rule.question = question
+                    rule.answer = response
+                    db.session.commit()
+                    self.guest_rules = self.get_guest_rules()
+                    return True
+        except Exception as e:
+            logging.error(f"Error editing rule in MySQL: {e}")
+            db.session.rollback()
+        return False
 
     def reload_faqs(self):
         """
-        Reload FAQs from database/faqs.json into memory.
+        Reload FAQs from MySQL Faq table into memory.
         """
         try:
-            with open('database/faqs.json', 'r', encoding='utf-8') as f:
-                self.faqs = json.load(f)
+            faqs_data = Faq.query.all()
+            self.faqs = [{"question": faq.question, "answer": faq.answer} for faq in faqs_data]
         except Exception as e:
-            logging.error(f"Error reloading FAQs: {e}")
+            logging.error(f"Error reloading FAQs from MySQL: {e}")
             self.faqs = []
 
     def reload_location_rules(self):
@@ -1002,11 +812,9 @@ class Chatbot:
 
     def reload_visual_rules(self):
         """
-        Reload visual rules from database/visuals/visuals.json into memory.
+        Reload visual rules from MySQL Visual table into memory.
         """
-        visuals_path = os.path.join("database", "visuals", "visuals.json")
         self.visual_rules = self.get_visual_rules()
-        self.visual_rules_mtime = os.path.getmtime(visuals_path)
 
     def create_category_files(self, category):
         """

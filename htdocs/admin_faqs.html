@@ -89,14 +89,14 @@
               <tbody>
                 {% if info_list %}
                   {% for item in info_list %}
-                  <tr data-info-id="{{ loop.index0 }}">
+                  <tr data-info-id="{{ item.id }}">
                     <td class="info-question">{{ item.question|safe }}</td>
                     <td class="info-answer">{{ item.answer|safe }}</td>
                     <td>
-                      <button class="btn btn-sm btn-danger delete-info" data-info-id="{{ loop.index0 }}" title="Delete Info">
+                      <button class="btn btn-sm btn-danger delete-info" data-info-id="{{ item.id }}" title="Delete Info">
                         <i class="fas fa-trash-alt"></i>
                       </button>
-                      <button class="btn btn-sm btn-primary edit-info" data-info-id="{{ loop.index0 }}" title="Edit Info">
+                      <button class="btn btn-sm btn-primary edit-info" data-info-id="{{ item.id }}" title="Edit Info">
                         <i class="fas fa-edit"></i>
                       </button>
                     </td>
