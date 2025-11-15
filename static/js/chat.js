@@ -260,6 +260,15 @@ async function loadHistoryForSession(sessionId) {
         } catch (error) {
             console.error('Error sending message:', error);
             if (typingIndicator.parentNode) typingIndicator.remove();
+            // Add error message to chat
+            const errorMessageDiv = document.createElement('div');
+            errorMessageDiv.classList.add('message', 'message-bot');
+            errorMessageDiv.innerHTML = `
+                <div class="message-content">I'm sorry, I encountered an error. Please try again.</div>
+                <div class="message-time"><i class="fas fa-robot me-1"></i>${new Date().toLocaleTimeString()}</div>
+            `;
+            chatMessages.appendChild(errorMessageDiv);
+            scrollToBottom();
         }
     }
 

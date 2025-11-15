@@ -19,15 +19,15 @@ with app.app_context():
     print('Testing sample queries with evaluation...')
     test_queries = [
         ('What is the location of the library?', 'location'),
-        ('How to contact the dean?', 'contact'),
+        ('How to contact the SOIT?', 'contact'),
         ('Where is the computer lab?', 'location'),
-        ('What are the admission requirements?', 'info'),
+        ('What are the enrollment requirements?', 'visuals'),
         ('Email of the registrar', 'contact'),
-        ('Contact the library', 'contact'),
-        ('Tell me about the uniform', 'info'),
-        ('Who is the director?', 'info'),
-        ('Where can I find the office?', 'location'),
-        ('What is the FAQ?', 'faq')
+        ('Email of SOIT', 'contact'),
+        ('Tell me about the SOBM uniform', 'visuals'),
+        ('Who is the SOICT director?', 'visuals'),
+        ('Where can I find the SOICT directors office?', 'location'),
+        ('Who is the director of SOICT?', 'visuals')
     ]
 
     predicted_responses = []

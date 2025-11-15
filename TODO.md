@@ -1,15 +1,14 @@
-# TODO: Optimize Chatbot Response Time
+# TODO: Improve NLP Accuracy for Query Matching
 
-## Completed
-- [x] Add missing JSON editor routes (/admin/load_json, /admin/save_json, /admin/upload_json) to app.py for admin JSON editing functionality.
-
-## In Progress
-- [ ] Disable spell correction in preprocess_text (nlp_utils.py).
-- [ ] Implement precompute_tfidf in chatbot.py to precompute TF-IDF matrix for all rules' questions.
-- [ ] Modify semantic_similarity to use precomputed matrix when corpus matches precomputed questions.
-- [ ] Run test_nlp.py to verify average response time <5 seconds.
-
-## Pending
-- [ ] If time not under 5s, explore further optimizations like caching preprocessed texts.
-- [ ] Set up Railway persistent volume for JSON file persistence on Railway (read-only file system workaround).
-
+- [x] Enhance fuzzy_match in nlp_utils.py with Dice similarity and n-grams for better handling of typos and variations
+- [x] Add optional lemmatization to preprocess_text for improved word normalization
+- [x] Increase rule limits in chatbot.py (e.g., from 20/5/50 to 50/20/100) for broader matching scope
+- [x] Fine-tune thresholds in get_response based on testing (e.g., lower base_threshold for better matches)
+- [x] Improve intent classification in nlp_utils.py with more keywords and patterns
+- [x] Reintroduce TF-IDF for semantic similarity in semantic_similarity function
+- [x] Fix get_location_rules to load from MySQL Location table instead of JSON
+- [x] Fix KeyError for 'person' intent by adding it to threshold dictionary
+- [x] Change semantic similarity to check all rules instead of limited subset for comprehensive matching
+- [x] Remove fuzzy matching to improve speed, rely on NLTK-based semantic similarity
+- [x] Remove semantic similarity to improve speed, rely on keyword matching only
+- [ ] Test improvements with test_nlp.py and adjust as needed

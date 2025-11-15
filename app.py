@@ -432,41 +432,48 @@ def send_message():
     """
     Handle sending a message from the user and return chatbot response.
     """
-    data = request.get_json()
-    user_message = data.get('message', '')
-    session_id = data.get('session_id', '')
-    user_role = session.get('user_type', None)
-    bot_response = chatbot.get_response(user_message, user_role=user_role)
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '')
+        session_id = data.get('session_id', '')
+        user_role = session.get('user_type', None)
+        bot_response = chatbot.get_response(user_message, user_role=user_role)
 
-    if current_user.is_authenticated and isinstance(current_user, UserModel) and session_id:
-        user_manager.add_chat_message(current_user.id, session_id, 'user', user_message)
-        user_manager.add_chat_message(current_user.id, session_id, 'bot', bot_response)
-    elif 'guest_username' in session and session_id:
-        # Store guest messages directly in database
-        from models import ChatMessage
-        guest_username = session['guest_username']
-        guest_user_message = ChatMessage(
-            user_id=None,
-            guest_username=guest_username,
-            session_id=session_id,
-            sender_type='user',
-            message=user_message
-        )
-        guest_bot_message = ChatMessage(
-            user_id=None,
-            guest_username=guest_username,
-            session_id=session_id,
-            sender_type='bot',
-            message=bot_response
-        )
-        db.session.add(guest_user_message)
-        db.session.add(guest_bot_message)
-        db.session.commit()
+        if current_user.is_authenticated and isinstance(current_user, UserModel) and session_id:
+            user_manager.add_chat_message(current_user.id, session_id, 'user', user_message)
+            user_manager.add_chat_message(current_user.id, session_id, 'bot', bot_response)
+        elif 'guest_username' in session and session_id:
+            # Store guest messages directly in database
+            from models import ChatMessage
+            guest_username = session['guest_username']
+            guest_user_message = ChatMessage(
+                user_id=None,
+                guest_username=guest_username,
+                session_id=session_id,
+                sender_type='user',
+                message=user_message
+            )
+            guest_bot_message = ChatMessage(
+                user_id=None,
+                guest_username=guest_username,
+                session_id=session_id,
+                sender_type='bot',
+                message=bot_response
+            )
+            db.session.add(guest_user_message)
+            db.session.add(guest_bot_message)
+            db.session.commit()
 
-    return jsonify({
-        'response': bot_response,
-        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
+        return jsonify({
+            'response': bot_response,
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+    except Exception as e:
+        app.logger.error(f"Error in send_message: {e}")
+        return jsonify({
+            'response': "I'm sorry, I encountered an error. Please try again.",
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }), 500
 
 @app.route('/clear_history', methods=['POST'])
 @login_required

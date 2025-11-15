@@ -2,6 +2,12 @@ import logging
 import string
 import re
 from uuid import uuid4
+import logging
+from nlp_utils import (
+    NLUEngine,
+    classify_intent,
+    preprocess_text
+)
 
 def simple_tokenize(text):
     """
@@ -15,17 +21,32 @@ import database.user_database.rule_utils as rule_utils
 import json
 import os
 
-from nlp_utils import semantic_similarity, preprocess_text, fuzzy_match, classify_intent
+from nlp_utils import NLUEngine
 from chatbot_models import Category, Faq, Location, Visual, UserRule, GuestRule
 from extensions import db
 
 class Chatbot:
     def __init__(self):
-        # Keep all other initialization code unchanged
+# Initialize NLP Engine FIRST
+        self.nlu = NLUEngine(
+            min_similarity=0.35,
+            fuzzy_threshold=80
+        )
 
-        # Initialize rules attributes
-        self.rules = self.get_rules()
-        self.guest_rules = self.get_guest_rules()
+        # -----------------------------------------
+        # Load all rules with error handling
+        # -----------------------------------------
+
+        try:
+            self.rules = self.get_rules()
+        except Exception as e:
+            logging.error(f"Error loading user rules: {e}")
+            self.rules = []
+        try:
+            self.guest_rules = self.get_guest_rules()
+        except Exception as e:
+            logging.error(f"Error loading guest rules: {e}")
+            self.guest_rules = []
 
         # Load chatbot answer images from MySQL Location table
         try:
@@ -40,14 +61,23 @@ class Chatbot:
                     "description": entry.description
                 }
                 self.chatbot_images.append(image_entry)
-        except Exception:
+        except Exception as e:
+            logging.error(f"Error loading chatbot images: {e}")
             self.chatbot_images = []
 
         # Load location-based rules from MySQL Location table
-        self.location_rules = self.get_location_rules()
+        try:
+            self.location_rules = self.get_location_rules()
+        except Exception as e:
+            logging.error(f"Error loading location rules: {e}")
+            self.location_rules = []
 
         # Load visual-based rules from MySQL Visual table
-        self.visual_rules = self.get_visual_rules()
+        try:
+            self.visual_rules = self.get_visual_rules()
+        except Exception as e:
+            logging.error(f"Error loading visual rules: {e}")
+            self.visual_rules = []
 
         # Email keywords for triggering email search
         self.email_keywords = ["email", "contact", "mail", "reach", "address", "send", "message"]
@@ -55,9 +85,12 @@ class Chatbot:
         # Load FAQs from MySQL Faq table
         try:
             faqs_data = Faq.query.all()
-            self.faqs = [{"question": faq.question, "answer": faq.answer} for faq in faqs_data]
-        except Exception:
+            self.faqs = [{"question": faq.question, "answer": faq.answer, "id": faq.id} for faq in faqs_data]
+            self.faq_rules = [{"question": faq["question"], "response": faq["answer"], "category": "faqs", "id": faq["id"]} for faq in self.faqs]
+        except Exception as e:
+            logging.error(f"Error loading FAQs: {e}")
             self.faqs = []
+            self.faq_rules = []
 
         # Initialize fallback tracking attributes
         self.consecutive_fallbacks = 0
@@ -71,17 +104,24 @@ class Chatbot:
         # Initialize context tracking for conversation history
         self.conversation_history = {}
 
-        # Precompute TF-IDF for performance
-        self.precompute_tfidf()
+        # Initialize response cache for repeated queries
+        self.response_cache = {}
+
+        # No longer precomputing TF-IDF for faster performance
 
         # Cache email directory for faster lookups
-        self.cached_emails = self.cache_emails()
+        try:
+            self.cached_emails = self.cache_emails()
+        except Exception as e:
+            logging.error(f"Error caching emails: {e}")
+            self.cached_emails = []
 
     def precompute_tfidf(self):
         """
-        Precompute TF-IDF vectors for all rules to improve performance.
+        Precompute TF-IDF matrix for all rules to improve performance.
+        Now includes all questions for better accuracy and speed.
         """
-        from nlp_utils import preprocess_text, vectorizer
+        from nlp_utils import preprocess_text, tfidf_vectorizer
         all_questions = []
         for rule in self.rules + self.guest_rules + self.location_rules + self.visual_rules:
             questions = rule.get('questions', []) or rule.get('question', '')
@@ -94,10 +134,8 @@ class Chatbot:
                 elif isinstance(q, list):
                     flattened_questions.extend(q)
             all_questions.extend(flattened_questions)
-        # Preprocess all questions
-        processed_questions = [preprocess_text(q) for q in all_questions]
-        # Fit vectorizer on all processed questions
-        self.tfidf_matrix = vectorizer.fit_transform(processed_questions)
+        # Compute TF-IDF for all questions (no limit for better coverage)
+        self.tfidf_matrix = tfidf_vectorizer.fit_transform([preprocess_text(q) for q in all_questions])
         self.tfidf_corpus = all_questions
 
     def cache_emails(self):
@@ -223,63 +261,59 @@ class Chatbot:
 
     def get_location_rules(self):
         """
-        Load location-based rules from database/locations/locations.json
-        Converts each image entry to a rule with keywords and response containing description and all image URLs.
+        Load location-based rules from MySQL Location table.
+        Converts each location entry to a rule with questions and response containing description and all image URLs.
         """
-        locations_path = os.path.join("database", "locations", "locations.json")
         try:
-            with open(locations_path, "r", encoding="utf-8") as f:
-                locations_data = json.load(f)
-                location_rules = []
-                for entry in locations_data:
-                    questions = entry.get("questions", [])
-                    if isinstance(questions, str):
-                        questions = [questions]
-                    flattened_questions = []
-                    for q in questions:
-                        if isinstance(q, str):
-                            flattened_questions.append(q)
-                        elif isinstance(q, list):
-                            flattened_questions.extend(q)
-                    # Include description in questions for NLP matching
-                    description = entry.get("description", "")
-                    flattened_questions.append(description)
-                    keywords = [word for q in flattened_questions for word in q.lower().split()]
-                    image_urls = entry.get("urls", [])
-                    # Compose response with description and all image HTML tags
-                    images_html = ""
-                    if len(image_urls) > 2:
-                        # Show first image with overlay for additional images
-                        static_img_url = image_urls[0]
-                        if not static_img_url.startswith("/static/"):
-                            static_img_url = "/static/" + static_img_url
-                        additional_count = len(image_urls) - 1
+            locations_data = Location.query.all()
+            location_rules = []
+            for entry in locations_data:
+                questions = entry.questions or []
+                if isinstance(questions, str):
+                    questions = [questions]
+                flattened_questions = []
+                for q in questions:
+                    if isinstance(q, str):
+                        flattened_questions.append(q)
+                    elif isinstance(q, list):
+                        flattened_questions.extend(q)
+                description = entry.description or ""
+                image_urls = entry.urls or []
+                # Compose response with description and all image HTML tags
+                images_html = ""
+                if len(image_urls) > 2:
+                    # Show first image with overlay for additional images
+                    static_img_url = image_urls[0]
+                    if not static_img_url.startswith("/static/"):
+                        static_img_url = "/static/" + static_img_url
+                    additional_count = len(image_urls) - 1
+                    prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
+                    images_html = f"""
+                    <div class="image-gallery" data-images='{",".join(prefixed_urls)}'>
+                        <img src='{static_img_url}' alt='Location Image' class='message-image'>
+                        <div class="image-overlay">+{additional_count} more</div>
+                    </div>
+                    """
+                else:
+                    # Show all images if 2 or fewer
+                    for img_url in image_urls:
+                        static_img_url = img_url
+                        if not img_url.startswith("/static/"):
+                            static_img_url = "/static/" + img_url
                         prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
-                        images_html = f"""
-                        <div class="image-gallery" data-images='{",".join(prefixed_urls)}'>
-                            <img src='{static_img_url}' alt='Location Image' class='message-image'>
-                            <div class="image-overlay">+{additional_count} more</div>
-                        </div>
-                        """
-                    else:
-                        # Show all images if 2 or fewer
-                        for img_url in image_urls:
-                            static_img_url = img_url
-                            if not img_url.startswith("/static/"):
-                                static_img_url = "/static/" + img_url
-                            prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
-                            images_html += f"<img src='{static_img_url}' alt='Location Image' class='message-image' data-images='{','.join(prefixed_urls)}'>"
-                    response = f"{description}<br>{images_html}"
-                    rule = {
-                        "id": entry.get("id", ""),
-                        "questions": flattened_questions,
-                        "response": response,
-                        "category": "locations",
-                        "user_type": entry.get("user_type", "both")
-                    }
-                    location_rules.append(rule)
-                return location_rules
-        except Exception:
+                        images_html += f"<img src='{static_img_url}' alt='Location Image' class='message-image' data-images='{','.join(prefixed_urls)}'>"
+                response = f"{description}<br>{images_html}"
+                rule = {
+                    "id": entry.id,
+                    "questions": flattened_questions,
+                    "response": response,
+                    "category": "locations",
+                    "user_type": entry.user_type or "both"
+                }
+                location_rules.append(rule)
+            return location_rules
+        except Exception as e:
+            logging.error(f"Error loading location rules from MySQL: {e}")
             return []
 
     def get_visual_rules(self):
@@ -403,7 +437,7 @@ class Chatbot:
         """
         Generate a response by collecting all matches above threshold and selecting the best overall match.
         Improved with TF-IDF cosine similarity, fuzzy matching, intent classification, context awareness,
-        and dynamic thresholds for better accuracy.
+        dynamic thresholds, and response caching for better accuracy and speed.
 
         Args:
             user_input (str): The input message from the user.
@@ -413,128 +447,97 @@ class Chatbot:
         Returns:
             str: The chatbot's response from rules, info.json, or fallback message.
         """
-        if not user_input.strip():
-            return "Please type a message to chat with DORAN."
+    def get_response(self, user_input, user_role="guest", session_id=None):
 
-        # Classify intent for dynamic thresholds
-        intent = classify_intent(user_input)
-        base_threshold = {'location': 0.25, 'contact': 0.3, 'faq': 0.35, 'info': 0.3, 'unknown': 0.4}[intent]
+            try:
+                # Cache key
+                cache_key = f"{user_role}:{user_input.lower().strip()}"
+                if cache_key in self.response_cache:
+                    return self.append_image_to_response(self.response_cache[cache_key])
 
-        # Preprocess user input
-        processed_input = preprocess_text(user_input)
-        user_tokens = simple_tokenize(processed_input)
+                # Detect intent
+                intent = classify_intent(user_input)
 
-        # Check for email queries first to prioritize over rules
-        has_email_keyword = any(keyword in user_tokens for keyword in self.email_keywords)
-        if has_email_keyword:
-            email_response = self.search_emails(user_input)
-            if email_response:
-                self.consecutive_fallbacks = 0
+                # Select rules
+                if user_role == "guest":
+                    rules_to_use = (
+                        self.guest_rules +
+                        self.location_rules +
+                        self.visual_rules +
+                        self.faq_rules
+                    )
+                else:
+                    rules_to_use = (
+                        self.rules +
+                        self.location_rules +
+                        self.visual_rules +
+                        self.faq_rules
+                    )
+
+                # ---------------------------------------------------
+                # NEW NLP ENGINE REPLACEMENT BLOCK STARTS HERE
+                # ---------------------------------------------------
+
+                processed_query = self.nlu.preprocess(user_input)
+
+                # Combine all rules for unified search
+                all_rules = (
+                    self.rules +
+                    self.guest_rules +
+                    self.location_rules +
+                    self.visual_rules +
+                    self.faq_rules
+                )
+
+                best_rule, score = self.nlu.match_rule(processed_query, all_rules)
+
+                if best_rule:
+                    self.consecutive_fallbacks = 0
+
+                    # Determine the response text from rule
+                    response = (
+                        best_rule.get("response") or
+                        best_rule.get("answer") or
+                        best_rule.get("description") or
+                        "I'm not sure how to answer that, but I found something related."
+                    )
+
+                    if session_id:
+                        self.update_context(session_id, user_input, response)
+
+                    # Cache
+                    self.response_cache[cache_key] = response
+
+                    # If rule has images or visual data, include it
+                    return self.append_image_to_response(response, best_rule.get("questions"))
+
+                # ---------------------------------------------------
+                # NEW NLP ENGINE BLOCK ENDS HERE
+                # ---------------------------------------------------
+
+                # Fallback responses
+                logging.info("No matches found, using fallback")
+                self.consecutive_fallbacks += 1
+                fallback = self.fallback_responses[self.fallback_index]
+                self.fallback_index = (self.fallback_index + 1) % len(self.fallback_responses)
+
                 if session_id:
-                    self.update_context(session_id, user_input, email_response)
-                return self.append_image_to_response(email_response)
+                    self.update_context(session_id, user_input, fallback)
 
-        # Reload visuals if needed (no file check since it's from DB)
-        # self.reload_visual_rules()  # Not needed since visuals are loaded from DB
+                # Cache fallback
+                self.response_cache[cache_key] = fallback
+                return self.append_image_to_response(fallback)
 
-        # Collect all potential matches with their scores
-        candidates = []  # List of (rule, combined_score, match_type)
+            except Exception as e:
+                logging.error(f"Error in get_response: {e}", exc_info=True)
+                fallback = "I'm sorry, I encountered an error. Please try again."
 
-        # Determine rules to use based on user role
-        if user_role == 'guest':
-            rules_to_use = self.guest_rules + self.location_rules + self.visual_rules
-        else:
-            rules_to_use = self.rules + self.guest_rules + self.location_rules + self.visual_rules
+                if session_id:
+                    self.update_context(session_id, user_input, fallback)
 
-        # TF-IDF cosine similarity for all rules using precomputed matrix
-        for r in rules_to_use[:100]:  # Limit to first 100 rules to avoid memory issues
-            rule_user_type = r.get('user_type', 'both')
-            if user_role == 'guest' and rule_user_type == 'user':
-                continue
-            elif user_role != 'guest' and rule_user_type == 'guest':
-                continue
-            questions = r.get('questions', []) or r.get('question', '')
-            if isinstance(questions, str):
-                questions = [questions]
-            flattened_questions = []
-            for q in questions:
-                if isinstance(q, str):
-                    flattened_questions.append(q)
-                elif isinstance(q, list):
-                    flattened_questions.extend(q)
-            if flattened_questions:
-                _, tfidf_score = semantic_similarity(user_input, flattened_questions, threshold=0.0, precomputed_matrix=self.tfidf_matrix, precomputed_corpus=self.tfidf_corpus)
-                if tfidf_score >= base_threshold:
-                    # Boost for intent match
-                    if r.get('category') == intent or (intent == 'location' and r.get('category') in ['locations', 'visuals']):
-                        tfidf_score += 0.1
-                    candidates.append((r, tfidf_score, 'tfidf'))
+                self.response_cache[cache_key] = fallback
+                return fallback
 
-        # Fuzzy matching as fallback for typos
-        if not candidates:
-            for r in rules_to_use:
-                questions = r.get('questions', []) or r.get('question', '')
-                if isinstance(questions, str):
-                    questions = [questions]
-                flattened_questions = []
-                for q in questions:
-                    if isinstance(q, str):
-                        flattened_questions.append(q)
-                    elif isinstance(q, list):
-                        flattened_questions.extend(q)
-                if flattened_questions:
-                    _, fuzzy_score = fuzzy_match(user_input, flattened_questions, threshold=70)
-                    if fuzzy_score >= 0.7:  # Normalized threshold
-                        candidates.append((r, fuzzy_score, 'fuzzy'))
-
-        # FAQs TF-IDF similarity
-        faq_questions = [item['question'] for item in self.faqs]
-        faq_answers = [item['answer'] for item in self.faqs]
-        if faq_questions:
-            best_faq, faq_similarity_score = semantic_similarity(user_input, faq_questions, threshold=base_threshold)
-            if best_faq:
-                index = faq_questions.index(best_faq)
-                faq_rule = {'response': faq_answers[index], 'category': 'faqs'}
-                candidates.append((faq_rule, faq_similarity_score, 'faq'))
-
-        # Context-aware matching (check previous queries in session)
-        if session_id and session_id in self.conversation_history:
-            prev_queries = [entry['query'] for entry in self.conversation_history[session_id][-3:]]  # Last 3
-            for prev_q in prev_queries:
-                # Boost matches related to previous topics
-                for r in rules_to_use:
-                    questions = r.get('questions', []) or r.get('question', '')
-                    if isinstance(questions, str):
-                        questions = [questions]
-                    flattened_questions = []
-                    for q in questions:
-                        if isinstance(q, str):
-                            flattened_questions.append(q)
-                        elif isinstance(q, list):
-                            flattened_questions.extend(q)
-                    if flattened_questions:
-                        _, context_score = semantic_similarity(prev_q, flattened_questions, threshold=0.0)
-                        if context_score >= 0.5:  # High threshold for context
-                            candidates.append((r, context_score * 0.8, 'context'))  # Slight boost
-
-        # Select the best match across all candidates
-        if candidates:
-            best_candidate = max(candidates, key=lambda x: x[1])
-            best_rule, best_score, match_type = best_candidate
-            logging.info(f"Best match: {match_type} with score {best_score:.3f} for rule category {best_rule.get('category', 'unknown')}")
-            self.consecutive_fallbacks = 0
-            response = best_rule['response']
-            if session_id:
-                self.update_context(session_id, user_input, response)
-            return self.append_image_to_response(response)
-
-        # Fallback responses
-        self.consecutive_fallbacks += 1
-        fallback = self.fallback_responses[self.fallback_index]
-        self.fallback_index = (self.fallback_index + 1) % len(self.fallback_responses)
-        if session_id:
-            self.update_context(session_id, user_input, fallback)
-        return self.append_image_to_response(fallback)
 
     def append_image_to_response(self, response_text, rule_keywords=None):
         """
@@ -550,14 +553,24 @@ class Chatbot:
                     if isinstance(item, list):
                         flattened_keywords.extend(item)
                     else:
-                        flattened_keywords.append(item)
+                        flattened_keywords.append(str(item))
             else:
-                flattened_keywords = rule_keywords
+                flattened_keywords = [str(rule_keywords)]
             # Find an image whose questions contain any of the flattened_keywords
             for image in self.chatbot_images:
                 image_questions = image.get("questions", [])
+                # Flatten image_questions if nested
+                flattened_image_questions = []
+                if isinstance(image_questions, list):
+                    for item in image_questions:
+                        if isinstance(item, list):
+                            flattened_image_questions.extend(item)
+                        else:
+                            flattened_image_questions.append(str(item))
+                else:
+                    flattened_image_questions = [str(image_questions)]
                 # Check if any keyword is in any question
-                match = any(any(kw.lower() in q.lower() for kw in flattened_keywords) for q in image_questions)
+                match = any(any(kw.lower() in q.lower() for kw in flattened_keywords) for q in flattened_image_questions)
                 if match:
                     image_url = image.get("url", "")
                     if image_url:
@@ -799,10 +812,12 @@ class Chatbot:
         """
         try:
             faqs_data = Faq.query.all()
-            self.faqs = [{"question": faq.question, "answer": faq.answer} for faq in faqs_data]
+            self.faqs = [{"question": faq.question, "answer": faq.answer, "id": faq.id} for faq in faqs_data]
+            self.faq_rules = [{"question": faq["question"], "response": faq["answer"], "category": "faqs", "id": faq["id"]} for faq in self.faqs]
         except Exception as e:
             logging.error(f"Error reloading FAQs from MySQL: {e}")
             self.faqs = []
+            self.faq_rules = []
 
     def reload_location_rules(self):
         """
