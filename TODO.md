@@ -8,7 +8,3 @@
 - [x] Reintroduce TF-IDF for semantic similarity in semantic_similarity function
 - [x] Fix get_location_rules to load from MySQL Location table instead of JSON
 - [x] Fix KeyError for 'person' intent by adding it to threshold dictionary
-- [x] Change semantic similarity to check all rules instead of limited subset for comprehensive matching
-- [x] Remove fuzzy matching to improve speed, rely on NLTK-based semantic similarity
-- [x] Remove semantic similarity to improve speed, rely on keyword matching only
-- [ ] Test improvements with test_nlp.py and adjust as needed
