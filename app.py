@@ -45,13 +45,17 @@ sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
 
 def construct_railway_mysql_url(database_name='railway'):
     """Construct MySQL URL from Railway environment variables"""
-    host = os.environ.get('MYSQLHOST')
-    port = os.environ.get('MYSQLPORT')
-    user = os.environ.get('MYSQLUSER')
-    password = os.environ.get('MYSQLPASSWORD')
+    # Try different possible environment variable names
+    host = os.environ.get('MYSQLHOST') or os.environ.get('MYSQL_HOST')
+    port = os.environ.get('MYSQLPORT') or os.environ.get('MYSQL_PORT')
+    user = os.environ.get('MYSQLUSER') or os.environ.get('MYSQL_USER')
+    password = os.environ.get('MYSQLPASSWORD') or os.environ.get('MYSQL_ROOT_PASSWORD')
+
+    # Get database name from environment or use default
+    db_name = os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE') or database_name
 
     if host and port and user and password:
-        return f'mysql+pymysql://{user}:{password}@{host}:{port}/{database_name}'
+        return f'mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}'
     return None
 
 # Determine user database URL
