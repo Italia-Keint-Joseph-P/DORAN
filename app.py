@@ -35,52 +35,67 @@ if mysql_url and mysql_url.startswith('mysql://'):
 # Database URLs - separate databases for different data types
 # User data database (doran) - users, feedback, guests, chat history, etc.
 local_user_db_url = 'mysql+pymysql://root:@localhost/doran'
-railway_user_db_url = 'mysql+pymysql://root:smxcYzdpwUJTAiRdJWQFPJNbfsbVTAGC@trolley.proxy.rlwy.net:10349/doran_db'
 
 # Chatbot data database (chatbot_db) - rules, categories, locations, visuals, etc.
 local_chatbot_db_url = 'mysql+pymysql://root:@localhost/chatbot_db'
-railway_chatbot_db_url = 'mysql+pymysql://root:smxcYzdpwUJTAiRdJWQFPJNbfsbVTAGC@trolley.proxy.rlwy.net:10349/chatbot_db'
 
 # SQLite fallback databases
 sqlite_user_db_url = 'sqlite:///doran.db'
 sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
 
-# Try databases in order: environment variables, MySQL (local then Railway), then SQLite fallback
-def get_database_url(primary_url, fallback_url):
-    """Try primary URL, fallback to secondary if connection fails."""
-    try:
-        from sqlalchemy import create_engine
-        engine = create_engine(primary_url, connect_args={'connect_timeout': 10})
-        engine.dispose()
-        return primary_url
-    except Exception as e:
-        app.logger.warning(f"Failed to connect to {primary_url}: {str(e)}")
-        try:
-            engine = create_engine(fallback_url, connect_args={'connect_timeout': 10})
-            engine.dispose()
-            app.logger.info(f"Using fallback database: {fallback_url}")
-            return fallback_url
-        except Exception as e2:
-            app.logger.error(f"Failed to connect to fallback {fallback_url}: {str(e2)}")
-            raise e2
+def construct_railway_mysql_url(database_name='railway'):
+    """Construct MySQL URL from Railway environment variables"""
+    host = os.environ.get('MYSQLHOST')
+    port = os.environ.get('MYSQLPORT')
+    user = os.environ.get('MYSQLUSER')
+    password = os.environ.get('MYSQLPASSWORD')
+
+    if host and port and user and password:
+        return f'mysql+pymysql://{user}:{password}@{host}:{port}/{database_name}'
+    return None
 
 # Determine user database URL
-if os.environ.get('DATABASE_URL') or mysql_url:
-    user_db_url = os.environ.get('DATABASE_URL') or mysql_url
+if os.environ.get('DATABASE_URL'):
+    # Use explicit DATABASE_URL if provided
+    user_db_url = os.environ.get('DATABASE_URL')
+elif mysql_url:
+    # Use MYSQL_URL if provided
+    user_db_url = mysql_url
+elif construct_railway_mysql_url():
+    # Construct URL from Railway environment variables
+    user_db_url = construct_railway_mysql_url('railway')
+    app.logger.info("Using Railway MySQL for user database")
 else:
+    # Try local MySQL, fallback to SQLite
     try:
-        user_db_url = get_database_url(local_user_db_url, railway_user_db_url)
-    except Exception:
+        from sqlalchemy import create_engine
+        engine = create_engine(local_user_db_url, connect_args={'connect_timeout': 10})
+        engine.dispose()
+        user_db_url = local_user_db_url
+        app.logger.info("Using local MySQL for user database")
+    except Exception as e:
+        app.logger.warning(f"Failed to connect to local MySQL: {str(e)}")
         user_db_url = sqlite_user_db_url
         app.logger.info("Using SQLite fallback for user database")
 
 # Determine chatbot database URL
 if os.environ.get('CHATBOT_DATABASE_URL'):
+    # Use explicit CHATBOT_DATABASE_URL if provided
     chatbot_db_url = os.environ.get('CHATBOT_DATABASE_URL')
+elif construct_railway_mysql_url():
+    # Construct URL from Railway environment variables for chatbot database
+    chatbot_db_url = construct_railway_mysql_url('railway')
+    app.logger.info("Using Railway MySQL for chatbot database")
 else:
+    # Try local MySQL, fallback to SQLite
     try:
-        chatbot_db_url = get_database_url(local_chatbot_db_url, railway_chatbot_db_url)
-    except Exception:
+        from sqlalchemy import create_engine
+        engine = create_engine(local_chatbot_db_url, connect_args={'connect_timeout': 10})
+        engine.dispose()
+        chatbot_db_url = local_chatbot_db_url
+        app.logger.info("Using local MySQL for chatbot database")
+    except Exception as e:
+        app.logger.warning(f"Failed to connect to local MySQL: {str(e)}")
         chatbot_db_url = sqlite_chatbot_db_url
         app.logger.info("Using SQLite fallback for chatbot database")
 
