@@ -29,6 +29,10 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 def get_database_urls():
     """Get database URLs at runtime to ensure environment variables are available"""
+    # Debug: Log all MySQL-related environment variables
+    mysql_env_vars = {k: v for k, v in os.environ.items() if 'mysql' in k.lower() or 'database' in k.lower()}
+    app.logger.info(f"Available MySQL/Database environment variables: {mysql_env_vars}")
+
     # Add SQLAlchemy configuration for MySQL
     mysql_url = os.environ.get('MYSQL_URL')
     if mysql_url and mysql_url.startswith('mysql://'):
@@ -49,8 +53,13 @@ def get_database_urls():
         # Get database name from environment or use default
         db_name = os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE') or database_name
 
+        app.logger.info(f"Railway MySQL vars - host: {host}, port: {port}, user: {user}, password: {'***' if password else None}, db: {db_name}")
+
         if host and port and user and password:
-            return f'mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}'
+            url = f'mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}'
+            app.logger.info(f"Constructed Railway MySQL URL: {url.replace(password, '***')}")
+            return url
+        app.logger.warning("Railway MySQL environment variables not complete")
         return None
 
     # Determine user database URL - prioritize Railway/production databases
@@ -87,6 +96,7 @@ def get_database_urls():
         chatbot_db_url = sqlite_chatbot_db_url
         app.logger.info("Using SQLite fallback for chatbot database")
 
+    app.logger.info(f"Final database URLs - user: {user_db_url}, chatbot: {chatbot_db_url}")
     return user_db_url, chatbot_db_url
 
 # Get database URLs at runtime
