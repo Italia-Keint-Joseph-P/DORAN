@@ -320,71 +320,25 @@ class Chatbot:
         """
         Load visual-based rules from MySQL Visual table.
         Converts each visual entry to a rule with questions and response containing description and all image URLs.
-        Dynamically generates specific questions based on description if questions are generic.
         """
         try:
             visuals_data = Visual.query.all()
             visual_rules = []
             for entry in visuals_data:
                 questions = entry.questions or []
+                if isinstance(questions, str):
+                    questions = [questions]
+                # Flatten nested questions arrays
+                flattened_questions = []
+                for q in questions:
+                    if isinstance(q, str):
+                        flattened_questions.append(q)
+                    elif isinstance(q, list):
+                        flattened_questions.extend(q)
+
                 description = entry.description or ""
-                # Check if questions are generic and generate specific ones based on description
-                if questions == ["What is ?", "Can you show me ?", "Where can I find information about ?", "Tell me about .", "What are the details on ?"]:
-                    desc_lower = description.lower()
-                    if 'uniform' in desc_lower:
-                        school = desc_lower.split('uniform')[0].strip().title()
-                        questions = [
-                            f"What is the uniform for {school}?",
-                            "Can you show me the uniform?",
-                            "Tell me about the uniform.",
-                            "What are the details on the uniform?",
-                            "Where can I find information about the uniform?"
-                        ]
-                    elif 'student council' in desc_lower or 'council' in desc_lower:
-                        council_type = 'ICT Student Council' if 'ict' in desc_lower else 'Student Council'
-                        questions = [
-                            f"Who are the {council_type} members?",
-                            f"Can you show me the {council_type}?",
-                            f"Tell me about the {council_type}.",
-                            f"What are the details on the {council_type}?",
-                            f"Where can I find information about the {council_type}?"
-                        ]
-                    elif 'ictzen' in desc_lower:
-                        # Extract role
-                        if 'is the' in desc_lower:
-                            role = desc_lower.split('is the')[1].split('a.y')[0].strip().title()
-                        else:
-                            role = 'ICTzen staff'
-                        questions = [
-                            f"Who is the {role}?",
-                            f"Can you show me the {role}?",
-                            f"Tell me about the {role}.",
-                            f"What is the {role}'s role?",
-                            f"Where can I find information about the {role}?"
-                        ]
-                    elif 'research coordinator' in desc_lower or 'program head' in desc_lower or 'director' in desc_lower or 'adviser' in desc_lower or 'professor' in desc_lower or 'instructor' in desc_lower or 'lecturer' in desc_lower or 'aide' in desc_lower:
-                        # Person entry
-                        if ',' in description:
-                            name = description.split(',')[0].strip()
-                        else:
-                            name = description.split(' is ')[0].strip()
-                        questions = [
-                            f"Who is {name}?",
-                            f"Can you show me {name}?",
-                            f"Tell me about {name}.",
-                            f"What is {name}'s role?",
-                            f"Where can I find information about {name}?"
-                        ]
-                    else:
-                        # Default
-                        questions = [
-                            "What is this?",
-                            "Can you show me this?",
-                            "Tell me about this.",
-                            "What are the details on this?",
-                            "Where can I find information about this?"
-                        ]
                 image_urls = entry.urls or []
+
                 # Compose response with description and all image HTML tags
                 images_html = ""
                 if len(image_urls) > 2:
@@ -404,17 +358,18 @@ class Chatbot:
                     # Show all images if 2 or fewer
                     for img_url in image_urls:
                         static_img_url = img_url
-                        if not img_url.startswith("/static/"):
+                        if not static_img_url.startswith("/static/"):
                             static_img_url = "/static/" + img_url
                         prefixed_urls = ["/static/" + url if not url.startswith("/static/") else url for url in image_urls]
                         images_html += f"<img src='{static_img_url}' alt='Visual Image' class='message-image' data-images='{','.join(prefixed_urls)}'>"
+
                 response = f"{description}<br>{images_html}"
                 rule = {
                     "id": entry.id,
-                    "questions": questions,
+                    "questions": flattened_questions,
                     "response": response,
                     "category": "visuals",
-                    "user_type": entry.user_type or "user"
+                    "user_type": entry.user_type or "both"
                 }
                 visual_rules.append(rule)
             return visual_rules
@@ -585,6 +540,7 @@ class Chatbot:
             if user_type == 'user':
                 new_rule = UserRule(category=category, question=question, answer=response)
                 db.session.add(new_rule)
+                db.session.flush()  # Flush to generate the ID
                 db.session.commit()
                 # Reload rules to update in-memory state
                 self.rules = self.get_rules()
@@ -592,6 +548,7 @@ class Chatbot:
             elif user_type == 'guest':
                 new_rule = GuestRule(category=category, question=question, answer=response)
                 db.session.add(new_rule)
+                db.session.flush()  # Flush to generate the ID
                 db.session.commit()
                 # Reload rules to update in-memory state
                 self.guest_rules = self.get_guest_rules()
@@ -602,6 +559,7 @@ class Chatbot:
                 guest_rule = GuestRule(category=category, question=question, answer=response)
                 db.session.add(user_rule)
                 db.session.add(guest_rule)
+                db.session.flush()  # Flush to generate the IDs
                 db.session.commit()
                 # Reload rules to update in-memory state
                 self.rules = self.get_rules()
@@ -691,96 +649,64 @@ class Chatbot:
 
     def delete_rule(self, rule_id, user_type=None):
         import logging
-        logging.debug(f"Deleting rule with id: {rule_id}, user_type: {user_type}")
-        deleted = False
+        logging.debug(f"Deleting rule with id: {rule_id}, user_type: {user_type}, type of rule_id: {type(rule_id)}")
 
-        if user_type == 'guest':
-            # Check guest rules first
-            for i in reversed(range(len(self.guest_rules))):
-                rule = self.guest_rules[i]
-                logging.debug(f"Checking guest rule id: {rule.get('id')}")
-                if str(rule.get("id")) == str(rule_id):
-                    category = rule.get("category", "SOICT")
-                    del self.guest_rules[i]
-                    # Remove from JSON file using rule_utils
-                    from database.user_database import rule_utils
-                    deleted = rule_utils.delete_rule(rule_id, user_type='guest', category=category)
-                    self.guest_rules = self.get_guest_rules()
-                    logging.debug(f"Rule with id {rule_id} deleted from guest rules.")
-                    return deleted
+        # First try to delete from MySQL UserRule and GuestRule tables
+        try:
+            from chatbot_models import UserRule, GuestRule
 
-            # Then check user rules
-            for i, rule in enumerate(self.rules):
-                logging.debug(f"Checking user rule id: {rule.get('id')}")
-                if str(rule.get("id")) == str(rule_id):
-                    category = rule.get("category", "SOICT")
-                    # Remove from in-memory list
-                    del self.rules[i]
-                    # Remove from JSON file using rule_utils
-                    from database.user_database import rule_utils
-                    deleted = rule_utils.delete_rule(rule_id, user_type='user', category=category)
-                    # Reload rules
-                    self.rules = self.get_rules()
-                    # Recompute embeddings after deleting rules
-                    self.recompute_embeddings()
-                    logging.debug(f"Rule with id {rule_id} deleted from user rules.")
-                    return deleted
-        else:
-            # Check user rules first (default)
-            for i, rule in enumerate(self.rules):
-                logging.debug(f"Checking user rule id: {rule.get('id')}")
-                if str(rule.get("id")) == str(rule_id):
-                    category = rule.get("category", "SOICT")
-                    # Remove from in-memory list
-                    del self.rules[i]
-                    # Remove from JSON file using rule_utils
-                    from database.user_database import rule_utils
-                    deleted = rule_utils.delete_rule(rule_id, user_type='user', category=category)
-                    # Reload rules
-                    self.rules = self.get_rules()
-                    logging.debug(f"Rule with id {rule_id} deleted from user rules.")
-                    return deleted
+            # Try both tables regardless of user_type to ensure we find the rule
+            # Check guest rules
+            guest_rule = GuestRule.query.filter_by(id=rule_id).first()
+            if guest_rule:
+                db.session.delete(guest_rule)
+                db.session.commit()
+                self.guest_rules = self.get_guest_rules()
+                logging.debug(f"Rule with id {rule_id} deleted from guest rules in MySQL.")
+                return True
 
-            # Then check guest rules
-            for i in reversed(range(len(self.guest_rules))):
-                rule = self.guest_rules[i]
-                logging.debug(f"Checking guest rule id: {rule.get('id')}")
-                if str(rule.get("id")) == str(rule_id):
-                    category = rule.get("category", "SOICT")
-                    del self.guest_rules[i]
-                    # Remove from JSON file using rule_utils
-                    from database.user_database import rule_utils
-                    deleted = rule_utils.delete_rule(rule_id, user_type='guest', category=category)
-                    self.guest_rules = self.get_guest_rules()
-                    # Recompute embeddings after deleting rules
-                    self.recompute_embeddings()
-                    logging.debug(f"Rule with id {rule_id} deleted from guest rules.")
-                    return deleted
+            # Check user rules
+            user_rule = UserRule.query.filter_by(id=rule_id).first()
+            if user_rule:
+                db.session.delete(user_rule)
+                db.session.commit()
+                self.rules = self.get_rules()
+                logging.debug(f"Rule with id {rule_id} deleted from user rules in MySQL.")
+                return True
 
-        if not deleted:
-            # Check location rules
-            for i, rule in enumerate(self.location_rules):
-                logging.debug(f"Checking location rule id: {rule.get('id')}")
-                if str(rule.get("id")) == str(rule_id):
-                    del self.location_rules[i]
-                    self.save_location_rules()
-                    self.location_rules = self.get_location_rules()
-                    logging.debug(f"Rule with id {rule_id} deleted from location rules.")
-                    deleted = True
-                    break
+        except Exception as e:
+            logging.error(f"Error deleting rule from MySQL: {e}")
+            db.session.rollback()
+            return False
 
-        if not deleted:
-            # Check visual rules
-            for i, rule in enumerate(self.visual_rules):
-                logging.debug(f"Checking visual rule id: {rule.get('id')}")
-                if str(rule.get("id")) == str(rule_id):
-                    del self.visual_rules[i]
-                    self.save_visual_rules()
-                    self.visual_rules = self.get_visual_rules()
-                    logging.debug(f"Rule with id {rule_id} deleted from visual rules.")
-                    deleted = True
-                    break
-        return deleted
+        # Check location rules in MySQL
+        try:
+            location = Location.query.filter_by(id=rule_id).first()
+            if location:
+                db.session.delete(location)
+                db.session.commit()
+                self.location_rules = self.get_location_rules()
+                logging.debug(f"Rule with id {rule_id} deleted from location rules in MySQL.")
+                return True
+        except Exception as e:
+            logging.error(f"Error deleting location rule from MySQL: {e}")
+            db.session.rollback()
+
+        # Check visual rules in MySQL
+        try:
+            visual = Visual.query.filter_by(id=rule_id).first()
+            if visual:
+                db.session.delete(visual)
+                db.session.commit()
+                self.visual_rules = self.get_visual_rules()
+                logging.debug(f"Rule with id {rule_id} deleted from visual rules in MySQL.")
+                return True
+        except Exception as e:
+            logging.error(f"Error deleting visual rule from MySQL: {e}")
+            db.session.rollback()
+
+        logging.debug(f"Rule with id {rule_id} not found in any database.")
+        return False
 
     def edit_rule(self, rule_id, question, response, user_type='user'):
         # Edit rule in MySQL database
