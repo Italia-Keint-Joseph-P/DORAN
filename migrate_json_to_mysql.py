@@ -3,9 +3,9 @@ import json
 import pymysql
 from datetime import datetime
 
-def create_mysql_tables():
+def create_mysql_tables(host='localhost', user='root', password='', database='chatbot_db', port=3306):
     """Create MySQL tables for chatbot data"""
-    conn = pymysql.connect(host='localhost', user='root', database='chatbot_db')
+    conn = pymysql.connect(host=host, user=user, password=password, database=database, port=port)
     cursor = conn.cursor()
 
     # Create categories table
@@ -140,16 +140,22 @@ def migrate_email_directory(cursor, base_path):
                         print(f"Migrated {len(emails_data)} email entries")
 
 def migrate_faqs(cursor, base_path):
-    """Migrate faqs.json to MySQL"""
+    """Migrate faqs.json to MySQL, avoiding duplicates"""
     faqs_path = os.path.join(base_path, 'faqs.json')
     if os.path.exists(faqs_path):
         with open(faqs_path, 'r', encoding='utf-8') as f:
             faqs = json.load(f)
 
+        migrated_count = 0
         for faq in faqs:
-            cursor.execute('INSERT INTO faqs (question, answer) VALUES (%s, %s)',
+            # Check if FAQ already exists
+            cursor.execute('SELECT id FROM faqs WHERE question = %s AND answer = %s',
                          (faq.get('question', ''), faq.get('answer', '')))
-        print(f"Migrated {len(faqs)} FAQs")
+            if not cursor.fetchone():
+                cursor.execute('INSERT INTO faqs (question, answer) VALUES (%s, %s)',
+                             (faq.get('question', ''), faq.get('answer', '')))
+                migrated_count += 1
+        print(f"Migrated {migrated_count} new FAQs (skipped {len(faqs) - migrated_count} duplicates)")
 
 def migrate_locations(cursor, base_path):
     """Migrate locations.json to MySQL"""

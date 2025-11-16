@@ -45,18 +45,18 @@ railway_chatbot_db_url = 'mysql+pymysql://root:smxcYzdpwUJTAiRdJWQFPJNbfsbVTAGC@
 sqlite_user_db_url = 'sqlite:///doran.db'
 sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
 
-# Try databases in order: environment variables, MySQL, then SQLite fallback
+# Try databases in order: environment variables, MySQL (local then Railway), then SQLite fallback
 def get_database_url(primary_url, fallback_url):
     """Try primary URL, fallback to secondary if connection fails."""
     try:
         from sqlalchemy import create_engine
-        engine = create_engine(primary_url, connect_args={'connect_timeout': 5})
+        engine = create_engine(primary_url, connect_args={'connect_timeout': 10})
         engine.dispose()
         return primary_url
     except Exception as e:
         app.logger.warning(f"Failed to connect to {primary_url}: {str(e)}")
         try:
-            engine = create_engine(fallback_url, connect_args={'connect_timeout': 5})
+            engine = create_engine(fallback_url, connect_args={'connect_timeout': 10})
             engine.dispose()
             app.logger.info(f"Using fallback database: {fallback_url}")
             return fallback_url
@@ -64,8 +64,28 @@ def get_database_url(primary_url, fallback_url):
             app.logger.error(f"Failed to connect to fallback {fallback_url}: {str(e2)}")
             raise e2
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or mysql_url or get_database_url(local_user_db_url, sqlite_user_db_url)
-app.config['CHATBOT_DATABASE_URI'] = os.environ.get('CHATBOT_DATABASE_URL') or get_database_url(local_chatbot_db_url, sqlite_chatbot_db_url)
+# Determine user database URL
+if os.environ.get('DATABASE_URL') or mysql_url:
+    user_db_url = os.environ.get('DATABASE_URL') or mysql_url
+else:
+    try:
+        user_db_url = get_database_url(local_user_db_url, railway_user_db_url)
+    except Exception:
+        user_db_url = sqlite_user_db_url
+        app.logger.info("Using SQLite fallback for user database")
+
+# Determine chatbot database URL
+if os.environ.get('CHATBOT_DATABASE_URL'):
+    chatbot_db_url = os.environ.get('CHATBOT_DATABASE_URL')
+else:
+    try:
+        chatbot_db_url = get_database_url(local_chatbot_db_url, railway_chatbot_db_url)
+    except Exception:
+        chatbot_db_url = sqlite_chatbot_db_url
+        app.logger.info("Using SQLite fallback for chatbot database")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = user_db_url
+app.config['CHATBOT_DATABASE_URI'] = chatbot_db_url
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False  # Disable SQL echo for cleaner logs
@@ -186,6 +206,111 @@ def auto_upload_json_files():
 
 # Run auto-upload before initializing chatbot
 auto_upload_json_files()
+
+# Auto-migrate JSON files to MySQL tables on startup
+def auto_migrate_json_to_mysql():
+    """
+    Automatically migrate JSON files to MySQL tables on startup if tables are empty.
+    """
+    import pymysql
+    from sqlalchemy.orm import sessionmaker
+
+    try:
+        # Check if chatbot database tables are empty
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
+
+        # Check if any data exists in key tables
+        from chatbot_models import Faq, Location, Visual
+        faq_count = session.query(Faq).count()
+        location_count = session.query(Location).count()
+        visual_count = session.query(Visual).count()
+
+        session.close()
+
+        # If tables are empty, run migration
+        if faq_count == 0 and location_count == 0 and visual_count == 0:
+            app.logger.info("MySQL tables appear empty, running JSON to MySQL migration...")
+
+            # Import migration functions
+            import sys
+            import os
+            sys.path.append(os.path.dirname(__file__))
+
+            # Create MySQL connection for migration
+            chatbot_db_url = app.config['CHATBOT_DATABASE_URI']
+            if chatbot_db_url.startswith('mysql+pymysql://'):
+                # Parse connection details from SQLAlchemy URL
+                from urllib.parse import urlparse
+                parsed = urlparse(chatbot_db_url.replace('mysql+pymysql://', 'mysql://'))
+                conn = pymysql.connect(
+                    host=parsed.hostname,
+                    user=parsed.username,
+                    password=parsed.password,
+                    database=parsed.path.lstrip('/'),
+                    port=parsed.port or 3306
+                )
+                cursor = conn.cursor()
+
+                try:
+                    # Run migration functions
+                    base_path = os.path.join(app.root_path, 'database')
+
+                    # Migrate categories
+                    migrate_categories(cursor, base_path)
+
+                    # Migrate email directory
+                    migrate_email_directory(cursor, base_path)
+
+                    # Migrate FAQs
+                    migrate_faqs(cursor, base_path)
+
+                    # Migrate locations
+                    migrate_locations(cursor, base_path)
+
+                    # Migrate visuals
+                    migrate_visuals(cursor, base_path)
+
+                    # Migrate rules
+                    migrate_rules(cursor, base_path)
+
+                    conn.commit()
+                    app.logger.info("JSON to MySQL migration completed successfully!")
+
+                except Exception as e:
+                    app.logger.error(f"Migration failed: {str(e)}")
+                    conn.rollback()
+
+                finally:
+                    cursor.close()
+                    conn.close()
+
+            else:
+                app.logger.info("Not using MySQL, skipping JSON migration")
+        else:
+            app.logger.info("MySQL tables already contain data, skipping migration")
+
+    except Exception as e:
+        app.logger.error(f"Error during auto-migration check: {str(e)}")
+
+# Import migration functions
+try:
+    from migrate_json_to_mysql import (
+        create_mysql_tables, migrate_categories, migrate_email_directory,
+        migrate_faqs, migrate_locations, migrate_visuals, migrate_rules
+    )
+except ImportError:
+    app.logger.warning("Migration functions not available, skipping auto-migration")
+    migrate_categories = migrate_email_directory = migrate_faqs = None
+    migrate_locations = migrate_visuals = migrate_rules = None
+
+# Run auto-migration before initializing chatbot
+if migrate_categories and migrate_email_directory and migrate_faqs:
+    try:
+        auto_migrate_json_to_mysql()
+    except Exception as e:
+        app.logger.error(f"Auto-migration failed: {str(e)}")
+        app.logger.info("Continuing with app startup despite migration failure")
 
 # Initialize chatbot within app context
 with app.app_context():
