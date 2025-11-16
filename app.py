@@ -113,11 +113,6 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_size': 1,         # Very small pool size for reliability
     'max_overflow': 2,      # Minimal overflow connections
     'pool_timeout': 10,     # Shorter timeout
-    'connect_args': {
-        'connect_timeout': 5,  # Shorter connect timeout
-        'read_timeout': 10,    # Shorter read timeout
-        'write_timeout': 10,   # Shorter write timeout
-    }
 }
 
 # Configure binds for multiple databases
