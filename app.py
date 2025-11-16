@@ -27,81 +27,91 @@ app = Flask(__name__)
 app.template_folder = 'htdocs'
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
-# Add SQLAlchemy configuration for MySQL
-mysql_url = os.environ.get('MYSQL_URL')
-if mysql_url and mysql_url.startswith('mysql://'):
-    mysql_url = mysql_url.replace('mysql://', 'mysql+pymysql://', 1)
+def get_database_urls():
+    """Get database URLs at runtime to ensure environment variables are available"""
+    # Add SQLAlchemy configuration for MySQL
+    mysql_url = os.environ.get('MYSQL_URL')
+    if mysql_url and mysql_url.startswith('mysql://'):
+        mysql_url = mysql_url.replace('mysql://', 'mysql+pymysql://', 1)
 
-# Database URLs - separate databases for different data types
-# User data database (doran) - users, feedback, guests, chat history, etc.
-local_user_db_url = 'mysql+pymysql://root:@localhost/doran'
+    # Database URLs - separate databases for different data types
+    # User data database (doran) - users, feedback, guests, chat history, etc.
+    local_user_db_url = 'mysql+pymysql://root:@localhost/doran'
 
-# Chatbot data database (chatbot_db) - rules, categories, locations, visuals, etc.
-local_chatbot_db_url = 'mysql+pymysql://root:@localhost/chatbot_db'
+    # Chatbot data database (chatbot_db) - rules, categories, locations, visuals, etc.
+    local_chatbot_db_url = 'mysql+pymysql://root:@localhost/chatbot_db'
 
-# SQLite fallback databases
-sqlite_user_db_url = 'sqlite:///doran.db'
-sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
+    # SQLite fallback databases
+    sqlite_user_db_url = 'sqlite:///doran.db'
+    sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
 
-def construct_railway_mysql_url(database_name='railway'):
-    """Construct MySQL URL from Railway environment variables"""
-    # Try different possible environment variable names
-    host = os.environ.get('MYSQLHOST') or os.environ.get('MYSQL_HOST')
-    port = os.environ.get('MYSQLPORT') or os.environ.get('MYSQL_PORT')
-    user = os.environ.get('MYSQLUSER') or os.environ.get('MYSQL_USER')
-    password = os.environ.get('MYSQLPASSWORD') or os.environ.get('MYSQL_ROOT_PASSWORD')
+    def construct_railway_mysql_url(database_name='railway'):
+        """Construct MySQL URL from Railway environment variables"""
+        # Try different possible environment variable names
+        host = os.environ.get('MYSQLHOST') or os.environ.get('MYSQL_HOST')
+        port = os.environ.get('MYSQLPORT') or os.environ.get('MYSQL_PORT')
+        user = os.environ.get('MYSQLUSER') or os.environ.get('MYSQL_USER')
+        password = os.environ.get('MYSQLPASSWORD') or os.environ.get('MYSQL_ROOT_PASSWORD')
 
-    # Get database name from environment or use default
-    db_name = os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE') or database_name
+        # Get database name from environment or use default
+        db_name = os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE') or database_name
 
-    if host and port and user and password:
-        return f'mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}'
-    return None
+        if host and port and user and password:
+            return f'mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}'
+        return None
 
-# Determine user database URL
-if os.environ.get('DATABASE_URL'):
-    # Use explicit DATABASE_URL if provided
-    user_db_url = os.environ.get('DATABASE_URL')
-elif mysql_url:
-    # Use MYSQL_URL if provided
-    user_db_url = mysql_url
-elif construct_railway_mysql_url():
-    # Construct URL from Railway environment variables
-    user_db_url = construct_railway_mysql_url('railway')
-    app.logger.info("Using Railway MySQL for user database")
-else:
-    # Try local MySQL, fallback to SQLite
-    try:
-        from sqlalchemy import create_engine
-        engine = create_engine(local_user_db_url, connect_args={'connect_timeout': 10})
-        engine.dispose()
-        user_db_url = local_user_db_url
-        app.logger.info("Using local MySQL for user database")
-    except Exception as e:
-        app.logger.warning(f"Failed to connect to local MySQL: {str(e)}")
-        user_db_url = sqlite_user_db_url
-        app.logger.info("Using SQLite fallback for user database")
+    # Determine user database URL
+    if os.environ.get('DATABASE_URL'):
+        # Use explicit DATABASE_URL if provided
+        user_db_url = os.environ.get('DATABASE_URL')
+        app.logger.info("Using DATABASE_URL for user database")
+    elif mysql_url:
+        # Use MYSQL_URL if provided
+        user_db_url = mysql_url
+        app.logger.info("Using MYSQL_URL for user database")
+    elif construct_railway_mysql_url():
+        # Construct URL from Railway environment variables
+        user_db_url = construct_railway_mysql_url('railway')
+        app.logger.info("Using Railway MySQL for user database")
+    else:
+        # Try local MySQL, fallback to SQLite
+        try:
+            from sqlalchemy import create_engine
+            engine = create_engine(local_user_db_url, connect_args={'connect_timeout': 10})
+            engine.dispose()
+            user_db_url = local_user_db_url
+            app.logger.info("Using local MySQL for user database")
+        except Exception as e:
+            app.logger.warning(f"Failed to connect to local MySQL: {str(e)}")
+            user_db_url = sqlite_user_db_url
+            app.logger.info("Using SQLite fallback for user database")
 
-# Determine chatbot database URL
-if os.environ.get('CHATBOT_DATABASE_URL'):
-    # Use explicit CHATBOT_DATABASE_URL if provided
-    chatbot_db_url = os.environ.get('CHATBOT_DATABASE_URL')
-elif construct_railway_mysql_url():
-    # Construct URL from Railway environment variables for chatbot database
-    chatbot_db_url = construct_railway_mysql_url('railway')
-    app.logger.info("Using Railway MySQL for chatbot database")
-else:
-    # Try local MySQL, fallback to SQLite
-    try:
-        from sqlalchemy import create_engine
-        engine = create_engine(local_chatbot_db_url, connect_args={'connect_timeout': 10})
-        engine.dispose()
-        chatbot_db_url = local_chatbot_db_url
-        app.logger.info("Using local MySQL for chatbot database")
-    except Exception as e:
-        app.logger.warning(f"Failed to connect to local MySQL: {str(e)}")
-        chatbot_db_url = sqlite_chatbot_db_url
-        app.logger.info("Using SQLite fallback for chatbot database")
+    # Determine chatbot database URL
+    if os.environ.get('CHATBOT_DATABASE_URL'):
+        # Use explicit CHATBOT_DATABASE_URL if provided
+        chatbot_db_url = os.environ.get('CHATBOT_DATABASE_URL')
+        app.logger.info("Using CHATBOT_DATABASE_URL for chatbot database")
+    elif construct_railway_mysql_url():
+        # Construct URL from Railway environment variables for chatbot database
+        chatbot_db_url = construct_railway_mysql_url('railway')
+        app.logger.info("Using Railway MySQL for chatbot database")
+    else:
+        # Try local MySQL, fallback to SQLite
+        try:
+            from sqlalchemy import create_engine
+            engine = create_engine(local_chatbot_db_url, connect_args={'connect_timeout': 10})
+            engine.dispose()
+            chatbot_db_url = local_chatbot_db_url
+            app.logger.info("Using local MySQL for chatbot database")
+        except Exception as e:
+            app.logger.warning(f"Failed to connect to local MySQL: {str(e)}")
+            chatbot_db_url = sqlite_chatbot_db_url
+            app.logger.info("Using SQLite fallback for chatbot database")
+
+    return user_db_url, chatbot_db_url
+
+# Get database URLs at runtime
+user_db_url, chatbot_db_url = get_database_urls()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = user_db_url
 app.config['CHATBOT_DATABASE_URI'] = chatbot_db_url
