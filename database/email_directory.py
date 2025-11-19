@@ -5,24 +5,25 @@ from urllib.parse import urlparse
 def get_db_config():
     """
     Get database configuration from environment variables.
-    Prioritizes MYSQL_URL if available, otherwise uses individual vars.
+    Prioritizes MYSQL_URL if available, otherwise uses Railway defaults.
     """
     mysql_url = os.environ.get('MYSQL_URL')
     if mysql_url and mysql_url.startswith('mysql://'):
         parsed = urlparse(mysql_url)
         return {
             'host': parsed.hostname,
-            'port': parsed.port or 3306,
+            'port': parsed.port or 8080,
             'user': parsed.username,
             'password': parsed.password,
             'database': parsed.path.lstrip('/')
         }
     else:
+        # Use Railway defaults if individual vars not set
         return {
-            'host': os.environ.get('MYSQLHOST'),
+            'host': os.environ.get('MYSQLHOST', 'mysql.railway.internal'),
             'port': int(os.environ.get('MYSQLPORT', 3306)),
-            'user': os.environ.get('MYSQLUSER'),
-            'password': os.environ.get('MYSQLPASSWORD'),
+            'user': os.environ.get('MYSQLUSER', 'root'),
+            'password': os.environ.get('MYSQLPASSWORD', 'dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA'),
             'database': os.environ.get('MYSQLDATABASE', 'railway')
         }
 
