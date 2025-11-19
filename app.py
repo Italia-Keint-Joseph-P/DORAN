@@ -44,12 +44,12 @@ def get_database_urls():
     sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
 
     def construct_railway_mysql_url(database_name='railway'):
-        """Construct MySQL URL from Railway environment variables"""
+        """Construct MySQL URL from Railway environment variables or hardcoded Railway credentials"""
         # Try different possible environment variable names
-        host = os.environ.get('MYSQLHOST') or os.environ.get('MYSQL_HOST')
-        port = os.environ.get('MYSQLPORT') or os.environ.get('MYSQL_PORT')
-        user = os.environ.get('MYSQLUSER') or os.environ.get('MYSQL_USER')
-        password = os.environ.get('MYSQLPASSWORD') or os.environ.get('MYSQL_ROOT_PASSWORD')
+        host = os.environ.get('MYSQLHOST') or os.environ.get('MYSQL_HOST') or 'trolley.proxy.rlwy.net'
+        port = os.environ.get('MYSQLPORT') or os.environ.get('MYSQL_PORT') or 10349
+        user = os.environ.get('MYSQLUSER') or os.environ.get('MYSQL_USER') or 'root'
+        password = os.environ.get('MYSQLPASSWORD') or os.environ.get('MYSQL_ROOT_PASSWORD') or 'dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA'
 
         # Get database name from environment or use default
         db_name = os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE') or database_name
@@ -245,7 +245,7 @@ with app.app_context():
                 app.logger.info("Database tables appear empty, running JSON to database migration...")
 
                 # Import migration functions
-                from migrate_json_to_mysql import (
+                from migrate_all_json_to_mysql import (
                     create_sqlalchemy_tables, migrate_categories, migrate_email_directory,
                     migrate_faqs, migrate_locations, migrate_visuals, migrate_rules
                 )
