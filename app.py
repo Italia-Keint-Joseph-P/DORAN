@@ -225,64 +225,64 @@ def auto_upload_json_files():
 # Run auto-upload before initializing chatbot
 auto_upload_json_files()
 
-# Auto-migrate JSON files to database tables on startup
-def auto_migrate_json_to_db():
-    """
-    Automatically migrate JSON files to database tables on startup if tables are empty.
-    """
-    try:
-        # Check if chatbot database tables are empty
-        from chatbot_models import Faq, Location, Visual
-        faq_count = Faq.query.count()
-        location_count = Location.query.count()
-        visual_count = Visual.query.count()
-
-        # If tables are empty, run migration
-        if faq_count == 0 and location_count == 0 and visual_count == 0:
-            app.logger.info("Database tables appear empty, running JSON to database migration...")
-
-            # Import migration functions
-            from migrate_json_to_mysql import (
-                create_sqlalchemy_tables, migrate_categories, migrate_email_directory,
-                migrate_faqs, migrate_locations, migrate_visuals, migrate_rules
-            )
-
-            try:
-                # Create tables first
-                create_sqlalchemy_tables()
-
-                # Run migration functions
-                base_path = os.path.join(app.root_path, 'database')
-
-                # Migrate data
-                migrate_categories(base_path)
-                migrate_email_directory(base_path)
-                migrate_faqs(base_path)
-                migrate_locations(base_path)
-                migrate_visuals(base_path)
-                migrate_rules(base_path)
-
-                app.logger.info("JSON to database migration completed successfully!")
-
-            except Exception as e:
-                app.logger.error(f"Migration failed: {str(e)}")
-                db.session.rollback()
-
-        else:
-            app.logger.info("Database tables already contain data, skipping migration")
-
-    except Exception as e:
-        app.logger.error(f"Error during auto-migration check: {str(e)}")
-
-# Run auto-migration before initializing chatbot
-try:
-    auto_migrate_json_to_db()
-except Exception as e:
-    app.logger.error(f"Auto-migration failed: {str(e)}")
-    app.logger.info("Continuing with app startup despite migration failure")
-
 # Initialize chatbot within app context
 with app.app_context():
+    # Auto-migrate JSON files to database tables on startup
+    def auto_migrate_json_to_db():
+        """
+        Automatically migrate JSON files to database tables on startup if tables are empty.
+        """
+        try:
+            # Check if chatbot database tables are empty
+            from chatbot_models import Faq, Location, Visual
+            faq_count = Faq.query.count()
+            location_count = Location.query.count()
+            visual_count = Visual.query.count()
+
+            # If tables are empty, run migration
+            if faq_count == 0 and location_count == 0 and visual_count == 0:
+                app.logger.info("Database tables appear empty, running JSON to database migration...")
+
+                # Import migration functions
+                from migrate_json_to_mysql import (
+                    create_sqlalchemy_tables, migrate_categories, migrate_email_directory,
+                    migrate_faqs, migrate_locations, migrate_visuals, migrate_rules
+                )
+
+                try:
+                    # Create tables first
+                    create_sqlalchemy_tables()
+
+                    # Run migration functions
+                    base_path = os.path.join(app.root_path, 'database')
+
+                    # Migrate data
+                    migrate_categories(base_path)
+                    migrate_email_directory(base_path)
+                    migrate_faqs(base_path)
+                    migrate_locations(base_path)
+                    migrate_visuals(base_path)
+                    migrate_rules(base_path)
+
+                    app.logger.info("JSON to database migration completed successfully!")
+
+                except Exception as e:
+                    app.logger.error(f"Migration failed: {str(e)}")
+                    db.session.rollback()
+
+            else:
+                app.logger.info("Database tables already contain data, skipping migration")
+
+        except Exception as e:
+            app.logger.error(f"Error during auto-migration check: {str(e)}")
+
+    # Run auto-migration before initializing chatbot
+    try:
+        auto_migrate_json_to_db()
+    except Exception as e:
+        app.logger.error(f"Auto-migration failed: {str(e)}")
+        app.logger.info("Continuing with app startup despite migration failure")
+
     try:
         chatbot = Chatbot()  # Rules are now loaded from MySQL automatically
         app.logger.info("Chatbot initialized successfully")
