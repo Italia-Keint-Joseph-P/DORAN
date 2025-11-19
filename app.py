@@ -12,6 +12,7 @@ from flask_login import (
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
