@@ -202,6 +202,11 @@ def auto_upload_json_files():
                     rel_path = os.path.relpath(local_file, local_db_path)
                     volume_file = os.path.join(volume_path, rel_path)
 
+                    # Skip if source and destination are the same file (Railway volume mount)
+                    if os.path.abspath(local_file) == os.path.abspath(volume_file):
+                        app.logger.info(f"Skipping copy for {rel_path}: source and destination are the same")
+                        continue
+
                     try:
                         # Ensure destination directory exists
                         os.makedirs(os.path.dirname(volume_file), exist_ok=True)
@@ -220,113 +225,64 @@ def auto_upload_json_files():
 # Run auto-upload before initializing chatbot
 auto_upload_json_files()
 
-# Auto-migrate JSON files to MySQL tables on startup
-def auto_migrate_json_to_mysql():
-    """
-    Automatically migrate JSON files to MySQL tables on startup if tables are empty.
-    """
-    import pymysql
-    from sqlalchemy.orm import sessionmaker
+# Initialize chatbot within app context
+with app.app_context():
+    # Auto-migrate JSON files to database tables on startup
+    def auto_migrate_json_to_db():
+        """
+        Automatically migrate JSON files to database tables on startup if tables are empty.
+        """
+        try:
+            # Check if chatbot database tables are empty
+            from chatbot_models import Faq, Location, Visual
+            faq_count = Faq.query.count()
+            location_count = Location.query.count()
+            visual_count = Visual.query.count()
 
-    try:
-        # Check if chatbot database tables are empty
-        Session = sessionmaker(bind=chatbot_engine)
-        session = Session()
+            # If tables are empty, run migration
+            if faq_count == 0 and location_count == 0 and visual_count == 0:
+                app.logger.info("Database tables appear empty, running JSON to database migration...")
 
-        # Check if any data exists in key tables
-        from chatbot_models import Faq, Location, Visual
-        faq_count = session.query(Faq).count()
-        location_count = session.query(Location).count()
-        visual_count = session.query(Visual).count()
-
-        session.close()
-
-        # If tables are empty, run migration
-        if faq_count == 0 and location_count == 0 and visual_count == 0:
-            app.logger.info("MySQL tables appear empty, running JSON to MySQL migration...")
-
-            # Import migration functions
-            import sys
-            import os
-            sys.path.append(os.path.dirname(__file__))
-
-            # Create MySQL connection for migration
-            chatbot_db_url = app.config['CHATBOT_DATABASE_URI']
-            if chatbot_db_url.startswith('mysql+pymysql://'):
-                # Parse connection details from SQLAlchemy URL
-                from urllib.parse import urlparse
-                parsed = urlparse(chatbot_db_url.replace('mysql+pymysql://', 'mysql://'))
-                conn = pymysql.connect(
-                    host=parsed.hostname,
-                    user=parsed.username,
-                    password=parsed.password,
-                    database=parsed.path.lstrip('/'),
-                    port=parsed.port or 3306
+                # Import migration functions
+                from migrate_json_to_mysql import (
+                    create_sqlalchemy_tables, migrate_categories, migrate_email_directory,
+                    migrate_faqs, migrate_locations, migrate_visuals, migrate_rules
                 )
-                cursor = conn.cursor()
 
                 try:
+                    # Create tables first
+                    create_sqlalchemy_tables()
+
                     # Run migration functions
                     base_path = os.path.join(app.root_path, 'database')
 
-                    # Migrate categories
-                    migrate_categories(cursor, base_path)
+                    # Migrate data
+                    migrate_categories(base_path)
+                    migrate_email_directory(base_path)
+                    migrate_faqs(base_path)
+                    migrate_locations(base_path)
+                    migrate_visuals(base_path)
+                    migrate_rules(base_path)
 
-                    # Migrate email directory
-                    migrate_email_directory(cursor, base_path)
-
-                    # Migrate FAQs
-                    migrate_faqs(cursor, base_path)
-
-                    # Migrate locations
-                    migrate_locations(cursor, base_path)
-
-                    # Migrate visuals
-                    migrate_visuals(cursor, base_path)
-
-                    # Migrate rules
-                    migrate_rules(cursor, base_path)
-
-                    conn.commit()
-                    app.logger.info("JSON to MySQL migration completed successfully!")
+                    app.logger.info("JSON to database migration completed successfully!")
 
                 except Exception as e:
                     app.logger.error(f"Migration failed: {str(e)}")
-                    conn.rollback()
-
-                finally:
-                    cursor.close()
-                    conn.close()
+                    db.session.rollback()
 
             else:
-                app.logger.info("Not using MySQL, skipping JSON migration")
-        else:
-            app.logger.info("MySQL tables already contain data, skipping migration")
+                app.logger.info("Database tables already contain data, skipping migration")
 
-    except Exception as e:
-        app.logger.error(f"Error during auto-migration check: {str(e)}")
+        except Exception as e:
+            app.logger.error(f"Error during auto-migration check: {str(e)}")
 
-# Import migration functions
-try:
-    from migrate_json_to_mysql import (
-        create_mysql_tables, migrate_categories, migrate_email_directory,
-        migrate_faqs, migrate_locations, migrate_visuals, migrate_rules
-    )
-except ImportError:
-    app.logger.warning("Migration functions not available, skipping auto-migration")
-    migrate_categories = migrate_email_directory = migrate_faqs = None
-    migrate_locations = migrate_visuals = migrate_rules = None
-
-# Run auto-migration before initializing chatbot
-if migrate_categories and migrate_email_directory and migrate_faqs:
+    # Run auto-migration before initializing chatbot
     try:
-        auto_migrate_json_to_mysql()
+        auto_migrate_json_to_db()
     except Exception as e:
         app.logger.error(f"Auto-migration failed: {str(e)}")
         app.logger.info("Continuing with app startup despite migration failure")
 
-# Initialize chatbot within app context
-with app.app_context():
     try:
         chatbot = Chatbot()  # Rules are now loaded from MySQL automatically
         app.logger.info("Chatbot initialized successfully")

@@ -41,7 +41,7 @@ class Visual(db.Model):
 class UserRule(db.Model):
     __tablename__ = 'user_rules'
     __bind_key__ = 'chatbot_db'
-    id = db.Column(db.String(255), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     category = db.Column(db.String(255), nullable=True)
     question = db.Column(db.Text, nullable=True)
     answer = db.Column(db.Text, nullable=True)
@@ -50,8 +50,16 @@ class UserRule(db.Model):
 class GuestRule(db.Model):
     __tablename__ = 'guest_rules'
     __bind_key__ = 'chatbot_db'
-    id = db.Column(db.String(255), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     category = db.Column(db.String(255), nullable=True)
     question = db.Column(db.Text, nullable=True)
     answer = db.Column(db.Text, nullable=True)
     user_type = db.Column(db.String(50), nullable=True, default='guest')
+
+class EmailDirectory(db.Model):
+    __tablename__ = 'email_directory'
+    __bind_key__ = 'chatbot_db'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    school = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())

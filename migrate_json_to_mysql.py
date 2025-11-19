@@ -1,117 +1,36 @@
 import os
 import json
-import pymysql
 from datetime import datetime
+from extensions import db
+from chatbot_models import Category, Faq, Location, Visual, UserRule, GuestRule, EmailDirectory
 
-def create_mysql_tables(host='localhost', user='root', password='', database='chatbot_db', port=3306):
-    """Create MySQL tables for chatbot data"""
-    conn = pymysql.connect(host=host, user=user, password=password, database=database, port=port)
-    cursor = conn.cursor()
+def create_sqlalchemy_tables():
+    """Create tables using SQLAlchemy for both MySQL and SQLite"""
+    try:
+        db.create_all(bind_key='chatbot_db')
+        print("Tables created successfully using SQLAlchemy")
+    except Exception as e:
+        print(f"Error creating tables: {e}")
+        raise
 
-    # Create categories table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS categories (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) UNIQUE NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-
-    # Create email_directory table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS email_directory (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            school VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-
-    # Create faqs table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS faqs (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            question TEXT NOT NULL,
-            answer TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-
-    # Create feedback table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS feedback (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NULL,
-            message TEXT NOT NULL,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-
-    # Create guest_rules table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS guest_rules (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            category VARCHAR(255) DEFAULT 'guest',
-            keywords TEXT NOT NULL,
-            response TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-
-    # Create locations table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS locations (
-            id VARCHAR(255) PRIMARY KEY,
-            questions JSON NOT NULL,
-            description TEXT NOT NULL,
-            user_type VARCHAR(50) DEFAULT 'both',
-            urls JSON,
-            url VARCHAR(500),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-
-    # Create user_rules table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS user_rules (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            category VARCHAR(255) DEFAULT 'soict',
-            keywords TEXT NOT NULL,
-            response TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-
-    # Create visuals table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS visuals (
-            id VARCHAR(255) PRIMARY KEY,
-            questions JSON NOT NULL,
-            description TEXT NOT NULL,
-            user_type VARCHAR(50) DEFAULT 'both',
-            urls JSON,
-            url VARCHAR(500),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-
-    conn.commit()
-    print("MySQL tables created successfully")
-    return conn, cursor
-
-def migrate_categories(cursor, base_path):
-    """Migrate categories.json to MySQL"""
+def migrate_categories(base_path):
+    """Migrate categories.json to database"""
     categories_path = os.path.join(base_path, 'categories.json')
     if os.path.exists(categories_path):
         with open(categories_path, 'r', encoding='utf-8') as f:
             categories = json.load(f)
 
         for category in categories:
-            cursor.execute('INSERT IGNORE INTO categories (name) VALUES (%s)', (category,))
+            # Check if category already exists
+            existing = Category.query.filter_by(name=category).first()
+            if not existing:
+                new_cat = Category(name=category)
+                db.session.add(new_cat)
+        db.session.commit()
         print(f"Migrated {len(categories)} categories")
 
-def migrate_email_directory(cursor, base_path):
-    """Migrate email_directory.py to MySQL"""
+def migrate_email_directory(base_path):
+    """Migrate email_directory.py to database"""
     email_dir_path = os.path.join(base_path, 'email_directory.py')
     if os.path.exists(email_dir_path):
         # Read the Python file and extract the data
@@ -135,12 +54,16 @@ def migrate_email_directory(cursor, base_path):
                                 emails_data.append(email_dict)
 
                         for email_data in emails_data:
-                            cursor.execute('INSERT IGNORE INTO email_directory (school, email) VALUES (%s, %s)',
-                                         (email_data.get('school', ''), email_data.get('email', '')))
+                            # Check if email already exists
+                            existing = EmailDirectory.query.filter_by(school=email_data.get('school', ''), email=email_data.get('email', '')).first()
+                            if not existing:
+                                new_email = EmailDirectory(school=email_data.get('school', ''), email=email_data.get('email', ''))
+                                db.session.add(new_email)
+                        db.session.commit()
                         print(f"Migrated {len(emails_data)} email entries")
 
-def migrate_faqs(cursor, base_path):
-    """Migrate faqs.json to MySQL, avoiding duplicates"""
+def migrate_faqs(base_path):
+    """Migrate faqs.json to database, avoiding duplicates"""
     faqs_path = os.path.join(base_path, 'faqs.json')
     if os.path.exists(faqs_path):
         with open(faqs_path, 'r', encoding='utf-8') as f:
@@ -149,52 +72,56 @@ def migrate_faqs(cursor, base_path):
         migrated_count = 0
         for faq in faqs:
             # Check if FAQ already exists
-            cursor.execute('SELECT id FROM faqs WHERE question = %s AND answer = %s',
-                         (faq.get('question', ''), faq.get('answer', '')))
-            if not cursor.fetchone():
-                cursor.execute('INSERT INTO faqs (question, answer) VALUES (%s, %s)',
-                             (faq.get('question', ''), faq.get('answer', '')))
+            existing = Faq.query.filter_by(question=faq.get('question', ''), answer=faq.get('answer', '')).first()
+            if not existing:
+                new_faq = Faq(question=faq.get('question', ''), answer=faq.get('answer', ''))
+                db.session.add(new_faq)
                 migrated_count += 1
+        db.session.commit()
         print(f"Migrated {migrated_count} new FAQs (skipped {len(faqs) - migrated_count} duplicates)")
 
-def migrate_locations(cursor, base_path):
-    """Migrate locations.json to MySQL"""
+def migrate_locations(base_path):
+    """Migrate locations.json to database"""
     locations_path = os.path.join(base_path, 'locations', 'locations.json')
     if os.path.exists(locations_path):
         with open(locations_path, 'r', encoding='utf-8') as f:
             locations = json.load(f)
 
         for location in locations:
-            cursor.execute('''INSERT INTO locations (id, questions, description, user_type, urls, url)
-                            VALUES (%s, %s, %s, %s, %s, %s)''',
-                         (location.get('id', ''),
-                          json.dumps(location.get('questions', [])),
-                          location.get('description', ''),
-                          location.get('user_type', 'both'),
-                          json.dumps(location.get('urls', [])),
-                          location.get('url', '')))
+            new_loc = Location(
+                id=location.get('id', ''),
+                questions=location.get('questions', []),
+                description=location.get('description', ''),
+                user_type=location.get('user_type', 'both'),
+                urls=location.get('urls', []),
+                url=location.get('url', '')
+            )
+            db.session.add(new_loc)
+        db.session.commit()
         print(f"Migrated {len(locations)} locations")
 
-def migrate_visuals(cursor, base_path):
-    """Migrate visuals.json to MySQL"""
+def migrate_visuals(base_path):
+    """Migrate visuals.json to database"""
     visuals_path = os.path.join(base_path, 'visuals', 'visuals.json')
     if os.path.exists(visuals_path):
         with open(visuals_path, 'r', encoding='utf-8') as f:
             visuals = json.load(f)
 
         for visual in visuals:
-            cursor.execute('''INSERT INTO visuals (id, questions, description, user_type, urls, url)
-                            VALUES (%s, %s, %s, %s, %s, %s)''',
-                         (visual.get('id', ''),
-                          json.dumps(visual.get('questions', [])),
-                          visual.get('description', ''),
-                          visual.get('user_type', 'both'),
-                          json.dumps(visual.get('urls', [])),
-                          visual.get('url', '')))
+            new_vis = Visual(
+                id=visual.get('id', ''),
+                questions=visual.get('questions', []),
+                description=visual.get('description', ''),
+                user_type=visual.get('user_type', 'both'),
+                urls=visual.get('urls', []),
+                url=visual.get('url', '')
+            )
+            db.session.add(new_vis)
+        db.session.commit()
         print(f"Migrated {len(visuals)} visuals")
 
-def migrate_rules(cursor, base_path):
-    """Migrate user and guest rules from JSON files to MySQL"""
+def migrate_rules(base_path):
+    """Migrate user and guest rules from JSON files to database"""
     # Migrate user rules
     user_db_path = os.path.join(base_path, 'user_database')
     if os.path.exists(user_db_path):
@@ -204,10 +131,14 @@ def migrate_rules(cursor, base_path):
                 user_rules = json.load(f)
 
             for rule in user_rules:
-                cursor.execute('INSERT INTO user_rules (category, keywords, response) VALUES (%s, %s, %s)',
-                             (rule.get('category', 'soict'),
-                              json.dumps(rule.get('keywords', [])),
-                              rule.get('response', '')))
+                new_rule = UserRule(
+                    category=rule.get('category', 'soict'),
+                    question=rule.get('question', ''),
+                    answer=rule.get('response', ''),
+                    user_type='user'
+                )
+                db.session.add(new_rule)
+            db.session.commit()
             print(f"Migrated {len(user_rules)} user rules")
 
     # Migrate guest rules
@@ -219,40 +150,39 @@ def migrate_rules(cursor, base_path):
                 guest_rules = json.load(f)
 
             for rule in guest_rules:
-                cursor.execute('INSERT INTO guest_rules (category, keywords, response) VALUES (%s, %s, %s)',
-                             (rule.get('category', 'guest'),
-                              json.dumps(rule.get('keywords', [])),
-                              rule.get('response', '')))
+                new_rule = GuestRule(
+                    category=rule.get('category', 'guest'),
+                    question=rule.get('question', ''),
+                    answer=rule.get('response', ''),
+                    user_type='guest'
+                )
+                db.session.add(new_rule)
+            db.session.commit()
             print(f"Migrated {len(guest_rules)} guest rules")
 
 def main():
-    """Main migration function"""
+    """Main migration function using SQLAlchemy"""
     base_path = 'database'
 
-    print("Starting JSON to MySQL migration...")
+    print("Starting JSON to database migration...")
 
     # Create tables
-    conn, cursor = create_mysql_tables()
+    create_sqlalchemy_tables()
 
     try:
         # Migrate data
-        migrate_categories(cursor, base_path)
-        migrate_email_directory(cursor, base_path)
-        migrate_faqs(cursor, base_path)
-        migrate_locations(cursor, base_path)
-        migrate_visuals(cursor, base_path)
-        migrate_rules(cursor, base_path)
+        migrate_categories(base_path)
+        migrate_email_directory(base_path)
+        migrate_faqs(base_path)
+        migrate_locations(base_path)
+        migrate_visuals(base_path)
+        migrate_rules(base_path)
 
-        conn.commit()
         print("Migration completed successfully!")
 
     except Exception as e:
         print(f"Migration failed: {str(e)}")
-        conn.rollback()
-
-    finally:
-        cursor.close()
-        conn.close()
+        db.session.rollback()
 
 if __name__ == '__main__':
     main()
