@@ -1,18 +1,25 @@
 import mysql.connector
+import os
 
 def get_all_emails():
     """
     Get all emails using direct MySQL connection (no Flask context required).
     """
     try:
+        host = os.environ.get('MYSQLHOST', 'localhost')
+        port = int(os.environ.get('MYSQLPORT', 3306))
+        user = os.environ.get('MYSQLUSER', 'root')
+        password = os.environ.get('MYSQLPASSWORD', '')
+        database = os.environ.get('MYSQLDATABASE', 'chatbot_db')
         conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='chatbot_db'
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database
         )
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT school, email FROM email_directory")
+        cursor.execute("SELECT id, school, email FROM email_directory")
         emails = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -23,11 +30,17 @@ def get_all_emails():
 
 def add_email(school, email):
     try:
+        host = os.environ.get('MYSQLHOST', 'localhost')
+        port = int(os.environ.get('MYSQLPORT', 3306))
+        user = os.environ.get('MYSQLUSER', 'root')
+        password = os.environ.get('MYSQLPASSWORD', '')
+        database = os.environ.get('MYSQLDATABASE', 'chatbot_db')
         conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='chatbot_db'
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database
         )
         cursor = conn.cursor()
         cursor.execute("INSERT INTO email_directory (school, email) VALUES (%s, %s)", (school, email))
@@ -61,11 +74,17 @@ def update_email(id, school, email):
 
 def delete_email(id):
     try:
+        host = os.environ.get('MYSQLHOST', 'localhost')
+        port = int(os.environ.get('MYSQLPORT', 3306))
+        user = os.environ.get('MYSQLUSER', 'root')
+        password = os.environ.get('MYSQLPASSWORD', '')
+        database = os.environ.get('MYSQLDATABASE', 'chatbot_db')
         conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='chatbot_db'
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database
         )
         cursor = conn.cursor()
         cursor.execute("DELETE FROM email_directory WHERE id = %s", (id,))
