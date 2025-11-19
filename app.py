@@ -110,10 +110,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False  # Disable SQL echo for cleaner logs
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,  # Check connection before using
-    'pool_recycle': 300,    # Recycle connections after 5 minutes
+    'pool_recycle': 300,    # Recycle connections after 5 minutes (more aggressive for Railway)
     'pool_size': 1,         # Very small pool size for reliability
-    'max_overflow': 2,      # Minimal overflow connections
-    'pool_timeout': 10,     # Shorter timeout
+    'max_overflow': 1,      # Minimal overflow connections
+    'pool_timeout': 60,     # Longer timeout for Railway
+    'pool_reset_on_return': 'rollback',  # Reset connections on return to pool
+    'connect_args': {
+        'connect_timeout': 20,  # Increased timeout
+        'read_timeout': 60,     # Increased read timeout
+        'write_timeout': 60,    # Increased write timeout
+        'autocommit': True,     # Enable autocommit for better reliability
+    }
 }
 
 # Configure binds for multiple databases
@@ -298,6 +305,7 @@ try:
 except Exception as e:
     app.logger.error(f"Failed to connect to database: {str(e)}")
     chatbot_db = None
+    # Don't fail app startup if database connection fails
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -305,15 +313,18 @@ def load_user(user_id):
     Load user by ID for Flask-Login.
     """
     try:
-        user_type = session.get('user_type')
-        if user_type == 'admin':
-            admin = Admin.query.get(int(user_id))
-            if admin:
-                return admin
-        elif user_type == 'user':
-            user = user_manager.get_user_by_id(user_id)
-            if user:
-                return user
+        def load_user_operation():
+            user_type = session.get('user_type')
+            if user_type == 'admin':
+                admin = Admin.query.get(int(user_id))
+                if admin:
+                    return admin
+            elif user_type == 'user':
+                user = user_manager.get_user_by_id(user_id)
+                if user:
+                    return user
+            return None
+        return retry_db_operation(load_user_operation)
     except Exception as e:
         app.logger.error(f"Database error in load_user: {str(e)}")
     return None
