@@ -30,27 +30,44 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 def get_database_urls():
     """Get database URLs at runtime to ensure environment variables are available"""
-    # Check if we're running on Railway (production) or locally (development)
-    is_production = os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('RAILWAY_PROJECT_ID')
+    # Debug: Log all MySQL-related environment variables
+    mysql_env_vars = {k: v for k, v in os.environ.items() if 'mysql' in k.lower() or 'database' in k.lower()}
+    app.logger.info(f"Available MySQL/Database environment variables: {mysql_env_vars}")
 
-    if is_production:
-        app.logger.info("Running in production (Railway), using MySQL database")
-        # Use Railway MySQL URL - try environment variable first, then fallback to known URL
-        mysql_url = os.environ.get('MYSQL_URL') or 'mysql://root:dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA@mysql.railway.internal:3306/railway'
-        if mysql_url.startswith('mysql://'):
-            mysql_url = mysql_url.replace('mysql://', 'mysql+pymysql://', 1)
+    # Add SQLAlchemy configuration for MySQL
+    mysql_url = os.environ.get('MYSQL_URL')
+    if mysql_url and mysql_url.startswith('mysql://'):
+        mysql_url = mysql_url.replace('mysql://', 'mysql+pymysql://', 1)
 
-        user_db_url = mysql_url
-        chatbot_db_url = mysql_url
-        app.logger.info("Using Railway MySQL URL for both user and chatbot databases")
-    else:
-        app.logger.info("Running in development, using SQLite database")
-        # SQLite fallback databases for local development
-        sqlite_user_db_url = 'sqlite:///doran.db'
-        sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
-        user_db_url = sqlite_user_db_url
-        chatbot_db_url = sqlite_chatbot_db_url
-        app.logger.info("Using SQLite URLs for both user and chatbot databases")
+    # SQLite fallback databases (only for development/local testing)
+    sqlite_user_db_url = 'sqlite:///doran.db'
+    sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
+
+    def construct_railway_mysql_url(database_name='railway'):
+        """Construct MySQL URL from Railway environment variables or hardcoded Railway credentials"""
+        # Try different possible environment variable names
+        host = os.environ.get('MYSQLHOST') or os.environ.get('MYSQL_HOST') or 'trolley.proxy.rlwy.net'
+        port = os.environ.get('MYSQLPORT') or os.environ.get('MYSQL_PORT') or 10349
+        user = os.environ.get('MYSQLUSER') or os.environ.get('MYSQL_USER') or 'root'
+        password = os.environ.get('MYSQLPASSWORD') or os.environ.get('MYSQL_ROOT_PASSWORD') or 'dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA'
+
+        # Get database name from environment or use default
+        db_name = os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE') or database_name
+
+        app.logger.info(f"Railway MySQL vars - host: {host}, port: {port}, user: {user}, password: {'***' if password else None}, db: {db_name}")
+
+        if host and port and user and password:
+            url = f'mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}'
+            app.logger.info(f"Constructed Railway MySQL URL: {url.replace(password, '***')}")
+            return url
+        app.logger.warning("Railway MySQL environment variables not complete")
+        return None
+
+    # Use the correct hardcoded database URL
+    correct_db_url = 'mysql+pymysql://root:dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA@mysql.railway.internal:3306/railway'
+    user_db_url = correct_db_url
+    chatbot_db_url = correct_db_url
+    app.logger.info("Using corrected hardcoded MySQL URL for both user and chatbot databases")
 
     app.logger.info(f"Final database URLs - user: {user_db_url}, chatbot: {chatbot_db_url}")
     return user_db_url, chatbot_db_url
@@ -59,9 +76,6 @@ def get_database_urls():
 user_db_url, chatbot_db_url = get_database_urls()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = user_db_url
-app.config['CHATBOT_DATABASE_URI'] = chatbot_db_url
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CHATBOT_DATABASE_URI'] = chatbot_db_url
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -141,18 +155,18 @@ railway_engine = RailwayMySQLEngine(user_db_url)
 # Use the custom engine for all database operations
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
-    'pool_recycle': 300,  # Recycle connections every 5 minutes
-    'pool_size': 5,       # Allow more connections
-    'max_overflow': 10,   # Allow overflow connections
-    'pool_timeout': 60,   # Increased pool timeout
+    'pool_recycle': 30,  # Less aggressive recycling
+    'pool_size': 1,
+    'max_overflow': 0,
+    'pool_timeout': 30,  # Increased timeout
     'pool_reset_on_return': 'rollback',
     'connect_args': {
-        'connect_timeout': 60,  # Increased connection timeout
-        'read_timeout': 60,     # Increased read timeout
-        'write_timeout': 60,    # Increased write timeout
+        'connect_timeout': 30,  # Increased connection timeout
+        'read_timeout': 30,     # Increased read timeout
+        'write_timeout': 30,    # Increased write timeout
         'autocommit': True,
         'charset': 'utf8mb4',
-        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"; SET SESSION wait_timeout=28800; SET SESSION interactive_timeout=28800;',
+        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
     }
 }
 
@@ -858,18 +872,19 @@ def admin_faqs():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('chat'))
 
-    def load_faqs():
-        from chatbot_models import Faq
-        # Use main db.session for consistency with data insertion operations
-        faqs_list = Faq.query.order_by(Faq.created_at.desc()).all()
-        # Convert to list format expected by template
-        return [{"id": faq.id, "question": faq.question, "answer": faq.answer} for faq in faqs_list]
-
+    from chatbot_models import Faq
+    from sqlalchemy.orm import sessionmaker
     try:
-        faqs_data = retry_db_operation(load_faqs)
+        # Use direct session with chatbot_engine to ensure correct database connection
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
+        faqs_list = session.query(Faq).order_by(Faq.created_at.desc()).all()
+        session.close()
+        # Convert to list format expected by template
+        faqs_data = [{"id": faq.id, "question": faq.question, "answer": faq.answer} for faq in faqs_list]
     except Exception as e:
         faqs_data = []
-        app.logger.error(f"Failed to load FAQs from MySQL after retries: {e}")
+        app.logger.error(f"Failed to load FAQs from MySQL: {e}")
 
     # Prevent caching to ensure fresh data on reload
     response = make_response(render_template('admin_faqs.html', info_list=faqs_data))
@@ -895,15 +910,18 @@ def add_info():
         return jsonify({'status': 'error', 'message': 'Question and answer are required'})
 
     from chatbot_models import Faq
+    from sqlalchemy.orm import sessionmaker
     try:
-        # Use main db.session for consistency with data loading operations
+        # Use direct session with chatbot_engine to ensure correct database connection
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
         new_faq = Faq(question=question, answer=answer)
-        db.session.add(new_faq)
-        db.session.commit()
+        session.add(new_faq)
+        session.commit()
+        session.close()
         # Reload FAQs in chatbot memory
         chatbot.reload_faqs()
     except Exception as e:
-        db.session.rollback()
         return jsonify({'status': 'error', 'message': f'Failed to save FAQ: {str(e)}'})
 
     return jsonify({'status': 'success'})
@@ -912,7 +930,7 @@ def add_info():
 @login_required
 def edit_info():
     """
-    Edit an existing FAQ entry in database Faq table.
+    Edit an existing FAQ entry in MySQL Faq table.
     """
     if not is_admin(current_user):
         return jsonify({'status': 'error', 'message': 'Unauthorized access'})
@@ -928,19 +946,23 @@ def edit_info():
         return jsonify({'status': 'error', 'message': 'ID, question, and answer are required'})
 
     from chatbot_models import Faq
+    from sqlalchemy.orm import sessionmaker
     try:
-        # Use main db.session for consistency with data loading operations
-        faq = Faq.query.get(info_id)
+        # Use direct session with chatbot_engine to ensure correct database connection
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
+        faq = session.query(Faq).get(info_id)
         if not faq:
+            session.close()
             return jsonify({'status': 'error', 'message': 'FAQ not found'})
 
         faq.question = question
         faq.answer = answer
-        db.session.commit()
+        session.commit()
+        session.close()
         # Reload FAQs in chatbot memory
         chatbot.reload_faqs()
     except Exception as e:
-        db.session.rollback()
         return jsonify({'status': 'error', 'message': f'Failed to update FAQ: {str(e)}'})
 
     return jsonify({'status': 'success'})
@@ -1010,10 +1032,15 @@ def admin_existing_locations():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('chat'))
 
-    def load_locations():
-        # Use main db.session for consistency with data insertion operations
+    try:
+        # Use direct database query to ensure correct data retrieval
         from chatbot_models import Location
-        locations_list = Location.query.order_by(Location.created_at.desc()).all()
+        from sqlalchemy.orm import sessionmaker
+
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
+        locations_list = session.query(Location).order_by(Location.created_at.desc()).all()
+        session.close()
 
         # Convert to list format expected by template
         locations = []
@@ -1039,13 +1066,9 @@ def admin_existing_locations():
                 'created_at': loc.created_at.strftime('%Y-%m-%d %H:%M:%S') if loc.created_at else ''
             }
             locations.append(location_dict)
-        return locations
-
-    try:
-        locations = retry_db_operation(load_locations)
     except Exception as e:
         locations = []
-        app.logger.error(f"Failed to load locations from database after retries: {e}")
+        app.logger.error(f"Failed to load locations from database: {e}")
 
     return render_template('admin_existing_locations.html', locations=locations)
 
@@ -1084,9 +1107,14 @@ def admin_existing_visuals():
         return redirect(url_for('chat'))
 
     try:
-        # Use main db.session for consistency with data insertion operations
+        # Use direct database query to ensure correct data retrieval
         from chatbot_models import Visual
-        visuals_list = Visual.query.order_by(Visual.created_at.desc()).all()
+        from sqlalchemy.orm import sessionmaker
+
+        Session = sessionmaker(bind=chatbot_engine)
+        session = Session()
+        visuals_list = session.query(Visual).order_by(Visual.created_at.desc()).all()
+        session.close()
 
         # Convert to list format expected by template
         visuals = []
@@ -1706,18 +1734,11 @@ def admin_feedback():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('chat'))
 
-    def load_feedbacks():
-        feedbacks = Feedback.query.order_by(Feedback.timestamp.desc()).all()
-        # Format timestamps for display
-        for fb in feedbacks:
-            fb.formatted_timestamp = fb.timestamp.strftime('%B %d, %Y')
-        return feedbacks
+    feedbacks = Feedback.query.order_by(Feedback.timestamp.desc()).all()
 
-    try:
-        feedbacks = retry_db_operation(load_feedbacks)
-    except Exception as e:
-        feedbacks = []
-        app.logger.error(f"Failed to load feedbacks from database after retries: {e}")
+    # Format timestamps for display
+    for fb in feedbacks:
+        fb.formatted_timestamp = fb.timestamp.strftime('%B %d, %Y')
 
     return render_template('admin_feedback.html', feedbacks=feedbacks)
 
