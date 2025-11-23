@@ -10,7 +10,7 @@ from chatbot_models import Category, Faq, Location, Visual, UserRule, GuestRule,
 app = Flask(__name__)
 
 # Use Railway MySQL for production
-railway_chatbot_db_url = 'mysql+pymysql://root:smxcYzdpwUJTAiRdJWQFPJNbfsbVTAGC@trolley.proxy.rlwy.net:10349/railway'
+railway_chatbot_db_url = 'mysql+pymysql://root:dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA@mysql.railway.internal:3306/railway'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = railway_chatbot_db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
