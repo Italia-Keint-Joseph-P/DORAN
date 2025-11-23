@@ -30,6 +30,22 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 
 db.init_app(app)
 
+def retry_db_operation(operation, max_retries=3, delay=1):
+    """
+    Retry a database operation with exponential backoff.
+    """
+    import time
+    for attempt in range(max_retries):
+        try:
+            return operation()
+        except Exception as e:
+            if attempt < max_retries - 1:
+                print(f"Database operation failed (attempt {attempt + 1}): {str(e)}")
+                time.sleep(delay * (2 ** attempt))
+            else:
+                print(f"Database operation failed after {max_retries} attempts: {str(e)}")
+                raise
+
 def create_sqlalchemy_tables():
     """Create tables using SQLAlchemy for Railway MySQL"""
     try:
@@ -42,12 +58,12 @@ def create_sqlalchemy_tables():
 
 def migrate_categories(base_path):
     """Migrate categories.json to database"""
-    categories_path = os.path.join(base_path, 'categories.json')
-    if os.path.exists(categories_path):
-        with open(categories_path, 'r', encoding='utf-8') as f:
-            categories = json.load(f)
+    def migrate_categories_operation():
+        categories_path = os.path.join(base_path, 'categories.json')
+        if os.path.exists(categories_path):
+            with open(categories_path, 'r', encoding='utf-8') as f:
+                categories = json.load(f)
 
-        with app.app_context():
             for category in categories:
                 # Check if category already exists
                 existing = Category.query.filter_by(name=category).first()
@@ -55,7 +71,10 @@ def migrate_categories(base_path):
                     new_cat = Category(name=category)
                     db.session.add(new_cat)
             db.session.commit()
-        print(f"Migrated {len(categories)} categories")
+            print(f"Migrated {len(categories)} categories")
+
+    with app.app_context():
+        retry_db_operation(migrate_categories_operation)
 
 def migrate_email_directory(base_path):
     """Migrate email_directory.py to database"""
@@ -92,12 +111,12 @@ def migrate_email_directory(base_path):
 
 def migrate_faqs(base_path):
     """Migrate faqs.json to database, avoiding duplicates"""
-    faqs_path = os.path.join(base_path, 'faqs.json')
-    if os.path.exists(faqs_path):
-        with open(faqs_path, 'r', encoding='utf-8') as f:
-            faqs = json.load(f)
+    def migrate_faqs_operation():
+        faqs_path = os.path.join(base_path, 'faqs.json')
+        if os.path.exists(faqs_path):
+            with open(faqs_path, 'r', encoding='utf-8') as f:
+                faqs = json.load(f)
 
-        with app.app_context():
             migrated_count = 0
             for faq in faqs:
                 # Check if FAQ already exists
@@ -107,7 +126,10 @@ def migrate_faqs(base_path):
                     db.session.add(new_faq)
                     migrated_count += 1
             db.session.commit()
-        print(f"Migrated {migrated_count} new FAQs (skipped {len(faqs) - migrated_count} duplicates)")
+            print(f"Migrated {migrated_count} new FAQs (skipped {len(faqs) - migrated_count} duplicates)")
+
+    with app.app_context():
+        retry_db_operation(migrate_faqs_operation)
 
 def migrate_locations(base_path):
     """Migrate locations.json to database"""
@@ -132,12 +154,12 @@ def migrate_locations(base_path):
 
 def migrate_visuals(base_path):
     """Migrate visuals.json to database"""
-    visuals_path = os.path.join(base_path, 'visuals', 'visuals.json')
-    if os.path.exists(visuals_path):
-        with open(visuals_path, 'r', encoding='utf-8') as f:
-            visuals = json.load(f)
+    def migrate_visuals_operation():
+        visuals_path = os.path.join(base_path, 'visuals', 'visuals.json')
+        if os.path.exists(visuals_path):
+            with open(visuals_path, 'r', encoding='utf-8') as f:
+                visuals = json.load(f)
 
-        with app.app_context():
             for visual in visuals:
                 new_vis = Visual(
                     id=visual.get('id', ''),
@@ -149,7 +171,10 @@ def migrate_visuals(base_path):
                 )
                 db.session.add(new_vis)
             db.session.commit()
-        print(f"Migrated {len(visuals)} visuals")
+            print(f"Migrated {len(visuals)} visuals")
+
+    with app.app_context():
+        retry_db_operation(migrate_visuals_operation)
 
 def migrate_rules(base_path):
     """Migrate user and guest rules from JSON files to database"""
