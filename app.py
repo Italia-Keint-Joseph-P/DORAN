@@ -110,16 +110,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False  # Disable SQL echo for cleaner logs
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,  # Check connection before using
-    'pool_recycle': 300,    # Recycle connections after 5 minutes (more aggressive for Railway)
+    'pool_recycle': 180,    # Recycle connections after 3 minutes (more aggressive for Railway)
     'pool_size': 1,         # Very small pool size for reliability
-    'max_overflow': 1,      # Minimal overflow connections
-    'pool_timeout': 60,     # Longer timeout for Railway
+    'max_overflow': 2,      # Minimal overflow connections
+    'pool_timeout': 30,     # Reasonable timeout for Railway
     'pool_reset_on_return': 'rollback',  # Reset connections on return to pool
     'connect_args': {
-        'connect_timeout': 20,  # Increased timeout
-        'read_timeout': 60,     # Increased read timeout
-        'write_timeout': 60,    # Increased write timeout
+        'connect_timeout': 10,  # Reasonable timeout
+        'read_timeout': 30,     # Reasonable read timeout
+        'write_timeout': 30,    # Reasonable write timeout
         'autocommit': True,     # Enable autocommit for better reliability
+        'reconnect': True,      # Enable automatic reconnection
     }
 }
 
@@ -284,12 +285,24 @@ with app.app_context():
         except Exception as e:
             app.logger.error(f"Error during auto-migration check: {str(e)}")
 
-    # Run auto-migration before initializing chatbot
-    try:
-        auto_migrate_json_to_db()
-    except Exception as e:
-        app.logger.error(f"Auto-migration failed: {str(e)}")
-        app.logger.info("Continuing with app startup despite migration failure")
+    # Run auto-migration before initializing chatbot with retry logic
+    max_retries = 5
+    for attempt in range(max_retries):
+        try:
+            auto_migrate_json_to_db()
+            app.logger.info("Auto-migration completed successfully")
+            break  # Success, exit retry loop
+        except Exception as e:
+            app.logger.warning(f"Auto-migration attempt {attempt + 1} failed: {str(e)}")
+            if attempt < max_retries - 1:
+                import time
+                delay = 2 ** attempt  # Exponential backoff: 1, 2, 4, 8 seconds
+                app.logger.info(f"Retrying auto-migration in {delay} seconds...")
+                time.sleep(delay)
+                continue
+            else:
+                app.logger.error(f"Auto-migration failed after {max_retries} attempts: {str(e)}")
+                app.logger.info("Continuing with app startup despite migration failure")
 
     try:
         chatbot = Chatbot()  # Rules are now loaded from MySQL automatically
