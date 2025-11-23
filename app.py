@@ -280,13 +280,15 @@ with app.app_context():
         """
         try:
             # Check if chatbot database tables are empty
-            from chatbot_models import Faq, Location, Visual
+            from chatbot_models import Faq, Location, Visual, UserRule, GuestRule
             faq_count = Faq.query.count()
             location_count = Location.query.count()
             visual_count = Visual.query.count()
+            user_rule_count = UserRule.query.count()
+            guest_rule_count = GuestRule.query.count()
 
             # If tables are empty, run migration
-            if faq_count == 0 and location_count == 0 and visual_count == 0:
+            if faq_count == 0 and location_count == 0 and visual_count == 0 and user_rule_count == 0 and guest_rule_count == 0:
                 app.logger.info("Database tables appear empty, running JSON to database migration...")
 
                 # Import migration functions
