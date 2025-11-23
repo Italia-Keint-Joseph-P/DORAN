@@ -63,39 +63,11 @@ def get_database_urls():
         app.logger.warning("Railway MySQL environment variables not complete")
         return None
 
-    # Determine user database URL - prioritize Railway/production databases
-    if os.environ.get('DATABASE_URL'):
-        # Use explicit DATABASE_URL if provided (Railway/production)
-        user_db_url = os.environ.get('DATABASE_URL')
-        app.logger.info("Using DATABASE_URL for user database")
-    elif construct_railway_mysql_url():
-        # Construct URL from Railway environment variables (Railway/production)
-        user_db_url = construct_railway_mysql_url('railway')
-        app.logger.info("Using Railway MySQL for user database")
-    elif mysql_url:
-        # Use MYSQL_URL if provided (other production environments)
-        user_db_url = mysql_url
-        app.logger.info("Using MYSQL_URL for user database")
-    else:
-        # Fallback to SQLite for development/local testing only
-        app.logger.warning("No production database configured, using SQLite fallback for development")
-        user_db_url = sqlite_user_db_url
-        app.logger.info("Using SQLite fallback for user database")
-
-    # Determine chatbot database URL - prioritize Railway/production databases
-    if os.environ.get('CHATBOT_DATABASE_URL'):
-        # Use explicit CHATBOT_DATABASE_URL if provided (Railway/production)
-        chatbot_db_url = os.environ.get('CHATBOT_DATABASE_URL')
-        app.logger.info("Using CHATBOT_DATABASE_URL for chatbot database")
-    elif construct_railway_mysql_url():
-        # Construct URL from Railway environment variables (Railway/production)
-        chatbot_db_url = construct_railway_mysql_url('railway')
-        app.logger.info("Using Railway MySQL for chatbot database")
-    else:
-        # Fallback to SQLite for development/local testing only
-        app.logger.warning("No production database configured for chatbot, using SQLite fallback for development")
-        chatbot_db_url = sqlite_chatbot_db_url
-        app.logger.info("Using SQLite fallback for chatbot database")
+    # Use the correct hardcoded database URL
+    correct_db_url = 'mysql+pymysql://root:dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA@mysql.railway.internal:3306/railway'
+    user_db_url = correct_db_url
+    chatbot_db_url = correct_db_url
+    app.logger.info("Using corrected hardcoded MySQL URL for both user and chatbot databases")
 
     app.logger.info(f"Final database URLs - user: {user_db_url}, chatbot: {chatbot_db_url}")
     return user_db_url, chatbot_db_url
@@ -120,21 +92,21 @@ class RailwayMySQLEngine:
         from sqlalchemy import create_engine
         import time
 
-        max_retries = 5  # Increased retries
+        max_retries = 3  # Reduced retries
         for attempt in range(max_retries):
             try:
                 engine = create_engine(
                     self.url,
                     pool_pre_ping=True,
-                    pool_recycle=5,  # Extremely aggressive recycling
+                    pool_recycle=30,  # Less aggressive recycling
                     pool_size=1,
                     max_overflow=0,
-                    pool_timeout=1,  # Very short timeout
+                    pool_timeout=30,  # Increased timeout
                     pool_reset_on_return='rollback',
                     connect_args={
-                        'connect_timeout': 1,  # Very short connection timeout
-                        'read_timeout': 1,     # Very short read timeout
-                        'write_timeout': 1,    # Very short write timeout
+                        'connect_timeout': 30,  # Increased connection timeout
+                        'read_timeout': 30,     # Increased read timeout
+                        'write_timeout': 30,    # Increased write timeout
                         'autocommit': True,
                         'charset': 'utf8mb4',
                         'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
@@ -147,7 +119,7 @@ class RailwayMySQLEngine:
                 return engine
             except Exception as e:
                 if attempt < max_retries - 1:
-                    time.sleep(0.5)  # Shorter sleep
+                    time.sleep(2)  # Increased sleep for connection retry
                     continue
                 raise e
 
@@ -183,15 +155,15 @@ railway_engine = RailwayMySQLEngine(user_db_url)
 # Use the custom engine for all database operations
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
-    'pool_recycle': 10,  # Extremely aggressive recycling
+    'pool_recycle': 30,  # Less aggressive recycling
     'pool_size': 1,
     'max_overflow': 0,
-    'pool_timeout': 2,   # Very short timeout
+    'pool_timeout': 30,  # Increased timeout
     'pool_reset_on_return': 'rollback',
     'connect_args': {
-        'connect_timeout': 1,  # Very short connection timeout
-        'read_timeout': 2,     # Very short read timeout
-        'write_timeout': 2,    # Very short write timeout
+        'connect_timeout': 30,  # Increased connection timeout
+        'read_timeout': 30,     # Increased read timeout
+        'write_timeout': 30,    # Increased write timeout
         'autocommit': True,
         'charset': 'utf8mb4',
         'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
@@ -238,6 +210,9 @@ with app.app_context():
     try:
         db.create_all()
         app.logger.info("Database tables created successfully")
+        # Add delay to prevent spamming MySQL at startup
+        import time
+        time.sleep(5)
     except Exception as e:
         app.logger.warning(f"Database table creation failed (continuing anyway): {str(e)}")
 
@@ -348,7 +323,9 @@ with app.app_context():
             app.logger.error(f"Error during auto-migration check: {str(e)}")
 
     # Run auto-migration before initializing chatbot with retry logic
-    max_retries = 5
+    import time
+    time.sleep(10)  # Initial delay to prevent spamming MySQL at startup
+    max_retries = 3
     for attempt in range(max_retries):
         try:
             auto_migrate_json_to_db()
@@ -357,8 +334,7 @@ with app.app_context():
         except Exception as e:
             app.logger.warning(f"Auto-migration attempt {attempt + 1} failed: {str(e)}")
             if attempt < max_retries - 1:
-                import time
-                delay = 2 ** attempt  # Exponential backoff: 1, 2, 4, 8 seconds
+                delay = 10 * (attempt + 1)  # Linear backoff: 10, 20, 30 seconds
                 app.logger.info(f"Retrying auto-migration in {delay} seconds...")
                 time.sleep(delay)
                 continue
@@ -2145,8 +2121,6 @@ def submit_feedback():
         db.session.rollback()
         return jsonify({'status': 'error', 'message': 'Failed to submit feedback'})
 
-
-
 @app.route('/admin/json_editor')
 @login_required
 def admin_json_editor():
@@ -2158,8 +2132,6 @@ def admin_json_editor():
         return redirect(url_for('chat'))
 
     return render_template('admin_json_editor.html')
-
-
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
