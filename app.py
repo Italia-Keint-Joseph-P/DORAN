@@ -108,19 +108,89 @@ app.config['CHATBOT_DATABASE_URI'] = chatbot_db_url
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False  # Disable SQL echo for cleaner logs
+# Custom connection handling for Railway's unstable MySQL
+class RailwayMySQLEngine:
+    def __init__(self, url, **kwargs):
+        self.url = url
+        self.kwargs = kwargs
+        self._engine = None
+
+    def _create_engine(self):
+        """Create engine with retry logic"""
+        from sqlalchemy import create_engine
+        import time
+
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                engine = create_engine(
+                    self.url,
+                    pool_pre_ping=True,
+                    pool_recycle=30,  # Very aggressive recycling
+                    pool_size=1,
+                    max_overflow=0,
+                    pool_timeout=5,
+                    pool_reset_on_return='rollback',
+                    connect_args={
+                        'connect_timeout': 2,
+                        'read_timeout': 5,
+                        'write_timeout': 5,
+                        'autocommit': True,
+                        'charset': 'utf8mb4',
+                        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
+                    },
+                    **self.kwargs
+                )
+                # Test the connection
+                with engine.connect() as conn:
+                    conn.execute("SELECT 1")
+                return engine
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    time.sleep(1)
+                    continue
+                raise e
+
+    @property
+    def engine(self):
+        """Get engine with automatic recreation on failure"""
+        if self._engine is None:
+            self._engine = self._create_engine()
+        return self._engine
+
+    def dispose(self):
+        """Dispose of the current engine"""
+        if self._engine:
+            self._engine.dispose()
+            self._engine = None
+
+    def execute(self, *args, **kwargs):
+        """Execute with automatic retry on connection failure"""
+        max_retries = 2
+        for attempt in range(max_retries):
+            try:
+                return self.engine.execute(*args, **kwargs)
+            except Exception as e:
+                if 'Lost connection' in str(e) or 'server has gone away' in str(e):
+                    self.dispose()  # Force recreation
+                    if attempt < max_retries - 1:
+                        continue
+                raise e
+
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_pre_ping': True,  # Check connection before using
-    'pool_recycle': 180,    # Recycle connections after 3 minutes (more aggressive for Railway)
-    'pool_size': 1,         # Very small pool size for reliability
-    'max_overflow': 2,      # Minimal overflow connections
-    'pool_timeout': 30,     # Reasonable timeout for Railway
-    'pool_reset_on_return': 'rollback',  # Reset connections on return to pool
+    'pool_pre_ping': True,
+    'pool_recycle': 30,
+    'pool_size': 1,
+    'max_overflow': 0,
+    'pool_timeout': 5,
+    'pool_reset_on_return': 'rollback',
     'connect_args': {
-        'connect_timeout': 10,  # Reasonable timeout
-        'read_timeout': 30,     # Reasonable read timeout
-        'write_timeout': 30,    # Reasonable write timeout
-        'autocommit': True,     # Enable autocommit for better reliability
-        'reconnect': True,      # Enable automatic reconnection
+        'connect_timeout': 2,
+        'read_timeout': 5,
+        'write_timeout': 5,
+        'autocommit': True,
+        'charset': 'utf8mb4',
+        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
     }
 }
 
