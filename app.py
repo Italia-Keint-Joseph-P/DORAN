@@ -324,8 +324,8 @@ with app.app_context():
 
     # Run auto-migration before initializing chatbot with retry logic
     import time
-    time.sleep(10)  # Initial delay to prevent spamming MySQL at startup
-    max_retries = 3
+    time.sleep(15)  # Increased initial delay to prevent spamming MySQL at startup
+    max_retries = 5  # Increased retries for migration
     for attempt in range(max_retries):
         try:
             auto_migrate_json_to_db()
@@ -334,7 +334,7 @@ with app.app_context():
         except Exception as e:
             app.logger.warning(f"Auto-migration attempt {attempt + 1} failed: {str(e)}")
             if attempt < max_retries - 1:
-                delay = 10 * (attempt + 1)  # Linear backoff: 10, 20, 30 seconds
+                delay = 15 * (attempt + 1)  # Increased linear backoff: 15, 30, 45, 60 seconds
                 app.logger.info(f"Retrying auto-migration in {delay} seconds...")
                 time.sleep(delay)
                 continue
