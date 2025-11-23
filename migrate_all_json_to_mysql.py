@@ -194,19 +194,22 @@ def migrate_rules(base_path):
         rules_file = os.path.join(user_db_path, 'all_user_rules.json')
         if os.path.exists(rules_file):
             with open(rules_file, 'r', encoding='utf-8') as f:
-                user_rules = json.load(f)
+                user_rules_data = json.load(f)
 
             with app.app_context():
-                for rule in user_rules:
-                    new_rule = UserRule(
-                        category=rule.get('category', 'soict'),
-                        question=rule.get('question', ''),
-                        answer=rule.get('response', ''),
-                        user_type='user'
-                    )
-                    db.session.add(new_rule)
+                total_user_rules = 0
+                for category, rules_list in user_rules_data.items():
+                    for rule in rules_list:
+                        new_rule = UserRule(
+                            category=category.lower(),
+                            question=rule.get('question', ''),
+                            answer=rule.get('answer', ''),
+                            user_type='user'
+                        )
+                        db.session.add(new_rule)
+                        total_user_rules += 1
                 db.session.commit()
-            print(f"Migrated {len(user_rules)} user rules")
+            print(f"Migrated {total_user_rules} user rules")
 
     # Migrate guest rules
     guest_db_path = os.path.join(base_path, 'guest_database')
@@ -214,19 +217,22 @@ def migrate_rules(base_path):
         rules_file = os.path.join(guest_db_path, 'all_guest_rules.json')
         if os.path.exists(rules_file):
             with open(rules_file, 'r', encoding='utf-8') as f:
-                guest_rules = json.load(f)
+                guest_rules_data = json.load(f)
 
             with app.app_context():
-                for rule in guest_rules:
-                    new_rule = GuestRule(
-                        category=rule.get('category', 'guest'),
-                        question=rule.get('question', ''),
-                        answer=rule.get('response', ''),
-                        user_type='guest'
-                    )
-                    db.session.add(new_rule)
+                total_guest_rules = 0
+                for category, rules_list in guest_rules_data.items():
+                    for rule in rules_list:
+                        new_rule = GuestRule(
+                            category=category.lower(),
+                            question=rule.get('question', ''),
+                            answer=rule.get('answer', ''),
+                            user_type='guest'
+                        )
+                        db.session.add(new_rule)
+                        total_guest_rules += 1
                 db.session.commit()
-            print(f"Migrated {len(guest_rules)} guest rules")
+            print(f"Migrated {total_guest_rules} guest rules")
 
 def main():
     """Main migration function using SQLAlchemy"""
