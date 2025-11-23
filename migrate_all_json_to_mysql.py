@@ -17,14 +17,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
-    'pool_recycle': 300,
+    'pool_recycle': 30,
     'pool_size': 1,
-    'max_overflow': 2,
-    'pool_timeout': 10,
+    'max_overflow': 0,
+    'pool_timeout': 30,
     'connect_args': {
-        'connect_timeout': 5,
-        'read_timeout': 10,
-        'write_timeout': 10,
+        'connect_timeout': 30,
+        'read_timeout': 30,
+        'write_timeout': 30,
+        'autocommit': True,
+        'charset': 'utf8mb4',
+        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
     }
 }
 
