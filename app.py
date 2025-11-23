@@ -30,72 +30,33 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 def get_database_urls():
     """Get database URLs at runtime to ensure environment variables are available"""
-    # Debug: Log all MySQL-related environment variables
-    mysql_env_vars = {k: v for k, v in os.environ.items() if 'mysql' in k.lower() or 'database' in k.lower()}
-    app.logger.info(f"Available MySQL/Database environment variables: {mysql_env_vars}")
+    # Check if we're running on Railway (production) or locally (development)
+    is_production = os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('RAILWAY_PROJECT_ID')
 
-    # Add SQLAlchemy configuration for MySQL
-    mysql_url = os.environ.get('MYSQL_URL')
-    if mysql_url and mysql_url.startswith('mysql://'):
-        mysql_url = mysql_url.replace('mysql://', 'mysql+pymysql://', 1)
+    if is_production:
+        app.logger.info("Running in production (Railway), using MySQL database")
+        # Debug: Log all MySQL-related environment variables
+        mysql_env_vars = {k: v for k, v in os.environ.items() if 'mysql' in k.lower() or 'database' in k.lower()}
+        app.logger.info(f"Available MySQL/Database environment variables: {mysql_env_vars}")
 
-    # SQLite fallback databases (only for development/local testing)
-    sqlite_user_db_url = 'sqlite:///doran.db'
-    sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
+        # Add SQLAlchemy configuration for MySQL
+        mysql_url = os.environ.get('MYSQL_URL')
+        if mysql_url and mysql_url.startswith('mysql://'):
+            mysql_url = mysql_url.replace('mysql://', 'mysql+pymysql://', 1)
 
-    def construct_railway_mysql_url(database_name='railway'):
-        """Construct MySQL URL from Railway environment variables"""
-        # Try different possible environment variable names
-        host = os.environ.get('MYSQLHOST') or os.environ.get('MYSQL_HOST')
-        port = os.environ.get('MYSQLPORT') or os.environ.get('MYSQL_PORT')
-        user = os.environ.get('MYSQLUSER') or os.environ.get('MYSQL_USER')
-        password = os.environ.get('MYSQLPASSWORD') or os.environ.get('MYSQL_ROOT_PASSWORD')
-
-        # Get database name from environment or use default
-        db_name = os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE') or database_name
-
-        app.logger.info(f"Railway MySQL vars - host: {host}, port: {port}, user: {user}, password: {'***' if password else None}, db: {db_name}")
-
-        if host and port and user and password:
-            url = f'mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}'
-            app.logger.info(f"Constructed Railway MySQL URL: {url.replace(password, '***')}")
-            return url
-        app.logger.warning("Railway MySQL environment variables not complete")
-        return None
-
-    # Determine user database URL - prioritize Railway/production databases
-    if os.environ.get('DATABASE_URL'):
-        # Use explicit DATABASE_URL if provided (Railway/production)
-        user_db_url = os.environ.get('DATABASE_URL')
-        app.logger.info("Using DATABASE_URL for user database")
-    elif construct_railway_mysql_url():
-        # Construct URL from Railway environment variables (Railway/production)
-        user_db_url = construct_railway_mysql_url('railway')
-        app.logger.info("Using Railway MySQL for user database")
-    elif mysql_url:
-        # Use MYSQL_URL if provided (other production environments)
-        user_db_url = mysql_url
-        app.logger.info("Using MYSQL_URL for user database")
+        # Use the correct hardcoded database URL for Railway
+        correct_db_url = 'mysql+pymysql://root:dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA@mysql.railway.internal:3306/railway'
+        user_db_url = correct_db_url
+        chatbot_db_url = correct_db_url
+        app.logger.info("Using Railway MySQL URL for both user and chatbot databases")
     else:
-        # Fallback to SQLite for development/local testing only
-        app.logger.warning("No production database configured, using SQLite fallback for development")
+        app.logger.info("Running in development, using SQLite database")
+        # SQLite fallback databases for local development
+        sqlite_user_db_url = 'sqlite:///doran.db'
+        sqlite_chatbot_db_url = 'sqlite:///chatbot.db'
         user_db_url = sqlite_user_db_url
-        app.logger.info("Using SQLite fallback for user database")
-
-    # Determine chatbot database URL - prioritize Railway/production databases
-    if os.environ.get('CHATBOT_DATABASE_URL'):
-        # Use explicit CHATBOT_DATABASE_URL if provided (Railway/production)
-        chatbot_db_url = os.environ.get('CHATBOT_DATABASE_URL')
-        app.logger.info("Using CHATBOT_DATABASE_URL for chatbot database")
-    elif construct_railway_mysql_url():
-        # Construct URL from Railway environment variables (Railway/production)
-        chatbot_db_url = construct_railway_mysql_url('railway')
-        app.logger.info("Using Railway MySQL for chatbot database")
-    else:
-        # Fallback to SQLite for development/local testing only
-        app.logger.warning("No production database configured for chatbot, using SQLite fallback for development")
         chatbot_db_url = sqlite_chatbot_db_url
-        app.logger.info("Using SQLite fallback for chatbot database")
+        app.logger.info("Using SQLite URLs for both user and chatbot databases")
 
     app.logger.info(f"Final database URLs - user: {user_db_url}, chatbot: {chatbot_db_url}")
     return user_db_url, chatbot_db_url
@@ -107,13 +68,98 @@ app.config['SQLALCHEMY_DATABASE_URI'] = user_db_url
 app.config['CHATBOT_DATABASE_URI'] = chatbot_db_url
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['CHATBOT_DATABASE_URI'] = chatbot_db_url
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False  # Disable SQL echo for cleaner logs
+# Custom connection handling for Railway's unstable MySQL
+class RailwayMySQLEngine:
+    def __init__(self, url, **kwargs):
+        self.url = url
+        self.kwargs = kwargs
+        self._engine = None
+
+    def _create_engine(self):
+        """Create engine with retry logic"""
+        from sqlalchemy import create_engine
+        import time
+
+        max_retries = 3  # Reduced retries
+        for attempt in range(max_retries):
+            try:
+                engine = create_engine(
+                    self.url,
+                    pool_pre_ping=True,
+                    pool_recycle=30,  # Less aggressive recycling
+                    pool_size=1,
+                    max_overflow=0,
+                    pool_timeout=30,  # Increased timeout
+                    pool_reset_on_return='rollback',
+                    connect_args={
+                        'connect_timeout': 30,  # Increased connection timeout
+                        'read_timeout': 30,     # Increased read timeout
+                        'write_timeout': 30,    # Increased write timeout
+                        'autocommit': True,
+                        'charset': 'utf8mb4',
+                        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
+                    },
+                    **self.kwargs
+                )
+                # Test the connection
+                with engine.connect() as conn:
+                    conn.execute("SELECT 1")
+                return engine
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    time.sleep(2)  # Increased sleep for connection retry
+                    continue
+                raise e
+
+    @property
+    def engine(self):
+        """Get engine with automatic recreation on failure"""
+        if self._engine is None:
+            self._engine = self._create_engine()
+        return self._engine
+
+    def dispose(self):
+        """Dispose of the current engine"""
+        if self._engine:
+            self._engine.dispose()
+            self._engine = None
+
+    def execute(self, *args, **kwargs):
+        """Execute with automatic retry on connection failure"""
+        max_retries = 2
+        for attempt in range(max_retries):
+            try:
+                return self.engine.execute(*args, **kwargs)
+            except Exception as e:
+                if 'Lost connection' in str(e) or 'server has gone away' in str(e):
+                    self.dispose()  # Force recreation
+                    if attempt < max_retries - 1:
+                        continue
+                raise e
+
+# Create custom engine for Railway MySQL with extremely aggressive settings
+railway_engine = RailwayMySQLEngine(user_db_url)
+
+# Use the custom engine for all database operations
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_pre_ping': True,  # Check connection before using
-    'pool_recycle': 300,    # Recycle connections after 5 minutes
-    'pool_size': 1,         # Very small pool size for reliability
-    'max_overflow': 2,      # Minimal overflow connections
-    'pool_timeout': 10,     # Shorter timeout
+    'pool_pre_ping': True,
+    'pool_recycle': 30,  # Less aggressive recycling
+    'pool_size': 1,
+    'max_overflow': 0,
+    'pool_timeout': 30,  # Increased timeout
+    'pool_reset_on_return': 'rollback',
+    'connect_args': {
+        'connect_timeout': 30,  # Increased connection timeout
+        'read_timeout': 30,     # Increased read timeout
+        'write_timeout': 30,    # Increased write timeout
+        'autocommit': True,
+        'charset': 'utf8mb4',
+        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
+    }
 }
 
 # Configure binds for multiple databases
@@ -152,26 +198,17 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 with app.app_context():
-    # Retry database table creation up to 5 times with exponential backoff
-    max_retries = 5
-    for attempt in range(max_retries):
-        try:
-            db.create_all()
-            app.logger.info("Database tables created successfully")
-            break  # Success, exit retry loop
-        except Exception as e:
-            app.logger.warning(f"Database table creation attempt {attempt + 1} failed: {str(e)}")
-            if attempt < max_retries - 1:
-                import time
-                delay = 2 ** attempt  # Exponential backoff: 1, 2, 4, 8 seconds
-                app.logger.info(f"Retrying in {delay} seconds...")
-                time.sleep(delay)
-                continue
-            else:
-                app.logger.error(f"Failed to create database tables after {max_retries} attempts: {str(e)}")
-                # Don't raise exception, allow app to continue
+    # Try to create database tables, but don't fail if it doesn't work
+    try:
+        db.create_all()
+        app.logger.info("Database tables created successfully")
+        # Add delay to prevent spamming MySQL at startup
+        import time
+        time.sleep(10)  # Increased delay
+    except Exception as e:
+        app.logger.warning(f"Database table creation failed (continuing anyway): {str(e)}")
 
-    # Initialize user manager with retry logic
+    # Initialize user manager - it will handle connection failures gracefully
     user_manager = UserManager(db)
 
 # Auto-upload JSON files to Railway volume on startup
@@ -235,17 +272,19 @@ with app.app_context():
         """
         try:
             # Check if chatbot database tables are empty
-            from chatbot_models import Faq, Location, Visual
+            from chatbot_models import Faq, Location, Visual, UserRule, GuestRule
             faq_count = Faq.query.count()
             location_count = Location.query.count()
             visual_count = Visual.query.count()
+            user_rule_count = UserRule.query.count()
+            guest_rule_count = GuestRule.query.count()
 
             # If tables are empty, run migration
-            if faq_count == 0 and location_count == 0 and visual_count == 0:
+            if faq_count == 0 and location_count == 0 and visual_count == 0 and user_rule_count == 0 and guest_rule_count == 0:
                 app.logger.info("Database tables appear empty, running JSON to database migration...")
 
                 # Import migration functions
-                from migrate_json_to_mysql import (
+                from migrate_all_json_to_mysql import (
                     create_sqlalchemy_tables, migrate_categories, migrate_email_directory,
                     migrate_faqs, migrate_locations, migrate_visuals, migrate_rules
                 )
@@ -253,22 +292,52 @@ with app.app_context():
                 try:
                     # Create tables first
                     create_sqlalchemy_tables()
+                    app.logger.info("Database tables created successfully for migration")
 
-                    # Run migration functions
-                    base_path = os.path.join(app.root_path, 'database')
+                    # Determine the correct base path - use volume if mounted, otherwise local
+                    volume_path = '/app/database'
+                    local_db_path = os.path.join(app.root_path, 'database')
+
+                    # Use volume path if it exists and is readable, otherwise use local path
+                    if os.path.exists(volume_path) and os.access(volume_path, os.R_OK):
+                        base_path = volume_path
+                        app.logger.info("Using Railway volume path for migration: /app/database")
+                    else:
+                        base_path = local_db_path
+                        app.logger.info("Using local database path for migration")
+
+                    # Check if JSON files exist before migration
+                    faqs_path = os.path.join(base_path, 'faqs.json')
+                    locations_path = os.path.join(base_path, 'locations', 'locations.json')
+                    visuals_path = os.path.join(base_path, 'visuals', 'visuals.json')
+
+                    app.logger.info(f"Checking for JSON files - FAQs: {os.path.exists(faqs_path)}, Locations: {os.path.exists(locations_path)}, Visuals: {os.path.exists(visuals_path)}")
 
                     # Migrate data
+                    app.logger.info("Starting category migration...")
                     migrate_categories(base_path)
+
+                    app.logger.info("Starting email directory migration...")
                     migrate_email_directory(base_path)
+
+                    app.logger.info("Starting FAQs migration...")
                     migrate_faqs(base_path)
+
+                    app.logger.info("Starting locations migration...")
                     migrate_locations(base_path)
+
+                    app.logger.info("Starting visuals migration...")
                     migrate_visuals(base_path)
+
+                    app.logger.info("Starting rules migration...")
                     migrate_rules(base_path)
 
                     app.logger.info("JSON to database migration completed successfully!")
 
                 except Exception as e:
                     app.logger.error(f"Migration failed: {str(e)}")
+                    import traceback
+                    app.logger.error(f"Migration traceback: {traceback.format_exc()}")
                     db.session.rollback()
 
             else:
@@ -277,12 +346,25 @@ with app.app_context():
         except Exception as e:
             app.logger.error(f"Error during auto-migration check: {str(e)}")
 
-    # Run auto-migration before initializing chatbot
-    try:
-        auto_migrate_json_to_db()
-    except Exception as e:
-        app.logger.error(f"Auto-migration failed: {str(e)}")
-        app.logger.info("Continuing with app startup despite migration failure")
+    # Run auto-migration before initializing chatbot with retry logic
+    import time
+    time.sleep(15)  # Increased initial delay to prevent spamming MySQL at startup
+    max_retries = 5  # Increased retries for migration
+    for attempt in range(max_retries):
+        try:
+            auto_migrate_json_to_db()
+            app.logger.info("Auto-migration completed successfully")
+            break  # Success, exit retry loop
+        except Exception as e:
+            app.logger.warning(f"Auto-migration attempt {attempt + 1} failed: {str(e)}")
+            if attempt < max_retries - 1:
+                delay = 15 * (attempt + 1)  # Increased linear backoff: 15, 30, 45, 60 seconds
+                app.logger.info(f"Retrying auto-migration in {delay} seconds...")
+                time.sleep(delay)
+                continue
+            else:
+                app.logger.error(f"Auto-migration failed after {max_retries} attempts: {str(e)}")
+                app.logger.info("Continuing with app startup despite migration failure")
 
     try:
         chatbot = Chatbot()  # Rules are now loaded from MySQL automatically
@@ -298,6 +380,7 @@ try:
 except Exception as e:
     app.logger.error(f"Failed to connect to database: {str(e)}")
     chatbot_db = None
+    # Don't fail app startup if database connection fails
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -305,15 +388,18 @@ def load_user(user_id):
     Load user by ID for Flask-Login.
     """
     try:
-        user_type = session.get('user_type')
-        if user_type == 'admin':
-            admin = Admin.query.get(int(user_id))
-            if admin:
-                return admin
-        elif user_type == 'user':
-            user = user_manager.get_user_by_id(user_id)
-            if user:
-                return user
+        def load_user_operation():
+            user_type = session.get('user_type')
+            if user_type == 'admin':
+                admin = Admin.query.get(int(user_id))
+                if admin:
+                    return admin
+            elif user_type == 'user':
+                user = user_manager.get_user_by_id(user_id)
+                if user:
+                    return user
+            return None
+        return retry_db_operation(load_user_operation)
     except Exception as e:
         app.logger.error(f"Database error in load_user: {str(e)}")
     return None
@@ -778,19 +864,18 @@ def admin_faqs():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('chat'))
 
-    from chatbot_models import Faq
-    from sqlalchemy.orm import sessionmaker
-    try:
-        # Use direct session with chatbot_engine to ensure correct database connection
-        Session = sessionmaker(bind=chatbot_engine)
-        session = Session()
-        faqs_list = session.query(Faq).order_by(Faq.created_at.desc()).all()
-        session.close()
+    def load_faqs():
+        from chatbot_models import Faq
+        # Use main db.session for consistency with data insertion operations
+        faqs_list = Faq.query.order_by(Faq.created_at.desc()).all()
         # Convert to list format expected by template
-        faqs_data = [{"id": faq.id, "question": faq.question, "answer": faq.answer} for faq in faqs_list]
+        return [{"id": faq.id, "question": faq.question, "answer": faq.answer} for faq in faqs_list]
+
+    try:
+        faqs_data = retry_db_operation(load_faqs)
     except Exception as e:
         faqs_data = []
-        app.logger.error(f"Failed to load FAQs from MySQL: {e}")
+        app.logger.error(f"Failed to load FAQs from MySQL after retries: {e}")
 
     # Prevent caching to ensure fresh data on reload
     response = make_response(render_template('admin_faqs.html', info_list=faqs_data))
@@ -816,18 +901,15 @@ def add_info():
         return jsonify({'status': 'error', 'message': 'Question and answer are required'})
 
     from chatbot_models import Faq
-    from sqlalchemy.orm import sessionmaker
     try:
-        # Use direct session with chatbot_engine to ensure correct database connection
-        Session = sessionmaker(bind=chatbot_engine)
-        session = Session()
+        # Use main db.session for consistency with data loading operations
         new_faq = Faq(question=question, answer=answer)
-        session.add(new_faq)
-        session.commit()
-        session.close()
+        db.session.add(new_faq)
+        db.session.commit()
         # Reload FAQs in chatbot memory
         chatbot.reload_faqs()
     except Exception as e:
+        db.session.rollback()
         return jsonify({'status': 'error', 'message': f'Failed to save FAQ: {str(e)}'})
 
     return jsonify({'status': 'success'})
@@ -836,7 +918,7 @@ def add_info():
 @login_required
 def edit_info():
     """
-    Edit an existing FAQ entry in MySQL Faq table.
+    Edit an existing FAQ entry in database Faq table.
     """
     if not is_admin(current_user):
         return jsonify({'status': 'error', 'message': 'Unauthorized access'})
@@ -852,23 +934,19 @@ def edit_info():
         return jsonify({'status': 'error', 'message': 'ID, question, and answer are required'})
 
     from chatbot_models import Faq
-    from sqlalchemy.orm import sessionmaker
     try:
-        # Use direct session with chatbot_engine to ensure correct database connection
-        Session = sessionmaker(bind=chatbot_engine)
-        session = Session()
-        faq = session.query(Faq).get(info_id)
+        # Use main db.session for consistency with data loading operations
+        faq = Faq.query.get(info_id)
         if not faq:
-            session.close()
             return jsonify({'status': 'error', 'message': 'FAQ not found'})
 
         faq.question = question
         faq.answer = answer
-        session.commit()
-        session.close()
+        db.session.commit()
         # Reload FAQs in chatbot memory
         chatbot.reload_faqs()
     except Exception as e:
+        db.session.rollback()
         return jsonify({'status': 'error', 'message': f'Failed to update FAQ: {str(e)}'})
 
     return jsonify({'status': 'success'})
@@ -938,15 +1016,10 @@ def admin_existing_locations():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('chat'))
 
-    try:
-        # Use direct database query to ensure correct data retrieval
+    def load_locations():
+        # Use main db.session for consistency with data insertion operations
         from chatbot_models import Location
-        from sqlalchemy.orm import sessionmaker
-
-        Session = sessionmaker(bind=chatbot_engine)
-        session = Session()
-        locations_list = session.query(Location).order_by(Location.created_at.desc()).all()
-        session.close()
+        locations_list = Location.query.order_by(Location.created_at.desc()).all()
 
         # Convert to list format expected by template
         locations = []
@@ -972,9 +1045,13 @@ def admin_existing_locations():
                 'created_at': loc.created_at.strftime('%Y-%m-%d %H:%M:%S') if loc.created_at else ''
             }
             locations.append(location_dict)
+        return locations
+
+    try:
+        locations = retry_db_operation(load_locations)
     except Exception as e:
         locations = []
-        app.logger.error(f"Failed to load locations from database: {e}")
+        app.logger.error(f"Failed to load locations from database after retries: {e}")
 
     return render_template('admin_existing_locations.html', locations=locations)
 
@@ -1013,14 +1090,9 @@ def admin_existing_visuals():
         return redirect(url_for('chat'))
 
     try:
-        # Use direct database query to ensure correct data retrieval
+        # Use main db.session for consistency with data insertion operations
         from chatbot_models import Visual
-        from sqlalchemy.orm import sessionmaker
-
-        Session = sessionmaker(bind=chatbot_engine)
-        session = Session()
-        visuals_list = session.query(Visual).order_by(Visual.created_at.desc()).all()
-        session.close()
+        visuals_list = Visual.query.order_by(Visual.created_at.desc()).all()
 
         # Convert to list format expected by template
         visuals = []
@@ -1640,11 +1712,18 @@ def admin_feedback():
         flash('Unauthorized access', 'danger')
         return redirect(url_for('chat'))
 
-    feedbacks = Feedback.query.order_by(Feedback.timestamp.desc()).all()
+    def load_feedbacks():
+        feedbacks = Feedback.query.order_by(Feedback.timestamp.desc()).all()
+        # Format timestamps for display
+        for fb in feedbacks:
+            fb.formatted_timestamp = fb.timestamp.strftime('%B %d, %Y')
+        return feedbacks
 
-    # Format timestamps for display
-    for fb in feedbacks:
-        fb.formatted_timestamp = fb.timestamp.strftime('%B %d, %Y')
+    try:
+        feedbacks = retry_db_operation(load_feedbacks)
+    except Exception as e:
+        feedbacks = []
+        app.logger.error(f"Failed to load feedbacks from database after retries: {e}")
 
     return render_template('admin_feedback.html', feedbacks=feedbacks)
 
@@ -2059,8 +2138,6 @@ def submit_feedback():
         db.session.rollback()
         return jsonify({'status': 'error', 'message': 'Failed to submit feedback'})
 
-
-
 @app.route('/admin/json_editor')
 @login_required
 def admin_json_editor():
@@ -2072,8 +2149,6 @@ def admin_json_editor():
         return redirect(url_for('chat'))
 
     return render_template('admin_json_editor.html')
-
-
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
