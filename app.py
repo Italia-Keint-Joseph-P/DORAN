@@ -724,7 +724,7 @@ def send_message():
         app.logger.error(f"Error in send_message: {e}")
         return jsonify({
             'response': "I'm sorry, I encountered an error. Please try again.",
-            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            'timestamp': datetime.utcnow().strftime("%Y-%m-%d %H:%M")
         }), 500
 
 @app.route('/clear_history', methods=['POST'])
@@ -2066,9 +2066,10 @@ def admin_login_logs():
     from models import LoginLog
     login_logs = LoginLog.query.filter(LoginLog.user_type.in_(['user', 'guest'])).order_by(LoginLog.timestamp.desc()).all()
 
-    # Format timestamps for display
+    # Format timestamps for display (convert UTC to local time UTC+8)
     for log in login_logs:
-        log.formatted_timestamp = log.timestamp.strftime('%B %d, %Y %H:%M:%S')
+        local_time = log.timestamp + timedelta(hours=8)
+        log.formatted_timestamp = local_time.strftime('%B %d, %Y %H:%M')
 
     return render_template('admin_login_logs.html', login_logs=login_logs)
 
