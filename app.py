@@ -35,19 +35,13 @@ def get_database_urls():
 
     if is_production:
         app.logger.info("Running in production (Railway), using MySQL database")
-        # Debug: Log all MySQL-related environment variables
-        mysql_env_vars = {k: v for k, v in os.environ.items() if 'mysql' in k.lower() or 'database' in k.lower()}
-        app.logger.info(f"Available MySQL/Database environment variables: {mysql_env_vars}")
-
-        # Add SQLAlchemy configuration for MySQL
-        mysql_url = os.environ.get('MYSQL_URL')
-        if mysql_url and mysql_url.startswith('mysql://'):
+        # Use Railway MySQL URL - try environment variable first, then fallback to known URL
+        mysql_url = os.environ.get('MYSQL_URL') or 'mysql://root:dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA@mysql.railway.internal:3306/railway'
+        if mysql_url.startswith('mysql://'):
             mysql_url = mysql_url.replace('mysql://', 'mysql+pymysql://', 1)
 
-        # Use the correct hardcoded database URL for Railway
-        correct_db_url = 'mysql+pymysql://root:dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA@mysql.railway.internal:3306/railway'
-        user_db_url = correct_db_url
-        chatbot_db_url = correct_db_url
+        user_db_url = mysql_url
+        chatbot_db_url = mysql_url
         app.logger.info("Using Railway MySQL URL for both user and chatbot databases")
     else:
         app.logger.info("Running in development, using SQLite database")
@@ -147,18 +141,18 @@ railway_engine = RailwayMySQLEngine(user_db_url)
 # Use the custom engine for all database operations
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
-    'pool_recycle': 30,  # Less aggressive recycling
-    'pool_size': 1,
-    'max_overflow': 0,
-    'pool_timeout': 30,  # Increased timeout
+    'pool_recycle': 300,  # Recycle connections every 5 minutes
+    'pool_size': 5,       # Allow more connections
+    'max_overflow': 10,   # Allow overflow connections
+    'pool_timeout': 60,   # Increased pool timeout
     'pool_reset_on_return': 'rollback',
     'connect_args': {
-        'connect_timeout': 30,  # Increased connection timeout
-        'read_timeout': 30,     # Increased read timeout
-        'write_timeout': 30,    # Increased write timeout
+        'connect_timeout': 60,  # Increased connection timeout
+        'read_timeout': 60,     # Increased read timeout
+        'write_timeout': 60,    # Increased write timeout
         'autocommit': True,
         'charset': 'utf8mb4',
-        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
+        'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"; SET SESSION wait_timeout=28800; SET SESSION interactive_timeout=28800;',
     }
 }
 
