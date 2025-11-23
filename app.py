@@ -212,7 +212,7 @@ with app.app_context():
         app.logger.info("Database tables created successfully")
         # Add delay to prevent spamming MySQL at startup
         import time
-        time.sleep(5)
+        time.sleep(10)  # Increased delay
     except Exception as e:
         app.logger.warning(f"Database table creation failed (continuing anyway): {str(e)}")
 
@@ -298,22 +298,52 @@ with app.app_context():
                 try:
                     # Create tables first
                     create_sqlalchemy_tables()
+                    app.logger.info("Database tables created successfully for migration")
 
-                    # Run migration functions
-                    base_path = os.path.join(app.root_path, 'database')
+                    # Determine the correct base path - use volume if mounted, otherwise local
+                    volume_path = '/app/database'
+                    local_db_path = os.path.join(app.root_path, 'database')
+
+                    # Use volume path if it exists and is readable, otherwise use local path
+                    if os.path.exists(volume_path) and os.access(volume_path, os.R_OK):
+                        base_path = volume_path
+                        app.logger.info("Using Railway volume path for migration: /app/database")
+                    else:
+                        base_path = local_db_path
+                        app.logger.info("Using local database path for migration")
+
+                    # Check if JSON files exist before migration
+                    faqs_path = os.path.join(base_path, 'faqs.json')
+                    locations_path = os.path.join(base_path, 'locations', 'locations.json')
+                    visuals_path = os.path.join(base_path, 'visuals', 'visuals.json')
+
+                    app.logger.info(f"Checking for JSON files - FAQs: {os.path.exists(faqs_path)}, Locations: {os.path.exists(locations_path)}, Visuals: {os.path.exists(visuals_path)}")
 
                     # Migrate data
+                    app.logger.info("Starting category migration...")
                     migrate_categories(base_path)
+
+                    app.logger.info("Starting email directory migration...")
                     migrate_email_directory(base_path)
+
+                    app.logger.info("Starting FAQs migration...")
                     migrate_faqs(base_path)
+
+                    app.logger.info("Starting locations migration...")
                     migrate_locations(base_path)
+
+                    app.logger.info("Starting visuals migration...")
                     migrate_visuals(base_path)
+
+                    app.logger.info("Starting rules migration...")
                     migrate_rules(base_path)
 
                     app.logger.info("JSON to database migration completed successfully!")
 
                 except Exception as e:
                     app.logger.error(f"Migration failed: {str(e)}")
+                    import traceback
+                    app.logger.error(f"Migration traceback: {traceback.format_exc()}")
                     db.session.rollback()
 
             else:
