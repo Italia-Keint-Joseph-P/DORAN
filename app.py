@@ -277,15 +277,25 @@ with app.app_context():
     def auto_migrate_json_to_db():
         """
         Automatically migrate JSON files to database tables on startup if tables are empty.
+        Also fixes email_directory schema and populates sample emails.
         """
         try:
+            # First, fix email_directory schema if needed
+            from fix_database_schema import fix_email_directory_table
+            try:
+                fix_email_directory_table(db.engine)
+                app.logger.info("Email directory schema fix completed")
+            except Exception as e:
+                app.logger.warning(f"Email directory schema fix failed (continuing): {str(e)}")
+
             # Check if chatbot database tables are empty
-            from chatbot_models import Faq, Location, Visual, UserRule, GuestRule
+            from chatbot_models import Faq, Location, Visual, UserRule, GuestRule, EmailDirectory
             faq_count = Faq.query.count()
             location_count = Location.query.count()
             visual_count = Visual.query.count()
             user_rule_count = UserRule.query.count()
             guest_rule_count = GuestRule.query.count()
+            email_count = EmailDirectory.query.count()
 
             # If tables are empty, run migration
             if faq_count == 0 and location_count == 0 and visual_count == 0 and user_rule_count == 0 and guest_rule_count == 0:
@@ -350,6 +360,16 @@ with app.app_context():
 
             else:
                 app.logger.info("Database tables already contain data, skipping migration")
+
+            # Always populate email directory if empty, regardless of other tables
+            if email_count == 0:
+                app.logger.info("Email directory is empty, populating with sample data...")
+                try:
+                    from populate_email_directory import populate_email_directory
+                    populate_email_directory()
+                    app.logger.info("Email directory populated successfully")
+                except Exception as e:
+                    app.logger.error(f"Failed to populate email directory: {str(e)}")
 
         except Exception as e:
             app.logger.error(f"Error during auto-migration check: {str(e)}")
