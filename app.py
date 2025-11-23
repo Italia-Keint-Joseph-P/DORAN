@@ -120,21 +120,21 @@ class RailwayMySQLEngine:
         from sqlalchemy import create_engine
         import time
 
-        max_retries = 3
+        max_retries = 5  # Increased retries
         for attempt in range(max_retries):
             try:
                 engine = create_engine(
                     self.url,
                     pool_pre_ping=True,
-                    pool_recycle=30,  # Very aggressive recycling
+                    pool_recycle=5,  # Extremely aggressive recycling
                     pool_size=1,
                     max_overflow=0,
-                    pool_timeout=5,
+                    pool_timeout=1,  # Very short timeout
                     pool_reset_on_return='rollback',
                     connect_args={
-                        'connect_timeout': 2,
-                        'read_timeout': 5,
-                        'write_timeout': 5,
+                        'connect_timeout': 1,  # Very short connection timeout
+                        'read_timeout': 1,     # Very short read timeout
+                        'write_timeout': 1,    # Very short write timeout
                         'autocommit': True,
                         'charset': 'utf8mb4',
                         'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
@@ -147,7 +147,7 @@ class RailwayMySQLEngine:
                 return engine
             except Exception as e:
                 if attempt < max_retries - 1:
-                    time.sleep(1)
+                    time.sleep(0.5)  # Shorter sleep
                     continue
                 raise e
 
@@ -177,17 +177,21 @@ class RailwayMySQLEngine:
                         continue
                 raise e
 
+# Create custom engine for Railway MySQL with extremely aggressive settings
+railway_engine = RailwayMySQLEngine(user_db_url)
+
+# Use the custom engine for all database operations
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
-    'pool_recycle': 30,
+    'pool_recycle': 10,  # Extremely aggressive recycling
     'pool_size': 1,
     'max_overflow': 0,
-    'pool_timeout': 5,
+    'pool_timeout': 2,   # Very short timeout
     'pool_reset_on_return': 'rollback',
     'connect_args': {
-        'connect_timeout': 2,
-        'read_timeout': 5,
-        'write_timeout': 5,
+        'connect_timeout': 1,  # Very short connection timeout
+        'read_timeout': 2,     # Very short read timeout
+        'write_timeout': 2,    # Very short write timeout
         'autocommit': True,
         'charset': 'utf8mb4',
         'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
@@ -230,26 +234,14 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 with app.app_context():
-    # Retry database table creation up to 5 times with exponential backoff
-    max_retries = 5
-    for attempt in range(max_retries):
-        try:
-            db.create_all()
-            app.logger.info("Database tables created successfully")
-            break  # Success, exit retry loop
-        except Exception as e:
-            app.logger.warning(f"Database table creation attempt {attempt + 1} failed: {str(e)}")
-            if attempt < max_retries - 1:
-                import time
-                delay = 2 ** attempt  # Exponential backoff: 1, 2, 4, 8 seconds
-                app.logger.info(f"Retrying in {delay} seconds...")
-                time.sleep(delay)
-                continue
-            else:
-                app.logger.error(f"Failed to create database tables after {max_retries} attempts: {str(e)}")
-                # Don't raise exception, allow app to continue
+    # Try to create database tables, but don't fail if it doesn't work
+    try:
+        db.create_all()
+        app.logger.info("Database tables created successfully")
+    except Exception as e:
+        app.logger.warning(f"Database table creation failed (continuing anyway): {str(e)}")
 
-    # Initialize user manager with retry logic
+    # Initialize user manager - it will handle connection failures gracefully
     user_manager = UserManager(db)
 
 # Auto-upload JSON files to Railway volume on startup
