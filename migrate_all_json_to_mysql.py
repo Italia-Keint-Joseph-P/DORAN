@@ -13,6 +13,7 @@ app = Flask(__name__)
 railway_chatbot_db_url = 'mysql+pymysql://root:dDDFLZWyupsuUkbFDIGveYZFXxzAEIEA@mysql.railway.internal:3306/railway'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = railway_chatbot_db_url
+app.config['CHATBOT_DATABASE_URI'] = railway_chatbot_db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
@@ -29,6 +30,11 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'charset': 'utf8mb4',
         'init_command': 'SET SESSION sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"',
     }
+}
+
+# Configure binds for multiple databases (same as main app)
+app.config['SQLALCHEMY_BINDS'] = {
+    'chatbot_db': app.config['CHATBOT_DATABASE_URI']
 }
 
 db.init_app(app)
@@ -53,6 +59,7 @@ def create_sqlalchemy_tables():
     """Create tables using SQLAlchemy for Railway MySQL"""
     try:
         with app.app_context():
+            # Create tables for all binds
             db.create_all()
         print("Tables created successfully using SQLAlchemy")
     except Exception as e:
