@@ -130,7 +130,7 @@ async function loadHistoryForSession(sessionId) {
                 msgDiv.classList.add('message', msg.sender === 'user' ? 'message-user' : 'message-bot');
                 msgDiv.innerHTML = `
                     <div class="message-content">${msg.message}</div>
-                    <div class="message-time"><i class="fas fa-${msg.sender === 'user' ? 'user' : 'robot'} me-1"></i>${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                    <div class="message-time"><i class="fas fa-${msg.sender === 'user' ? 'user' : 'robot'} me-1"></i>${new Date(msg.timestamp).toLocaleTimeString([], { hour12: true })}</div>
                 `;
                 chatMessages.appendChild(msgDiv);
             });
@@ -188,7 +188,7 @@ async function loadHistoryForSession(sessionId) {
         userMessageDiv.classList.add('message', 'message-user');
         userMessageDiv.innerHTML = `
             <div class="message-content">${message}</div>
-            <div class="message-time"><i class="fas fa-user me-1"></i>${new Date().toLocaleTimeString()}</div>
+            <div class="message-time"><i class="fas fa-user me-1"></i>${new Date().toLocaleTimeString([], { hour12: true })}</div>
         `;
         chatMessages.appendChild(userMessageDiv);
         scrollToBottom();
@@ -251,7 +251,7 @@ async function loadHistoryForSession(sessionId) {
                 botMessageDiv.classList.add('message', 'message-bot');
                 botMessageDiv.innerHTML = `
                     <div class="message-content">${botMessages}</div>
-                    <div class="message-time"><i class="fas fa-robot me-1"></i>${new Date(timestamp).toLocaleTimeString()}</div>
+                    <div class="message-time"><i class="fas fa-robot me-1"></i>${new Date(timestamp).toLocaleTimeString([], { hour12: true })}</div>
                 `;
                 chatMessages.appendChild(botMessageDiv);
 
@@ -265,7 +265,7 @@ async function loadHistoryForSession(sessionId) {
             errorMessageDiv.classList.add('message', 'message-bot');
             errorMessageDiv.innerHTML = `
                 <div class="message-content">I'm sorry, I encountered an error. Please try again.</div>
-                <div class="message-time"><i class="fas fa-robot me-1"></i>${new Date().toLocaleTimeString()}</div>
+                <div class="message-time"><i class="fas fa-robot me-1"></i>${new Date().toLocaleTimeString([], { hour12: true })}</div>
             `;
             chatMessages.appendChild(errorMessageDiv);
             scrollToBottom();
