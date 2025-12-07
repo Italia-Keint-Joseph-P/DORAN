@@ -169,7 +169,7 @@ class UserManager:
             sessions[session_id]['messages'].append({
                 'sender': msg.sender_type,
                 'message': msg.message,
-                'timestamp': msg.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+                'timestamp': msg.timestamp.strftime("%Y-%m-%d %I:%M %p")
             })
         # Sort sessions by timestamp descending
         sorted_sessions = dict(sorted(sessions.items(), key=lambda x: x[1]['timestamp'], reverse=True))
@@ -224,7 +224,7 @@ class UserManager:
             session_data['messages'].append({
                 'sender': msg.sender_type,
                 'message': msg.message,
-                'timestamp': msg.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+                'timestamp': msg.timestamp.strftime("%Y-%m-%d %I:%M %p")
             })
         return session_data
     
