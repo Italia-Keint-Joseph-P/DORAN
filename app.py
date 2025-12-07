@@ -718,13 +718,13 @@ def send_message():
 
         return jsonify({
             'response': bot_response,
-            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            'timestamp': datetime.now().strftime("%Y-%m-%d %I:%M %p")
         })
     except Exception as e:
         app.logger.error(f"Error in send_message: {e}")
         return jsonify({
             'response': "I'm sorry, I encountered an error. Please try again.",
-            'timestamp': datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+            'timestamp': datetime.utcnow().strftime("%Y-%m-%d %I:%M %p")
         }), 500
 
 @app.route('/clear_history', methods=['POST'])
